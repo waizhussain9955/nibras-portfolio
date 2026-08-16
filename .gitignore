@@ -1,0 +1,7 @@
+Portfolio.pdf
+*.log
+.system_generated/
+scratch/
+browser/
+node_modules/
+.DS_Store
