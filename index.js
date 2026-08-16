@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 0. Custom Neon Cursor Animation
+    // 0. Custom Neon Cursor Animation & Click Ripples
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
 
@@ -42,7 +42,146 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 1. Sticky Navigation Header
+    // Click Ripple Effect
+    window.addEventListener('click', (e) => {
+        const ripple = document.createElement('div');
+        ripple.className = 'click-ripple';
+        ripple.style.left = `${e.clientX}px`;
+        ripple.style.top = `${e.clientY}px`;
+        document.body.appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
+
+    // 1. Interactive Cyber Particle Canvas Background
+    const canvas = document.getElementById('particleCanvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let width = canvas.width = canvas.parentElement.offsetWidth;
+        let height = canvas.height = canvas.parentElement.offsetHeight;
+
+        window.addEventListener('resize', () => {
+            if (!canvas.parentElement) return;
+            width = canvas.width = canvas.parentElement.offsetWidth;
+            height = canvas.height = canvas.parentElement.offsetHeight;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.radius = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, ' : 'rgba(59, 130, 246, ';
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#22c55e';
+                ctx.fill();
+            }
+        }
+
+        const numParticles = Math.min(Math.floor(width / 25), 45);
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle());
+        }
+
+        const renderParticles = () => {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(34, 197, 94, ${0.25 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(renderParticles);
+        };
+        renderParticles();
+    }
+
+    // 2. Interactive Spotlight Radial Card Effect
+    const spotlightCards = document.querySelectorAll('.spotlight-card');
+    spotlightCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // 3. 3D Tilt Card Effect
+    const tiltCards = document.querySelectorAll('.tilt-card');
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+    });
+
+    // 4. Interactive Magnetic Buttons
+    const magneticBtns = document.querySelectorAll('.magnetic');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = `translate(0px, 0px)`;
+        });
+    });
+
+    // 5. Sticky Navigation Header
     const header = document.getElementById('mainHeader');
     const handleScroll = () => {
         if (window.scrollY > 50) {
@@ -54,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
 
-    // 2. Mobile Menu Toggle
+    // 6. Mobile Menu Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -75,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Portfolio Category Filtering
+    // 7. Portfolio Category Filtering
     const filterTabs = document.querySelectorAll('.filter-tab');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
 
@@ -91,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (filterValue === 'all' || category === filterValue) {
                     item.style.display = 'block';
-                    void item.offsetWidth; // Reflow trigger
+                    void item.offsetWidth;
                     item.classList.add('show');
                 } else {
                     item.classList.remove('show');
@@ -105,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Lightbox Modal System
+    // 8. Lightbox Modal System
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxTitle = document.getElementById('lightboxTitle');
@@ -154,11 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Software Stack Progress Bar Animations
+    // 9. Animated Software Stack Progress Bars & Number Counters
     const softwareSection = document.getElementById('softwares');
     const progressFills = document.querySelectorAll('.progress-bar-fill');
+    const counters = document.querySelectorAll('.counter');
 
-    if (softwareSection && progressFills.length > 0) {
+    if (softwareSection) {
         const softwareObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -166,6 +306,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         const targetWidth = fill.getAttribute('data-progress');
                         fill.style.width = targetWidth;
                     });
+
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-target'));
+                        let count = 0;
+                        const duration = 1500;
+                        const stepTime = Math.abs(Math.floor(duration / target));
+
+                        const timer = setInterval(() => {
+                            count += 1;
+                            counter.textContent = `${count}%`;
+                            if (count >= target) {
+                                counter.textContent = `${target}%`;
+                                clearInterval(timer);
+                            }
+                        }, stepTime);
+                    });
+
                     softwareObserver.unobserve(softwareSection);
                 }
             });
@@ -174,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         softwareObserver.observe(softwareSection);
     }
 
-    // 6. Scroll Reveal Animations
+    // 10. Scroll Reveal Animations
     const revealElements = [
         '.hero-content', '.hero-image-wrapper',
         '.about-left', '.about-right',
@@ -202,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.observe(el);
     });
 
-    // 7. Active Link Highlight on Scroll
+    // 11. Active Link Highlight on Scroll
     const sections = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
@@ -226,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', highlightNavLink);
 
-    // 8. Contact Form Simulation
+    // 12. Contact Form Simulation
     const contactForm = document.getElementById('contactForm');
     const formFeedback = document.getElementById('formFeedback');
 
