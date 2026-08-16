@@ -1,359 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Nibras Ansari | Mascot & Graphic Designer Portfolio</title>
-  <meta name="description" content="Nibras Ansari is a professional Mascot & Brand Designer specializing in character design, packaging, and high-impact visual identity.">
-  <meta name="keywords" content="Mascot Logo, Graphic Designer, Esports Logo, Packaging Design, Brand Identity, CorelDRAW, Illustrator">
-  <link rel="stylesheet" href="index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Nibras Ansari — Mascot & Graphic Designer Portfolio</title>
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Portfolio of Nibras Ansari, a Creative Graphic Designer specializing in mascot logos, esports branding, sports design, typography, and 2D character design.">
+    <meta name="keywords" content="Graphic Designer, Mascot Logo, Esports Logo, Sports Logo, 2D Character Design, Typography, Branding, Nibras Ansari">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
 
-  <!-- Background Ambient Glow Container (isolated to prevent page overflow) -->
-  <div class="bg-glows-wrapper" aria-hidden="true">
-    <div class="glow-orb glow-top-left"></div>
-    <div class="glow-orb glow-mid-right"></div>
-  </div>
+    <!-- Custom Neon Cursor Elements -->
+    <div class="custom-cursor-dot" id="cursorDot"></div>
+    <div class="custom-cursor-circle" id="cursorCircle"></div>
 
-  <!-- --- HEADER / NAVIGATION --- -->
-  <header class="main-header" id="header">
-    <div class="container header-container">
-      <a href="#home" class="logo">NIBRAS<span>.</span></a>
-      <nav>
-        <ul class="nav-menu" id="navMenu">
-          <li><a href="#home" class="nav-link active">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li class="mobile-nav-cta"><a href="#contact" class="btn btn-primary" style="margin-top: 12px; width: 100%;">LET'S TALK</a></li>
-        </ul>
-      </nav>
-      <div class="header-actions">
-        <a href="#contact" class="btn btn-primary btn-talk">LET'S TALK</a>
-        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- --- HERO SECTION --- -->
-  <section id="home" class="hero-section">
-    <div class="container hero-container">
-      <div class="hero-content">
-        <span class="section-tag">Available for Projects</span>
-        <h1 class="hero-title">I help brands build <span class="text-gradient">trust</span> through design.</h1>
-        <p class="hero-desc">I am Nibras Ansari, a Mascot & Brand Designer. I specialize in crafting distinctive mascot logos, playful packaging systems, and strong brand identities that resonate with target audiences and create lasting impressions.</p>
-        <div class="hero-actions">
-          <a href="#projects" class="btn btn-primary">
-            View Portfolio 
-            <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-          </a>
-          <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="hero-canvas-wrapper">
-          <div class="character-card">
-            <img src="assets/mascot_badge.png" alt="Mascot Design Badge" onerror="this.src='assets/cleanin.jpg'">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- --- ABOUT & TIMELINE --- -->
-  <section id="about">
-    <div class="container about-grid">
-      <div class="fade-in">
-        <span class="section-tag">My Story</span>
-        <h2 class="section-title">Outcomes over tools. Design that represents you.</h2>
-        <p class="section-desc">I don't just draft drawings; I build visual assets that tell a story. Good design is a tool of trust. By maintaining alignment, color psychology, and strict geometric consistency, I make sure your visual identity is scaling your authority.</p>
-        
-        <div class="experience-timeline" style="margin-top: var(--space-4);">
-          <h3 style="font-size: 1.3rem; margin-bottom: var(--space-2); color: var(--text-light);">Professional Journey</h3>
-          
-          <div class="timeline-item">
-            <div class="timeline-date">2022 - Present</div>
-            <h4 class="timeline-title">Graphic Designer</h4>
-            <div class="timeline-org">Digital Cuberoot</div>
-            <p class="timeline-desc">Designing mascot logos, esports branding, vector characters, and corporate packaging layouts for diverse global business campaigns.</p>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-date">2019 - 2020</div>
-            <h4 class="timeline-title">Freelance Designer</h4>
-            <div class="timeline-org">Self-Employed</div>
-            <p class="timeline-desc">Crafted dynamic mascot concepts, logo vectors, and social media banners for private commissions and online projects.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="fade-in">
-        <div class="experience-timeline education-timeline">
-          <h3 style="font-size: 1.3rem; margin-bottom: var(--space-2); color: var(--text-light);">Education & Training</h3>
-          
-          <div class="timeline-item">
-            <div class="timeline-date">2022 - 2024</div>
-            <h4 class="timeline-title">Certificate In Communication Design (CCD)</h4>
-            <div class="timeline-org">Arena Multimedia Karachi</div>
-            <p class="timeline-desc">Two-year deep dive into communication design, vector illustration, printing processes, layout hierarchies, and branding systems.</p>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-date">2021</div>
-            <h4 class="timeline-title">Intermediate Studies</h4>
-            <div class="timeline-org">Quaid e Millat College Liaquatabad</div>
-            <p class="timeline-desc">Academic studies laying down foundational critical thinking and analysis structures.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- --- SKILLS / SOFTWARES --- -->
-  <section id="skills" class="skills-section">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-4);" class="fade-in">
-        <span class="section-tag">Expertise</span>
-        <h2 class="section-title">My Creative Arsenal</h2>
-        <p class="section-desc" style="margin: 0 auto;">Mastery over industry-standard design tools ensuring production-ready vectors and layouts.</p>
-      </div>
-
-      <div class="skills-grid">
-        <div class="skill-card fade-in">
-          <div class="skill-icon-wrapper skill-icon-ai">Ai</div>
-          <span class="skill-name">Illustrator</span>
-          <p style="font-size:0.82rem; color: var(--text-muted);">Vector Mascot Logos</p>
-        </div>
-
-        <div class="skill-card fade-in">
-          <div class="skill-icon-wrapper skill-icon-ps">Ps</div>
-          <span class="skill-name">Photoshop</span>
-          <p style="font-size:0.82rem; color: var(--text-muted);">Mockups & Composites</p>
-        </div>
-
-        <div class="skill-card fade-in">
-          <div class="skill-icon-wrapper skill-icon-cd">Cd</div>
-          <span class="skill-name">CorelDRAW</span>
-          <p style="font-size:0.82rem; color: var(--text-muted);">Logo & Print Layouts</p>
-        </div>
-
-        <div class="skill-card fade-in">
-          <div class="skill-icon-wrapper skill-icon-id">Id</div>
-          <span class="skill-name">InDesign</span>
-          <p style="font-size:0.82rem; color: var(--text-muted);">Layouts & Portfolios</p>
-        </div>
-
-        <div class="skill-card fade-in">
-          <div class="skill-icon-wrapper skill-icon-lr">Lr</div>
-          <span class="skill-name">Lightroom</span>
-          <p style="font-size:0.82rem; color: var(--text-muted);">Color Grading & Edits</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- --- PROJECTS / PORTFOLIO SECTION --- -->
-  <section id="projects">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-6);" class="fade-in">
-        <span class="section-tag">Case Studies</span>
-        <h2 class="section-title">Featured Creations</h2>
-        <p class="section-desc" style="margin: 0 auto;">Outcome-focused design solutions. Click learn more to see grids, palettes, and mockups.</p>
-      </div>
-
-      <div class="portfolio-filter fade-in">
-        <button class="filter-btn active" data-filter="all">All Work</button>
-        <button class="filter-btn" data-filter="mascot">Mascots</button>
-        <button class="filter-btn" data-filter="packaging">Packaging</button>
-        <button class="filter-btn" data-filter="branding">Branding</button>
-      </div>
-
-      <div class="projects-grid">
-        <!-- Project 1: Cleanin -->
-        <div class="project-card fade-in" data-category="mascot branding">
-          <div class="project-image-panel">
-            <img src="assets/cleanin.jpg" alt="Cleanin Mascot Logo Mockup">
-            <div class="project-overlay">
-              <button class="btn btn-secondary open-case-study" data-project="cleanin">
-                Learn More 
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              </button>
-            </div>
-          </div>
-          <div class="project-info">
-            <div class="project-tag-row">
-              <span class="project-badge">Mascot Logo</span>
-              <span class="project-badge">Branding</span>
-            </div>
-            <h3 class="project-title">Cleanin Mascot Logo</h3>
-            <p class="project-desc">A premium mascot and corporate branding layout package for professional cleaning providers.</p>
-            <a href="#" class="project-link open-case-study" data-project="cleanin">
-              View Case Study 
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    <!-- Sticky Navigation Bar -->
+    <header class="main-header" id="mainHeader">
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <span class="logo-slash">//</span> NIBRAS.
             </a>
-          </div>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#expertise" class="nav-link">Expertise</a>
+                <a href="#portfolio" class="nav-link">Portfolio</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#softwares" class="nav-link">Stack</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+            <div class="header-actions">
+                <a href="https://behance.net/nibrasansari2" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-behance">
+                    <svg class="icon-behance" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.2 5c1.8 0 3.2.4 4.1 1.2.9.8 1.3 2 1.3 3.6 0 1.2-.2 2.1-.7 2.8s-1.1 1.2-1.9 1.5c1 .3 1.8.8 2.4 1.6.6.8.9 1.9.9 3.2 0 1.8-.5 3.2-1.5 4.1-1 .9-2.5 1.4-4.5 1.4H1v-19.4h7.2zm-.7 7c.9 0 1.6-.2 2-.5.4-.4.6-.9.6-1.5 0-.7-.2-1.2-.6-1.5-.4-.3-1.1-.4-2-.4H3.7v3.9H7.5zm.3 9c1 0 1.7-.2 2.2-.6s.7-1 .7-1.7-.2-1.3-.7-1.6c-.5-.3-1.2-.5-2.2-.5H3.7v4.4h4.1zM23 15.3h-7.9c0 .8.2 1.4.7 1.8.5.4 1.1.6 1.9.6.7 0 1.2-.1 1.7-.4.5-.3.8-.7.9-1.2h2.5c-.3 1.3-.9 2.3-1.9 3.1-1 .8-2.3 1.2-3.9 1.2-2 0-3.6-.6-4.7-1.8s-1.7-2.9-1.7-5.1c0-2.2.6-3.9 1.7-5.1 1.1-1.2 2.6-1.8 4.6-1.8 1.9 0 3.4.6 4.4 1.7 1 1.1 1.5 2.7 1.5 4.8v2.2zm-2.5-1.9c0-.7-.2-1.3-.6-1.7-.4-.4-.9-.6-1.6-.6-.7 0-1.2.2-1.6.6-.4.4-.6 1-.7 1.7h4.5zM16.1 7.2h6.1V8.6h-6.1z"/>
+                    </svg>
+                    <span>BEHANCE</span>
+                </a>
+                <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
         </div>
+    </header>
 
-        <!-- Project 2: Chipo -->
-        <div class="project-card fade-in" data-category="packaging">
-          <div class="project-image-panel">
-            <img src="assets/chipo.jpg" alt="Chipo Packaging Design Mockup">
-            <div class="project-overlay">
-              <button class="btn btn-secondary open-case-study" data-project="chipo">
-                Learn More 
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              </button>
+    <!-- Hero Section -->
+    <section id="about" class="hero-section">
+        <div class="hero-bg-text" aria-hidden="true">CREATIVE</div>
+        <div class="container hero-container">
+            <!-- Left Hero Details -->
+            <div class="hero-content">
+                <div class="hero-badge-tag">PORTFOLIO</div>
+                <h1 class="hero-title">
+                    NIBRAS<br>
+                    ANSARI.
+                </h1>
+                <h2 class="hero-subtitle">CREATIVE GRAPHIC DESIGNER</h2>
+                <p class="hero-intro-text">
+                    Specializing in bold branding, custom mascot logos, high-energy esports design, clean sports iconography, and personality-driven 2D character design. I craft impactful visuals that command attention.
+                </p>
+                <div class="hero-actions-row">
+                    <a href="#portfolio" class="btn btn-primary">
+                        <span>EXPLORE WORK</span>
+                        <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#contact" class="btn btn-outline">
+                        <span>HIRE ME</span>
+                    </a>
+                </div>
             </div>
-          </div>
-          <div class="project-info">
-            <div class="project-tag-row">
-              <span class="project-badge">Packaging</span>
-            </div>
-            <h3 class="project-title">Chipo Food Boxes</h3>
-            <p class="project-desc">Vibrant food packaging layout designed with custom cartoon characters, monkeys, squirrels, and bears.</p>
-            <a href="#" class="project-link open-case-study" data-project="chipo">
-              View Case Study 
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-          </div>
-        </div>
 
-        <!-- Project 3: Safety Mujh Se -->
-        <div class="project-card fade-in" data-category="branding">
-          <div class="project-image-panel">
-            <img src="assets/safety.jpg" alt="Safety Mujh Se Branding Campaign">
-            <div class="project-overlay">
-              <button class="btn btn-secondary open-case-study" data-project="safety">
-                Learn More 
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              </button>
+            <!-- Right Hero Visual Panel (Interactive Wolf Mascot Showcase) -->
+            <div class="hero-image-wrapper">
+                <div class="glow-border-container">
+                    <img src="assets/portfolio_esports_1.png" alt="Featured Esports Cyber Wolf Design by Nibras" class="hero-img">
+                </div>
+                <div class="hero-label-tag">// FEATURED DESIGN</div>
             </div>
-          </div>
-          <div class="project-info">
-            <div class="project-tag-row">
-              <span class="project-badge">Branding</span>
-              <span class="project-badge">Logo Folio</span>
-            </div>
-            <h3 class="project-title">Safety Campaign Branding</h3>
-            <p class="project-desc">Complete industrial safety identity designed for Shan campaigns, including helmet, banners, and app icon mockups.</p>
-            <a href="#" class="project-link open-case-study" data-project="safety">
-              View Case Study 
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-          </div>
         </div>
-      </div>
+    </section>
+
+    <!-- About Detail Panel (Visual Split) -->
+    <section class="about-detail-section section-padding">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-left">
+                    <h2 class="about-title-large">
+                        FOCUSED ON<br>
+                        DELIVERING BOLD,<br>
+                        IMPACTFUL<br>
+                        <span class="highlight-green">VISUALS.</span>
+                    </h2>
+                </div>
+                <div class="about-right">
+                    <div class="about-quote-box">
+                        <p class="about-lead">
+                            "A brand identity isn't just about graphics—it's about making a lasting impression that sets you apart from the noise."
+                        </p>
+                    </div>
+                    <div class="about-body">
+                        <p>
+                            With an education in Communication Design from <strong>Arena Multimedia Karachi</strong>, I combine strategic conceptual thinking with top-tier digital illustration. Whether structuring character guidelines, developing custom vector assets, or establishing full esports branding architectures, I deliver professional design.
+                        </p>
+                        
+                        <div class="about-meta-row">
+                            <div class="meta-item">
+                                <span class="meta-label">EDUCATION</span>
+                                <span class="meta-value">Arena Multimedia Karachi</span>
+                                <span class="meta-sub">Communication Design (2021)</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">LANGUAGES</span>
+                                <span class="meta-value">English & Urdu</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="expertise-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">
+                    <span class="tag-number">01</span>
+                    <span class="tag-text">MY EXPERTISE</span>
+                </div>
+                <h3 class="section-headline">SPECIALIZED DESIGN DOMAINS</h3>
+            </div>
+
+            <div class="expertise-grid">
+                <!-- Mascot Logos -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM12 20.2C9.39 20.2 7.11 18.85 5.8 16.8C5.83 14.81 9.8 13.7 12 13.7C14.19 13.7 18.17 14.81 18.2 16.8C16.89 18.85 14.61 20.2 12 20.2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">MASCOT LOGOS</h4>
+                    <p class="card-desc">High-impact mascots designed for esports teams, sports franchises, and modern businesses looking to establish a memorable character brand representation.</p>
+                </div>
+
+                <!-- Esports Branding -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 6H3C1.9 6 1.01 6.9 1.01 8L1 18C1 19.1 1.9 20 3 20H21C22.1 20 23 19.1 23 18V8C23 6.9 22.1 6 21 6ZM21 18H3V8H21V18ZM10.5 15.5L14.5 13L10.5 10.5V15.5Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">ESPORTS BRANDING</h4>
+                    <p class="card-desc">Striking and aggressive gaming designs featuring high-energy vector mascots, custom logotypes, jersey mocks, and full streaming overlay packages.</p>
+                </div>
+
+                <!-- Sports Logos -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 4C13.25 4 14.43 4.38 15.43 5.04C13.9 6.8 11.23 8.35 8.1 8.94C6.54 7.21 5.34 5.2 4.96 4.96C6.73 4.35 9.07 4 12 4ZM4.04 6.57C4.6 7.03 6.13 9.4 8 11.28C5.23 12.35 3.03 12.03 3.01 12.03C3 12.02 3 10.15 4.04 6.57ZM12 20C9.93 20 8.05 19.38 6.51 18.31C7.75 16.2 10.23 14.53 13.1 13.84C14.54 15.51 15.65 17.38 16.03 18.03C14.93 19.25 13.56 20 12 20ZM18.96 17.43C18.4 16.97 16.87 14.6 15 12.72C17.77 11.65 19.97 11.97 19.99 11.97C20 11.98 20 13.85 18.96 17.43Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">SPORTS ILLUSTRATION</h4>
+                    <p class="card-desc">Bold and dynamic sports logos featuring strong typography, clean outlines, and energetic compositions designed to stand out on uniforms and digital platforms.</p>
+                </div>
+
+                <!-- 2D Character Design -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 13.92 2.54 15.7 3.47 17.21L2.03 21.53C1.89 21.95 2.05 22.4 2.47 22.53C2.89 22.67 3.34 22.51 3.47 22.09L4.91 17.77C6.88 19.78 9.69 21 12.8 21C18.32 21 22.8 16.52 22.8 11C22.8 5.48 18.32 1 12.8 1H12.8ZM12 18.2C9.39 18.2 7.11 16.85 5.8 14.8C5.83 12.81 9.8 11.7 12 11.7C14.19 11.7 18.17 12.81 18.2 14.8C16.89 16.85 14.61 18.2 12 18.2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">2D CHARACTER DESIGN</h4>
+                    <p class="card-desc">Expressive and personality-driven character designs optimized for digital media, focusing on strong silhouettes, clean vector geometry, and print scalability.</p>
+                </div>
+
+                <!-- Typography & Lettering -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.5 4H5V6H9.5V18.5C9.5 20.43 11.07 22 13 22H19V20H13C12.17 20 11.5 19.33 11.5 18.5V6H19V4H9.5Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">TYPOGRAPHY DESIGN</h4>
+                    <p class="card-desc">Custom lettering structures and typography overlays. Creating bespoke layout hierarchy systems that complement primary illustration works.</p>
+                </div>
+
+                <!-- Social Media & Branding -->
+                <div class="expertise-card">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 17H13V15H11V17ZM11 13H13V7H11V13Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">BRAND IDENTITIES</h4>
+                    <p class="card-desc">Holistic brand guidelines and social media templates. Designing unified collateral assets (banners, avatars, posts) that ensure a consistent visual message.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Filter Showcase -->
+    <section id="portfolio" class="portfolio-section section-padding">
+        <div class="container">
+            <div class="section-header portfolio-header-flex">
+                <div>
+                    <div class="section-tag">
+                        <span class="tag-number">02</span>
+                        <span class="tag-text">MY PORTFOLIO</span>
+                    </div>
+                    <h3 class="section-headline">SELECTED DESIGN PROJECTS</h3>
+                </div>
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">ALL</button>
+                    <button class="filter-tab" data-filter="esports">ESPORTS</button>
+                    <button class="filter-tab" data-filter="mascot">MASCOTS</button>
+                    <button class="filter-tab" data-filter="sports">SPORTS</button>
+                    <button class="filter-tab" data-filter="character">2D CHARACTERS</button>
+                </div>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- Item 1: Esports Wolf -->
+                <div class="portfolio-item show" data-category="esports" data-image="assets/portfolio_esports_1.png" data-title="Cyber Fangs Esports Mascot" data-desc="Futuristic cybernetic wolf vector logo designed for a professional esports gaming team, featuring custom neon lighting highlights.">
+                    <div class="item-inner">
+                        <img src="assets/portfolio_esports_1.png" alt="Cyber Fangs Esports Mascot">
+                        <div class="item-overlay">
+                            <span class="item-category">ESPORTS LOGO</span>
+                            <h4 class="item-title">Cyber Fangs Mascot</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2: Mascot Samurai Panda -->
+                <div class="portfolio-item show" data-category="mascot" data-image="assets/portfolio_mascot_1.png" data-title="Samurai Red Panda Mascot" data-desc="Personality-driven red panda samurai character mascot, designed with detailed armor gradients and bold vector shapes.">
+                    <div class="item-inner">
+                        <img src="assets/portfolio_mascot_1.png" alt="Samurai Red Panda Mascot">
+                        <div class="item-overlay">
+                            <span class="item-category">MASCOT DESIGN</span>
+                            <h4 class="item-title">Samurai Red Panda</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3: Chicago Bulls Sports Logo -->
+                <div class="portfolio-item show" data-category="sports" data-image="assets/portfolio_sports_1.png" data-title="Chicago Bulls Athletics Emblem" data-desc="Fierce charging bull mascot logo for sports organizations, showcasing clean dynamic vectors and custom typography layouts.">
+                    <div class="item-inner">
+                        <img src="assets/portfolio_sports_1.png" alt="Chicago Bulls Athletics Emblem">
+                        <div class="item-overlay">
+                            <span class="item-category">SPORTS LOGO</span>
+                            <h4 class="item-title">Chicago Bulls Concept</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4: Cyberpunk Character Design -->
+                <div class="portfolio-item show" data-category="character" data-image="assets/portfolio_character_1.png" data-title="Cyberpunk Street Racer" data-desc="Detailed 2D character design of a cyberpunk racer holding key assets, emphasizing clean line execution and strong color highlights.">
+                    <div class="item-inner">
+                        <img src="assets/portfolio_character_1.png" alt="Cyberpunk Street Racer">
+                        <div class="item-overlay">
+                            <span class="item-category">2D CHARACTER DESIGN</span>
+                            <h4 class="item-title">Cyber Racer Character</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5: Corel Portfolio Page -->
+                <div class="portfolio-item show" data-category="mascot" data-image="assets/portfolio_page_1.png" data-title="Vector Mascot Highlights Collage" data-desc="Collage showcasing vector Mascot, Sports and Esports logos designed at Digital Cuberoot (2023 - Present).">
+                    <div class="item-inner">
+                        <img src="assets/portfolio_page_1.png" alt="Vector Mascot Highlights Collage">
+                        <div class="item-overlay">
+                            <span class="item-category">WORK COLLAGE</span>
+                            <h4 class="item-title">Branding Highlights Collage</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Experience Timeline -->
+    <section id="experience" class="experience-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">
+                    <span class="tag-number">03</span>
+                    <span class="tag-text">MY EXPERIENCE</span>
+                </div>
+                <h3 class="section-headline">PROFESSIONAL WORK HISTORY</h3>
+            </div>
+
+            <div class="timeline-container">
+                <!-- Card 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-badge">2023 - PRES</div>
+                    <div class="timeline-content">
+                        <div class="timeline-header-block">
+                            <h4 class="timeline-title">GRAPHIC ILLUSTRATOR & DESIGNER</h4>
+                            <h5 class="timeline-company">Digital Cuberoot</h5>
+                        </div>
+                        <p class="timeline-desc">
+                            Serving as lead vector designer specializing in character mascot creation, esports team branding, and customized merchandise line design.
+                        </p>
+                        <ul class="timeline-tasks">
+                            <li><strong>Mascot & Character Logos</strong>: Designed high-impact brand characters and esport mascot logo structures with dynamic shadow details.</li>
+                            <li><strong>Vector Execution</strong>: Maintained clean vector coordinates across digital and print assets, supporting scalability.</li>
+                            <li><strong>Typography Structuring</strong>: Engineered dynamic letterforms that integrate seamlessly with primary mascot frames.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Software Stack & Competency Section -->
+    <section id="softwares" class="software-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">
+                    <span class="tag-number">04</span>
+                    <span class="tag-text">SOFTWARE STACK</span>
+                </div>
+                <h3 class="section-headline">CREATIVE TOOLKIT</h3>
+            </div>
+
+            <div class="software-grid">
+                <!-- Photoshop -->
+                <div class="software-card">
+                    <div class="soft-logo-container ps-brand">Ps</div>
+                    <div class="soft-details">
+                        <h4 class="soft-title">Adobe Photoshop</h4>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="95%"></div>
+                        </div>
+                        <span class="soft-percent">95%</span>
+                    </div>
+                </div>
+
+                <!-- Illustrator -->
+                <div class="software-card">
+                    <div class="soft-logo-container ai-brand">Ai</div>
+                    <div class="soft-details">
+                        <h4 class="soft-title">Adobe Illustrator</h4>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="98%"></div>
+                        </div>
+                        <span class="soft-percent">98%</span>
+                    </div>
+                </div>
+
+                <!-- Lightroom -->
+                <div class="software-card">
+                    <div class="soft-logo-container lr-brand">Lr</div>
+                    <div class="soft-details">
+                        <h4 class="soft-title">Adobe Lightroom</h4>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="85%"></div>
+                        </div>
+                        <span class="soft-percent">85%</span>
+                    </div>
+                </div>
+
+                <!-- InDesign -->
+                <div class="software-card">
+                    <div class="soft-logo-container id-brand">Id</div>
+                    <div class="soft-details">
+                        <h4 class="soft-title">Adobe InDesign</h4>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="80%"></div>
+                        </div>
+                        <span class="soft-percent">80%</span>
+                    </div>
+                </div>
+
+                <!-- CorelDraw -->
+                <div class="software-card">
+                    <div class="soft-logo-container cd-brand">Cd</div>
+                    <div class="soft-details">
+                        <h4 class="soft-title">CorelDraw</h4>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="90%"></div>
+                        </div>
+                        <span class="soft-percent">90%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Contact Section -->
+    <section id="contact" class="contact-section section-padding">
+        <div class="container">
+            <div class="contact-layout">
+                <div class="contact-left">
+                    <h2 class="contact-title">
+                        START A<br>
+                        PROJECT<br>
+                        <span class="highlight-green">WITH ME.</span>
+                    </h2>
+                    <p class="contact-intro">
+                        Have a logo concept, esports branding project, or character design idea? Drop me a line, and let's create something memorable together.
+                    </p>
+                    
+                    <div class="contact-info-list">
+                        <div class="contact-info-item">
+                            <span class="info-label">EMAIL DIRECT</span>
+                            <a href="mailto:nibrasansari002@gmail.com" class="info-link">nibrasansari002@gmail.com</a>
+                        </div>
+                        <div class="contact-info-item">
+                            <span class="info-label">PHONE / WHATSAPP</span>
+                            <a href="tel:+923161183289" class="info-link">+92 316 1183289</a>
+                        </div>
+                        <div class="contact-info-item">
+                            <span class="info-label">LOCATION</span>
+                            <span class="info-text">Karachi, Pakistan (Available for Global Remote Projects)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-right">
+                    <!-- Premium Contact Form -->
+                    <form class="premium-form" id="contactForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-type" class="form-label">Project Domain</label>
+                            <select id="project-type" name="project" class="form-input form-select" required>
+                                <option value="" disabled selected>Select project type</option>
+                                <option value="esports">Esports Team Logo / Branding</option>
+                                <option value="mascot">Custom Mascot Design</option>
+                                <option value="sports">Athletic Sports Emblem</option>
+                                <option value="character">2D Character Illustration</option>
+                                <option value="other">General Graphic Design / Collaboration</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Project Scope</label>
+                            <textarea id="message" name="message" class="form-input form-textarea" placeholder="Outline your design requirements or project goals..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <span>TRANSMIT BRIEF</span>
+                            <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="form-feedback" id="formFeedback"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox-modal" id="lightboxModal" aria-hidden="true" role="dialog">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close preview">&times;</button>
+        <div class="lightbox-content">
+            <div class="lightbox-image-box">
+                <img src="" alt="" id="lightboxImg">
+            </div>
+            <div class="lightbox-meta">
+                <h4 id="lightboxTitle">Project Title</h4>
+                <p id="lightboxDesc">Project details and scope go here.</p>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- --- CASE STUDY MODAL DRAWER --- -->
-  <div class="modal" id="case-study-modal" aria-hidden="true" role="dialog">
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-content">
-      <button class="modal-close" id="modal-close" aria-label="Close Case Study">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-      <div class="modal-body" id="modal-body">
-        <!-- Dyn contents populated by JS -->
-      </div>
-    </div>
-  </div>
-
-  <!-- --- CONTACT SECTION --- -->
-  <section id="contact">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-6);" class="fade-in">
-        <span class="section-tag">Hire Me</span>
-        <h2 class="section-title">Let's create impact together</h2>
-        <p class="section-desc" style="margin: 0 auto;">Need a mascot logo, character layout, or branding strategy? Reach out and let's get talking.</p>
-      </div>
-
-      <div class="contact-layout">
-        <div class="contact-left fade-in">
-          <div class="contact-info-item">
-            <span class="info-label">Direct Email</span>
-            <a href="mailto:nibrasansari002@gmail.com" class="info-link">
-              <svg style="vertical-align: middle; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              nibrasansari002@gmail.com
-            </a>
-          </div>
-          <div class="contact-info-item">
-            <span class="info-label">Phone Call / WhatsApp</span>
-            <a href="tel:+923161183289" class="info-link">
-              <svg style="vertical-align: middle; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              +92 316 1183289
-            </a>
-          </div>
-          <div class="contact-info-item">
-            <span class="info-label">Behance Portfolio</span>
-            <a href="https://behance.net/nibrasansari2" target="_blank" rel="noopener" class="info-link">
-              <svg style="vertical-align: middle; margin-right: 6px;" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-4.148 0-5.625-3.08-5.625-6.071 0-3.666 2.062-5.929 5.484-5.929 3.242 0 4.906 2.115 4.906 5.214 0 .548-.062.982-.062.982h-7.688c.031 1.701 1.218 3.129 3.094 3.129 1.344 0 2.297-.66 2.766-1.571l2.226 1.246zm-5.281-5.178c-.031-1.25-.797-2.125-2.203-2.125-1.391 0-2.172.844-2.313 2.125h4.516zm-11.445-3.822h-7v12h7.062c3.047 0 4.938-1.547 4.938-4.047 0-1.641-.953-2.828-2.328-3.328 1.094-.531 1.844-1.562 1.844-2.875 0-2.125-1.625-3.75-4.516-3.75zm-4.328 4.703v-2.328h3.766c1.172 0 1.953.531 1.953 1.484 0 .969-.781 1.547-1.953 1.547l-3.766-.703zm0 4.922v-2.578h4.156c1.281 0 2.141.594 2.141 1.625 0 1.047-.859 1.672-2.141 1.672l-4.156-.719z"/></svg>
-              behance.net/nibrasansari2
-            </a>
-          </div>
-        </div>
-
-        <div class="contact-right fade-in">
-          <form class="premium-form" id="contactForm">
-            <div class="form-group">
-              <label for="name" class="form-label">Full Name</label>
-              <input type="text" id="name" class="form-input" placeholder="e.g. John Doe" required>
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-bg-text" aria-hidden="true">NIBRAS</div>
+        <div class="container footer-container">
+            <div class="footer-top">
+                <a href="https://behance.net/nibrasansari2" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-talk-footer">
+                    <span>BEHANCE PROFILE</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.2 5c1.8 0 3.2.4 4.1 1.2.9.8 1.3 2 1.3 3.6 0 1.2-.2 2.1-.7 2.8s-1.1 1.2-1.9 1.5c1 .3 1.8.8 2.4 1.6.6.8.9 1.9.9 3.2 0 1.8-.5 3.2-1.5 4.1-1 .9-2.5 1.4-4.5 1.4H1v-19.4h7.2zm-.7 7c.9 0 1.6-.2 2-.5.4-.4.6-.9.6-1.5 0-.7-.2-1.2-.6-1.5-.4-.3-1.1-.4-2-.4H3.7v3.9H7.5zm.3 9c1 0 1.7-.2 2.2-.6s.7-1 .7-1.7-.2-1.3-.7-1.6c-.5-.3-1.2-.5-2.2-.5H3.7v4.4h4.1zM23 15.3h-7.9c0 .8.2 1.4.7 1.8.5.4 1.1.6 1.9.6.7 0 1.2-.1 1.7-.4.5-.3.8-.7.9-1.2h2.5c-.3 1.3-.9 2.3-1.9 3.1-1 .8-2.3 1.2-3.9 1.2-2 0-3.6-.6-4.7-1.8s-1.7-2.9-1.7-5.1c0-2.2.6-3.9 1.7-5.1 1.1-1.2 2.6-1.8 4.6-1.8 1.9 0 3.4.6 4.4 1.7 1 1.1 1.5 2.7 1.5 4.8v2.2zm-2.5-1.9c0-.7-.2-1.3-.6-1.7-.4-.4-.9-.6-1.6-.6-.7 0-1.2.2-1.6.6-.4.4-.6 1-.7 1.7h4.5zM16.1 7.2h6.1V8.6h-6.1z"/>
+                    </svg>
+                </a>
+                
+                <div class="footer-nav">
+                    <a href="#about" class="footer-link">About</a>
+                    <a href="#expertise" class="footer-link">Expertise</a>
+                    <a href="#portfolio" class="footer-link">Portfolio</a>
+                    <a href="#experience" class="footer-link">Experience</a>
+                    <a href="#softwares" class="footer-link">Stack</a>
+                    <a href="#contact" class="footer-link">Contact</a>
+                </div>
             </div>
             
-            <div class="form-group">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" id="email" class="form-input" placeholder="e.g. john@example.com" required>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2026 Nibras Ansari. All rights reserved.</p>
+                <p class="footer-credit">Handcrafted with Neon & Code</p>
             </div>
-
-            <div class="form-group">
-              <label for="message" class="form-label">Message details</label>
-              <textarea id="message" class="form-input form-textarea" placeholder="Tell me about your mascot or packaging requirements..." required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-submit" style="width: 100%; justify-content: center;">
-              <span>Send Message</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
-
-            <div class="form-feedback" id="formFeedback"></div>
-          </form>
         </div>
-      </div>
-    </div>
-  </section>
+    </footer>
 
-  <!-- --- FOOTER --- -->
-  <footer class="main-footer">
-    <div class="container footer-container">
-      <div class="logo">NIBRAS<span>.</span></div>
-      <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: var(--space-2);">© 2026 Nibras Ansari. All rights reserved.</p>
-      
-      <div class="footer-social-row">
-        <!-- Behance SVG Icon -->
-        <a href="https://behance.net/nibrasansari2" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Behance" title="Behance">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-4.148 0-5.625-3.08-5.625-6.071 0-3.666 2.062-5.929 5.484-5.929 3.242 0 4.906 2.115 4.906 5.214 0 .548-.062.982-.062.982h-7.688c.031 1.701 1.218 3.129 3.094 3.129 1.344 0 2.297-.66 2.766-1.571l2.226 1.246zm-5.281-5.178c-.031-1.25-.797-2.125-2.203-2.125-1.391 0-2.172.844-2.313 2.125h4.516zm-11.445-3.822h-7v12h7.062c3.047 0 4.938-1.547 4.938-4.047 0-1.641-.953-2.828-2.328-3.328 1.094-.531 1.844-1.562 1.844-2.875 0-2.125-1.625-3.75-4.516-3.75zm-4.328 4.703v-2.328h3.766c1.172 0 1.953.531 1.953 1.484 0 .969-.781 1.547-1.953 1.547l-3.766-.703zm0 4.922v-2.578h4.156c1.281 0 2.141.594 2.141 1.625 0 1.047-.859 1.672-2.141 1.672l-4.156-.719z"/></svg>
-        </a>
-        
-        <!-- LinkedIn SVG Icon -->
-        <a href="https://linkedin.com" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Linkedin" title="LinkedIn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 0 0-1.6 1.6 1.6 1.6 0 0 0 1.6 1.6 1.6 1.6 0 0 0 1.6-1.6 1.6 1.6 0 0 0-1.6-1.6Z"/></svg>
-        </a>
-        
-        <!-- Instagram SVG Icon -->
-        <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-social-icon" aria-label="Instagram" title="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        </a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- --- SCRIPTS --- -->
-  <script src="index.js"></script>
+    <!-- Scripts -->
+    <script src="index.js"></script>
 </body>
 </html>
