@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeRole, 1400);
     }
 
-    // 1. Interactive Cyber Particle Canvas Background
+    // 1. Interactive Cyber Particle Canvas Background (Purple Theme)
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.vx = (Math.random() - 0.5) * 0.8;
                 this.vy = (Math.random() - 0.5) * 0.8;
                 this.radius = Math.random() * 2 + 1;
-                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, ' : 'rgba(59, 130, 246, ';
+                this.color = Math.random() > 0.5 ? 'rgba(168, 85, 247, ' : 'rgba(115, 7, 148, ';
                 this.alpha = Math.random() * 0.5 + 0.2;
             }
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = this.color + this.alpha + ')';
                 ctx.shadowBlur = 10;
-                ctx.shadowColor = '#22c55e';
+                ctx.shadowColor = '#730794';
                 ctx.fill();
             }
         }
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(34, 197, 94, ${0.25 * (1 - dist / 120)})`;
+                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.25 * (1 - dist / 120)})`;
                         ctx.lineWidth = 0.8;
                         ctx.stroke();
                     }
