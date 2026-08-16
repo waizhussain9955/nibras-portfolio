@@ -55,6 +55,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 600);
     });
 
+    // Dynamic Typewriter Subtitle Role Switcher
+    const typewriterText = document.getElementById('typewriterText');
+    if (typewriterText) {
+        const roles = [
+            "CREATIVE GRAPHIC DESIGNER",
+            "MASCOT LOGO ARTIST",
+            "ESPORTS BRANDING EXPERT",
+            "2D CHARACTER ILLUSTRATOR",
+            "SPORTS ICONOGRAPHY DESIGNER"
+        ];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        const typeRole = () => {
+            const currentRole = roles[roleIndex];
+            
+            if (isDeleting) {
+                typewriterText.textContent = currentRole.substring(0, charIndex - 1);
+                charIndex--;
+                typeSpeed = 35;
+            } else {
+                typewriterText.textContent = currentRole.substring(0, charIndex + 1);
+                charIndex++;
+                typeSpeed = 85;
+            }
+
+            if (!isDeleting && charIndex === currentRole.length) {
+                isDeleting = true;
+                typeSpeed = 2200; // Pause at end of full title
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                roleIndex = (roleIndex + 1) % roles.length;
+                typeSpeed = 350;
+            }
+
+            setTimeout(typeRole, typeSpeed);
+        };
+
+        // Start typing after initial entrance sequence
+        setTimeout(typeRole, 1400);
+    }
+
     // 1. Interactive Cyber Particle Canvas Background
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
@@ -333,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 10. Scroll Reveal Animations
     const revealElements = [
-        '.hero-content', '.hero-image-wrapper',
         '.about-left', '.about-right',
         '.expertise-card', '.portfolio-item',
         '.timeline-item', '.software-card',
