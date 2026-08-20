@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCursor();
 
         // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select');
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .mascot-companion-inner');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -97,6 +97,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Start typing after initial entrance sequence
         setTimeout(typeRole, 1400);
+    }
+
+    // -------------------------------------------------------------
+    // SCROLL-LINKED MASCOT ANIMATION (Inspired by hxnix-gold.vercel.app)
+    // -------------------------------------------------------------
+    const scrollMascot = document.getElementById('scrollMascotCompanion');
+    const mascotInner = document.getElementById('mascotInner');
+    const mascotStatusText = document.getElementById('mascotStatusText');
+    const heroMascotCard = document.getElementById('heroMascotCard');
+
+    if (scrollMascot && mascotInner && mascotStatusText) {
+        let currentX = window.innerWidth - 200;
+        let currentY = 160;
+        let targetX = currentX;
+        let targetY = currentY;
+        let currentRotZ = 0;
+        let targetRotZ = 0;
+        let currentRotY = 0;
+        let targetRotY = 0;
+        let currentScale = 1;
+        let targetScale = 1;
+
+        const sections = [
+            { id: 'about', status: '// DESIGN PHILOSOPHY', side: 'right', yRatio: 0.35, rotZ: -8, rotY: 15, scale: 1 },
+            { id: 'expertise', status: '// EXPLORING SKILLS', side: 'left', yRatio: 0.45, rotZ: 8, rotY: -15, scale: 1.05 },
+            { id: 'portfolio', status: '// SELECTED WORKS', side: 'right', yRatio: 0.3, rotZ: -5, rotY: 10, scale: 1.1 },
+            { id: 'experience', status: '// WORK HISTORY', side: 'left', yRatio: 0.45, rotZ: 6, rotY: -12, scale: 1 },
+            { id: 'softwares', status: '// CREATIVE TOOLKIT', side: 'right', yRatio: 0.4, rotZ: -6, rotY: 12, scale: 1 },
+            { id: 'contact', status: "// LET'S COLLABORATE!", side: 'right', yRatio: 0.55, rotZ: -4, rotY: 8, scale: 1.08 }
+        ];
+
+        const updateMascotTargets = () => {
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            const windowW = window.innerWidth;
+            const windowH = window.innerHeight;
+
+            // Only activate floating companion after leaving initial Hero view
+            if (scrollY < 180 && windowW > 768) {
+                scrollMascot.classList.remove('active');
+                if (heroMascotCard) {
+                    heroMascotCard.style.opacity = '1';
+                    heroMascotCard.style.transform = `perspective(1000px) translateY(${scrollY * 0.25}px) rotateY(${scrollY * 0.05}deg)`;
+                }
+                return;
+            }
+
+            scrollMascot.classList.add('active');
+
+            if (windowW <= 768) {
+                // Mobile layout is managed cleanly by CSS bottom-right fixed anchor
+                return;
+            }
+
+            // Identify which section is currently in view
+            let activeSection = sections[0];
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const secEl = document.getElementById(sections[i].id);
+                if (secEl) {
+                    const rect = secEl.getBoundingClientRect();
+                    if (rect.top <= windowH * 0.55) {
+                        activeSection = sections[i];
+                        break;
+                    }
+                }
+            }
+
+            // Calculate precise coordinates based on section
+            if (activeSection.side === 'left') {
+                targetX = Math.max(35, windowW * 0.04);
+            } else {
+                targetX = windowW - Math.min(180, windowW * 0.14);
+            }
+
+            // Continuous smooth scroll wave offset
+            const waveY = Math.sin(scrollY * 0.005) * 20;
+            targetY = (windowH * activeSection.yRatio) + waveY;
+            targetRotZ = activeSection.rotZ + Math.sin(scrollY * 0.008) * 4;
+            targetRotY = activeSection.rotY;
+            targetScale = activeSection.scale;
+
+            if (mascotStatusText.textContent !== activeSection.status) {
+                mascotStatusText.textContent = activeSection.status;
+            }
+        };
+
+        window.addEventListener('scroll', updateMascotTargets, { passive: true });
+        window.addEventListener('resize', updateMascotTargets);
+
+        // Smooth physics render loop
+        const animateMascotPhysics = () => {
+            if (window.innerWidth > 768 && scrollMascot.classList.contains('active')) {
+                currentX += (targetX - currentX) * 0.075;
+                currentY += (targetY - currentY) * 0.075;
+                currentRotZ += (targetRotZ - currentRotZ) * 0.075;
+                currentRotY += (targetRotY - currentRotY) * 0.075;
+                currentScale += (targetScale - currentScale) * 0.075;
+
+                scrollMascot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+                mascotInner.style.transform = `perspective(800px) rotateZ(${currentRotZ}deg) rotateY(${currentRotY}deg) scale(${currentScale})`;
+            }
+
+            requestAnimationFrame(animateMascotPhysics);
+        };
+        animateMascotPhysics();
+
+        // Interactive Click / Tap on Mascot
+        mascotInner.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mascotInner.classList.remove('spin-shockwave');
+            void mascotInner.offsetWidth; // Trigger reflow
+            mascotInner.classList.add('spin-shockwave');
+
+            const statusOld = mascotStatusText.textContent;
+            mascotStatusText.textContent = '// BOOM! ⚡ CYBER POWER';
+
+            // Spawn radial shockwave
+            const shockwave = document.createElement('div');
+            shockwave.className = 'click-ripple';
+            shockwave.style.left = `${currentX + 70}px`;
+            shockwave.style.top = `${currentY + 70}px`;
+            shockwave.style.borderColor = '#ffffff';
+            document.body.appendChild(shockwave);
+
+            setTimeout(() => {
+                shockwave.remove();
+            }, 600);
+
+            setTimeout(() => {
+                mascotStatusText.textContent = statusOld;
+            }, 2500);
+        });
     }
 
     // 1. Interactive Cyber Particle Canvas Background (Purple Theme)
@@ -403,13 +534,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 11. Active Link Highlight on Scroll
-    const sections = document.querySelectorAll('section[id]');
+    const sectionsNav = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
     const highlightNavLink = () => {
         let scrollY = window.pageYOffset;
         
-        sections.forEach(current => {
+        sectionsNav.forEach(current => {
             const sectionHeight = current.offsetHeight;
             const sectionTop = current.offsetTop - 120;
             const sectionId = current.getAttribute('id');

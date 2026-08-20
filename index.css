@@ -79,6 +79,142 @@
     }
 }
 
+/* -------------------------------------------------------------
+   SCROLL-LINKED MASCOT COMPANION (hxnix-gold inspired movement)
+   ------------------------------------------------------------- */
+.scroll-mascot-companion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 950;
+    pointer-events: none;
+    will-change: transform, opacity;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-mascot-companion.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mascot-companion-inner {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+.mascot-energy-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed rgba(168, 85, 247, 0.7);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(115, 7, 148, 0.6), inset 0 0 15px rgba(168, 85, 247, 0.3);
+    animation: ringSpin 12s linear infinite;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+@keyframes ringSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.mascot-aura-glow {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(115, 7, 148, 0.1) 60%, transparent 75%);
+    filter: blur(10px);
+    pointer-events: none;
+    animation: auraBreath 3s ease-in-out infinite alternate;
+}
+
+@keyframes auraBreath {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    100% { transform: scale(1.15); opacity: 0.9; }
+}
+
+.mascot-companion-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 18px rgba(168, 85, 247, 0.5));
+    transition: transform 0.25s ease, filter 0.25s ease;
+    user-select: none;
+}
+
+.mascot-companion-inner:hover .mascot-companion-img {
+    transform: scale(1.08) rotate(5deg);
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(168, 85, 247, 0.8));
+}
+
+.mascot-companion-inner:hover .mascot-energy-ring {
+    border-color: #ffffff;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.9);
+}
+
+/* Status Pill Bubble */
+.mascot-status-bubble {
+    position: absolute;
+    bottom: -25px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: rgba(7, 7, 9, 0.92);
+    border: 1px solid var(--brand-purple-light);
+    padding: 3px 10px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.7), 0 0 10px rgba(115, 7, 148, 0.4);
+    white-space: nowrap;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.bubble-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--brand-purple-light);
+    box-shadow: 0 0 8px var(--brand-purple-light);
+    animation: bubbleDotPulse 1.5s infinite;
+}
+
+@keyframes bubbleDotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.bubble-text {
+    font-family: var(--font-accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+}
+
+/* Interactive Click Spin Pulse */
+.spin-shockwave {
+    animation: mascotSpin360 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes mascotSpin360 {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.25); filter: drop-shadow(0 0 35px var(--brand-purple-light)); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
 /* Click Ripple Animation */
 .click-ripple {
     position: absolute;
@@ -1647,6 +1783,11 @@ img {
     .lightbox-meta {
         padding: 25px;
     }
+
+    .mascot-companion-inner {
+        width: 110px;
+        height: 110px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1764,6 +1905,23 @@ img {
     .about-meta-row {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+
+    .scroll-mascot-companion {
+        /* On smaller screens, anchor smoothly to bottom right */
+        bottom: 20px !important;
+        right: 15px !important;
+        top: auto !important;
+        left: auto !important;
+    }
+
+    .mascot-companion-inner {
+        width: 80px;
+        height: 80px;
+    }
+
+    .mascot-status-bubble {
+        display: none;
     }
 }
 
