@@ -1,0 +1,15 @@
+# Robots.txt for Nibras Ansari Portfolio
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /projects
+Allow: /projects.html
+
+# Disallow private CMS Admin Control Panel
+Disallow: /admin-nibras2026
+Disallow: /admin-nibras2026.html
+Disallow: /admin.js
+Disallow: /admin.css
+
+# Sitemap Location
+Sitemap: https://waizhussain9955.github.io/nibras-portfolio/sitemap.xml
