@@ -234,37 +234,37 @@
       "id": "nav_1",
       "num": "01.",
       "label": "ABOUT",
-      "href": "index.html#about"
+      "href": "#about"
     },
     {
       "id": "nav_2",
       "num": "02.",
       "label": "EXPERTISE",
-      "href": "index.html#expertise"
+      "href": "#expertise"
     },
     {
       "id": "nav_3",
       "num": "03.",
       "label": "PORTFOLIO",
-      "href": "index.html#portfolio"
+      "href": "projects/"
     },
     {
       "id": "nav_4",
       "num": "04.",
       "label": "EXPERIENCE",
-      "href": "index.html#experience"
+      "href": "#experience"
     },
     {
       "id": "nav_5",
       "num": "05.",
       "label": "STACK",
-      "href": "index.html#softwares"
+      "href": "#softwares"
     },
     {
       "id": "nav_6",
       "num": "06.",
       "label": "CONTACT",
-      "href": "index.html#contact"
+      "href": "#contact"
     }
   ],
   "contact": {

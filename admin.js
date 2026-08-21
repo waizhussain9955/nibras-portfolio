@@ -164,12 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "soft_5", name: "CorelDraw", code: "Cd", brandClass: "cd-brand", badge: "PRINT VECTOR", percent: 90, isExpert: true }
         ],
         navLinks: [
-            { id: "nav_1", num: "01.", label: "ABOUT", href: "index.html#about" },
-            { id: "nav_2", num: "02.", label: "EXPERTISE", href: "index.html#expertise" },
-            { id: "nav_3", num: "03.", label: "PORTFOLIO", href: "index.html#portfolio" },
-            { id: "nav_4", num: "04.", label: "EXPERIENCE", href: "index.html#experience" },
-            { id: "nav_5", num: "05.", label: "STACK", href: "index.html#softwares" },
-            { id: "nav_6", num: "06.", label: "CONTACT", href: "index.html#contact" }
+            { id: "nav_1", num: "01.", label: "ABOUT", href: "#about" },
+            { id: "nav_2", num: "02.", label: "EXPERTISE", href: "#expertise" },
+            { id: "nav_3", num: "03.", label: "PORTFOLIO", href: "projects/" },
+            { id: "nav_4", num: "04.", label: "EXPERIENCE", href: "#experience" },
+            { id: "nav_5", num: "05.", label: "STACK", href: "#softwares" },
+            { id: "nav_6", num: "06.", label: "CONTACT", href: "#contact" }
         ],
         contact: {
             email: "nibrasansari002@gmail.com",

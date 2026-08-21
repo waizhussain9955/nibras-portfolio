@@ -177,6 +177,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         leads: []
     };
 
+    // Clean index.html from URL bar dynamically if present
+    try {
+        if (window.location.pathname.endsWith('index.html')) {
+            const cleanPath = window.location.pathname.replace(/\/index\.html$/, '/') || '/';
+            const cleanUrl = window.location.origin + cleanPath + window.location.search + window.location.hash;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+    } catch (e) {
+        // history API fallback
+    }
+
     // Determine current location context (Root vs Subfolder)
     const pathname = window.location.pathname;
     const isSubfolder = pathname.includes('/projects/') || pathname.endsWith('/projects');
@@ -269,12 +280,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         } else {
                             secId = '#' + n.label.toLowerCase();
                         }
-                        targetHref = (isSubfolder ? '../index.html' : 'index.html') + secId;
+                        targetHref = (isSubfolder ? '../' : './') + secId;
                     }
                 } else {
                     // Homepage: smooth internal hash scrolling
                     if (isPortfolioLink) {
-                        targetHref = isSubfolder ? './' : 'projects.html';
+                        targetHref = isSubfolder ? './' : 'projects/';
                     } else {
                         let secId = n.href;
                         if (secId.includes('#')) {
