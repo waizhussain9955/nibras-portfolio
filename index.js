@@ -129,6 +129,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 image: "assets/portfolio_page_1.png"
             }
         ],
+        gallery: [
+            { id: "gal_1", title: "Esports Cyber Wolf", url: "assets/portfolio_esports_1.png" },
+            { id: "gal_2", title: "Samurai Red Panda Mascot", url: "assets/portfolio_mascot_1.png" },
+            { id: "gal_3", title: "Chicago Bulls Athletics", url: "assets/portfolio_sports_1.png" },
+            { id: "gal_4", title: "Cyberpunk Street Racer", url: "assets/portfolio_character_1.png" },
+            { id: "gal_5", title: "Ninja Tiger Mascot Badge", url: "assets/mascot_badge.png" },
+            { id: "gal_6", title: "Work Highlights Collage", url: "assets/portfolio_page_1.png" }
+        ],
         experience: [
             {
                 id: "exp_job_1",
@@ -151,12 +159,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             { id: "soft_5", name: "CorelDraw", code: "Cd", brandClass: "cd-brand", badge: "PRINT VECTOR", percent: 90, isExpert: true }
         ],
         navLinks: [
-            { id: "nav_1", num: "01.", label: "About", href: "index.html#about" },
-            { id: "nav_2", num: "02.", label: "Expertise", href: "index.html#expertise" },
-            { id: "nav_3", num: "03.", label: "Portfolio", href: "projects.html" },
-            { id: "nav_4", num: "04.", label: "Experience", href: "index.html#experience" },
-            { id: "nav_5", num: "05.", label: "Stack", href: "index.html#softwares" },
-            { id: "nav_6", num: "06.", label: "Contact", href: "index.html#contact" }
+            { id: "nav_1", num: "01.", label: "ABOUT", href: "index.html#about" },
+            { id: "nav_2", num: "02.", label: "EXPERTISE", href: "index.html#expertise" },
+            { id: "nav_3", num: "03.", label: "PORTFOLIO", href: "projects.html" },
+            { id: "nav_4", num: "04.", label: "EXPERIENCE", href: "index.html#experience" },
+            { id: "nav_5", num: "05.", label: "STACK", href: "index.html#softwares" },
+            { id: "nav_6", num: "06.", label: "CONTACT", href: "index.html#contact" }
         ],
         contact: {
             email: "nibrasansari002@gmail.com",
@@ -169,14 +177,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         leads: []
     };
 
-    const isProjectsPage = window.location.pathname.includes('projects');
+    // Determine current location context (Root vs Subfolder)
+    const pathname = window.location.pathname;
+    const isSubfolder = pathname.includes('/projects/') || pathname.endsWith('/projects');
+    const isProjectsPage = isSubfolder || pathname.includes('projects.html');
+
+    // Safe path resolver for images
     const resolveAssetPath = (path) => {
         if (!path) return '';
-        if (path.startsWith('http') || path.startsWith('data:')) return path;
-        if (isProjectsPage && !path.startsWith('../') && !path.startsWith('/')) {
-            return '../' + path;
+        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+            return path;
         }
-        return path;
+        if (isSubfolder) {
+            const clean = path.replace(/^(\.\.\/|\.\/)/, '');
+            return '../' + clean;
+        } else {
+            return path.replace(/^(\.\.\/)/, '');
+        }
     };
 
     // Load dynamic data from localStorage or fetch data.json fallback
@@ -184,13 +201,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const stored = localStorage.getItem('nibras_portfolio_data');
         if (stored) {
             try {
-                return JSON.parse(stored);
+                const parsed = JSON.parse(stored);
+                // Ensure default projects are clean if old dirty cache exists
+                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
+                    return parsed;
+                }
             } catch (e) {
                 // fallback
             }
         }
         try {
-            const dataUrl = isProjectsPage ? '../data.json' : 'data.json';
+            const dataUrl = isSubfolder ? '../data.json' : 'data.json';
             const res = await fetch(dataUrl + '?v=' + Date.now());
             if (res.ok) {
                 const fetchedData = await res.json();
@@ -227,24 +248,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     };
 
-    // Hydrate Dynamic Portfolio Content from CMS
+    // Hydrate Dynamic DOM Elements
     const hydrateDynamicDOM = () => {
         // 1. Navigation Links
         const navMenu = document.getElementById('navMenu');
         if (navMenu && liveData.navLinks && liveData.navLinks.length > 0) {
             navMenu.innerHTML = liveData.navLinks.map(n => {
-                let targetHref = n.href;
-                if (!isProjectsPage) {
-                    if (targetHref.startsWith('index.html#')) targetHref = targetHref.replace('index.html', '');
-                    if (targetHref === 'projects.html') targetHref = 'projects/';
+                const labelUpper = n.label.toUpperCase();
+                const isPortfolioLink = (labelUpper === 'PORTFOLIO');
+                let targetHref = '';
+
+                if (isProjectsPage) {
+                    if (isPortfolioLink) {
+                        targetHref = '#'; // already on portfolio archive
+                    } else {
+                        // Extract target section ID (e.g. #about, #expertise, #experience, #softwares, #contact)
+                        let secId = n.href;
+                        if (secId.includes('#')) {
+                            secId = '#' + secId.split('#')[1];
+                        } else {
+                            secId = '#' + n.label.toLowerCase();
+                        }
+                        targetHref = (isSubfolder ? '../index.html' : 'index.html') + secId;
+                    }
                 } else {
-                    if (targetHref.startsWith('#')) targetHref = '../' + targetHref;
-                    else if (targetHref.startsWith('index.html#')) targetHref = '../' + targetHref.replace('index.html', '');
-                    else if (targetHref === 'projects.html' || targetHref === 'projects/') targetHref = './';
+                    // Homepage: smooth internal hash scrolling
+                    if (isPortfolioLink) {
+                        targetHref = isSubfolder ? './' : 'projects.html';
+                    } else {
+                        let secId = n.href;
+                        if (secId.includes('#')) {
+                            secId = '#' + secId.split('#')[1];
+                        } else {
+                            secId = '#' + n.label.toLowerCase();
+                        }
+                        targetHref = secId;
+                    }
                 }
-                const isPortfolio = n.label.toUpperCase() === 'PORTFOLIO';
-                const isActive = (isProjectsPage && isPortfolio) ? 'active' : '';
-                return `<a href="${targetHref}" class="nav-link ${isActive}"><span class="nav-num">${n.num}</span> ${n.label.toUpperCase()}</a>`;
+
+                const isActive = (isProjectsPage && isPortfolioLink) ? 'active' : '';
+                return `<a href="${targetHref}" class="nav-link ${isActive}"><span class="nav-num">${n.num}</span> ${labelUpper}</a>`;
             }).join('');
         }
 
@@ -271,7 +314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const heroImg = document.querySelector('.hero-img');
             if (heroImg && liveData.hero.featuredImage) {
-                heroImg.src = liveData.hero.featuredImage;
+                heroImg.src = resolveAssetPath(liveData.hero.featuredImage);
             }
 
             // Stats
