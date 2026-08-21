@@ -1,0 +1,277 @@
+{
+  "auth": {
+    "email": "nibrasansari002@gmail.com",
+    "password": "nibras2026"
+  },
+  "hero": {
+    "badgeText": "AVAILABLE FOR NEW PROJECTS",
+    "badgeCode": "2026",
+    "titleLine1": "NIBRAS",
+    "titleLine2": "ANSARI.",
+    "typewriterRoles": [
+      "CREATIVE GRAPHIC DESIGNER",
+      "MASCOT LOGO ARTIST",
+      "ESPORTS BRANDING EXPERT",
+      "2D CHARACTER ILLUSTRATOR",
+      "SPORTS ICONOGRAPHY DESIGNER"
+    ],
+    "introText": "Specializing in bold branding, custom mascot logos, high-energy esports design, clean sports iconography, and personality-driven 2D character design. I craft impactful visuals that command attention.",
+    "stat1": {
+      "num": "50+",
+      "lbl": "Mascots Created"
+    },
+    "stat2": {
+      "num": "100%",
+      "lbl": "Vector Precision"
+    },
+    "stat3": {
+      "num": "2+ YRS",
+      "lbl": "Industry XP"
+    },
+    "featuredImage": "assets/portfolio_esports_1.png",
+    "marqueeItems": [
+      "MASCOT LOGOS",
+      "ESPORTS BRANDING",
+      "2D CHARACTER DESIGN",
+      "SPORTS ICONOGRAPHY",
+      "CUSTOM VECTOR ASSETS",
+      "BRAND IDENTITY SYSTEMS"
+    ]
+  },
+  "about": {
+    "title": "FOCUSED ON<br>DELIVERING BOLD,<br>IMPACTFUL<br><span class=\"animated-gradient-heading glow-text\">VISUALS.</span>",
+    "quote": "\"A brand identity isn't just about graphics—it's about making a lasting impression that sets you apart from the noise.\"",
+    "body": "With an education in Communication Design from <strong>Arena Multimedia Karachi</strong>, I combine strategic conceptual thinking with top-tier digital illustration. Whether structuring character guidelines, developing custom vector assets, or establishing full esports branding architectures, I deliver professional design.",
+    "education": {
+      "title": "Arena Multimedia Karachi",
+      "sub": "Communication Design (2021)"
+    },
+    "languages": {
+      "title": "English & Urdu",
+      "sub": "Fluent Global Communication"
+    }
+  },
+  "expertise": [
+    {
+      "id": "exp_1",
+      "title": "MASCOT LOGOS",
+      "desc": "High-impact mascots designed for esports teams, sports franchises, and modern businesses looking to establish a memorable character brand representation.",
+      "icon": "mascot"
+    },
+    {
+      "id": "exp_2",
+      "title": "ESPORTS BRANDING",
+      "desc": "Striking and aggressive gaming designs featuring high-energy vector mascots, custom logotypes, jersey mocks, and full streaming overlay packages.",
+      "icon": "esports"
+    },
+    {
+      "id": "exp_3",
+      "title": "SPORTS ILLUSTRATION",
+      "desc": "Bold and dynamic sports logos featuring strong typography, clean outlines, and energetic compositions designed to stand out on uniforms and digital platforms.",
+      "icon": "sports"
+    },
+    {
+      "id": "exp_4",
+      "title": "2D CHARACTER DESIGN",
+      "desc": "Expressive and personality-driven character designs optimized for digital media, focusing on strong silhouettes, clean vector geometry, and print scalability.",
+      "icon": "character"
+    },
+    {
+      "id": "exp_5",
+      "title": "TYPOGRAPHY DESIGN",
+      "desc": "Custom lettering structures and typography overlays. Creating bespoke layout hierarchy systems that complement primary illustration works.",
+      "icon": "typography"
+    },
+    {
+      "id": "exp_6",
+      "title": "BRAND IDENTITIES",
+      "desc": "Holistic brand guidelines and social media templates. Designing unified collateral assets (banners, avatars, posts) that ensure a consistent visual message.",
+      "icon": "branding"
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "proj_1",
+      "category": "esports",
+      "categoryLabel": "ESPORTS LOGO",
+      "title": "Cyber Fangs Mascot",
+      "desc": "Futuristic cybernetic wolf vector logo designed for a professional esports gaming team, featuring custom neon lighting highlights.",
+      "image": "assets/portfolio_esports_1.png"
+    },
+    {
+      "id": "proj_2",
+      "category": "mascot",
+      "categoryLabel": "MASCOT DESIGN",
+      "title": "Samurai Red Panda",
+      "desc": "Personality-driven red panda samurai character mascot, designed with detailed armor gradients and bold vector shapes.",
+      "image": "assets/portfolio_mascot_1.png"
+    },
+    {
+      "id": "proj_3",
+      "category": "sports",
+      "categoryLabel": "SPORTS LOGO",
+      "title": "Chicago Bulls Concept",
+      "desc": "Fierce charging bull mascot logo for sports organizations, showcasing clean dynamic vectors and custom typography layouts.",
+      "image": "assets/portfolio_sports_1.png"
+    },
+    {
+      "id": "proj_4",
+      "category": "character",
+      "categoryLabel": "2D CHARACTER DESIGN",
+      "title": "Cyber Racer Character",
+      "desc": "Detailed 2D character design of a cyberpunk racer holding key assets, emphasizing clean line execution and strong color highlights.",
+      "image": "assets/portfolio_character_1.png"
+    },
+    {
+      "id": "proj_5",
+      "category": "mascot",
+      "categoryLabel": "WORK COLLAGE",
+      "title": "Branding Highlights Collage",
+      "desc": "Collage showcasing vector Mascot, Sports and Esports logos designed at Digital Cuberoot (2023 - 2025).",
+      "image": "assets/portfolio_page_1.png"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gal_1",
+      "title": "Esports Cyber Wolf",
+      "url": "assets/portfolio_esports_1.png",
+      "type": "asset"
+    },
+    {
+      "id": "gal_2",
+      "title": "Samurai Red Panda Mascot",
+      "url": "assets/portfolio_mascot_1.png",
+      "type": "asset"
+    },
+    {
+      "id": "gal_3",
+      "title": "Chicago Bulls Athletics",
+      "url": "assets/portfolio_sports_1.png",
+      "type": "asset"
+    },
+    {
+      "id": "gal_4",
+      "title": "Cyberpunk Street Racer",
+      "url": "assets/portfolio_character_1.png",
+      "type": "asset"
+    },
+    {
+      "id": "gal_5",
+      "title": "Work Highlights Collage",
+      "url": "assets/portfolio_page_1.png",
+      "type": "asset"
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp_job_1",
+      "badge": "2023 - 2025",
+      "title": "GRAPHIC ILLUSTRATOR & DESIGNER",
+      "company": "Digital Cuberoot",
+      "desc": "Serving as lead vector designer specializing in character mascot creation, esports team branding, and customized merchandise line design.",
+      "tasks": [
+        "Designed high-impact brand characters and esport mascot logo structures with dynamic shadow details.",
+        "Maintained clean vector coordinates across digital and print assets, supporting scalability.",
+        "Engineered dynamic letterforms that integrate seamlessly with primary mascot frames."
+      ]
+    }
+  ],
+  "software": [
+    {
+      "id": "soft_1",
+      "name": "Adobe Photoshop",
+      "code": "Ps",
+      "brandClass": "ps-brand",
+      "badge": "PRO MASTER",
+      "percent": 95
+    },
+    {
+      "id": "soft_2",
+      "name": "Adobe Illustrator",
+      "code": "Ai",
+      "brandClass": "ai-brand",
+      "badge": "VECTOR EXPERT",
+      "percent": 98,
+      "isExpert": true
+    },
+    {
+      "id": "soft_3",
+      "name": "Adobe Lightroom",
+      "code": "Lr",
+      "brandClass": "lr-brand",
+      "badge": "COLOR GRADE",
+      "percent": 85
+    },
+    {
+      "id": "soft_4",
+      "name": "Adobe InDesign",
+      "code": "Id",
+      "brandClass": "id-brand",
+      "badge": "LAYOUT EDIT",
+      "percent": 80
+    },
+    {
+      "id": "soft_5",
+      "name": "CorelDraw",
+      "code": "Cd",
+      "brandClass": "cd-brand",
+      "badge": "PRINT VECTOR",
+      "percent": 90,
+      "isExpert": true
+    }
+  ],
+  "navLinks": [
+    {
+      "id": "nav_1",
+      "num": "01.",
+      "label": "About",
+      "href": "#about"
+    },
+    {
+      "id": "nav_2",
+      "num": "02.",
+      "label": "Expertise",
+      "href": "#expertise"
+    },
+    {
+      "id": "nav_3",
+      "num": "03.",
+      "label": "Portfolio",
+      "href": "#portfolio"
+    },
+    {
+      "id": "nav_4",
+      "num": "04.",
+      "label": "Experience",
+      "href": "#experience"
+    },
+    {
+      "id": "nav_5",
+      "num": "05.",
+      "label": "Stack",
+      "href": "#softwares"
+    },
+    {
+      "id": "nav_6",
+      "num": "06.",
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "contact": {
+    "email": "nibrasansari002@gmail.com",
+    "phone": "+92 316 1183289",
+    "location": "Karachi, Pakistan (Available for Global Remote Projects)",
+    "behance": "https://behance.net/nibrasansari2",
+    "copyright": "© 2026 Nibras Ansari. All rights reserved.",
+    "credit": "Handcrafted with Cyber Neon & Interactive Code"
+  },
+  "githubConfig": {
+    "repoOwner": "waizhussain9955",
+    "repoName": "nibras-portfolio",
+    "branch": "main",
+    "token": ""
+  },
+  "leads": []
+}

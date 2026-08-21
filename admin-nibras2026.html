@@ -21,7 +21,7 @@
                 <div class="login-logo">// NIBRAS<span>.</span> CMS</div>
                 <div class="login-badge"><span class="live-dot"></span> SECURE CONTROL PORTAL</div>
             </div>
-            <p class="login-desc">Sign in to manage and edit all portfolio projects, services, experience, custom pages, and content.</p>
+            <p class="login-desc">Sign in to manage and edit all portfolio projects, media gallery, experience, custom pages, backup, and live content.</p>
             
             <form id="loginForm" class="login-form">
                 <div class="form-group">
@@ -57,13 +57,17 @@
                     <span class="tab-icon">📊</span>
                     <span class="tab-label">Overview & Leads</span>
                 </button>
-                <button class="nav-tab" data-tab="tab-hero">
-                    <span class="tab-icon">⚡</span>
-                    <span class="tab-label">Hero & Header</span>
+                <button class="nav-tab" data-tab="tab-gallery">
+                    <span class="tab-icon">🖼️</span>
+                    <span class="tab-label">Media Gallery</span>
                 </button>
                 <button class="nav-tab" data-tab="tab-portfolio">
                     <span class="tab-icon">🎨</span>
                     <span class="tab-label">Portfolio Projects</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-hero">
+                    <span class="tab-icon">⚡</span>
+                    <span class="tab-label">Hero & Header</span>
                 </button>
                 <button class="nav-tab" data-tab="tab-about">
                     <span class="tab-icon">👤</span>
@@ -88,6 +92,10 @@
                 <button class="nav-tab" data-tab="tab-contact">
                     <span class="tab-icon">📞</span>
                     <span class="tab-label">Contact & Footer</span>
+                </button>
+                <button class="nav-tab" data-tab="tab-backup">
+                    <span class="tab-icon">☁️</span>
+                    <span class="tab-label">Backup & Cloud Sync</span>
                 </button>
                 <button class="nav-tab" data-tab="tab-security">
                     <span class="tab-icon">🔒</span>
@@ -131,8 +139,8 @@
                             <div class="stat-lbl">Active Portfolio Projects</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-val" id="countExpertise">6</div>
-                            <div class="stat-lbl">Expertise Domains</div>
+                            <div class="stat-val" id="countGallery">5</div>
+                            <div class="stat-lbl">Gallery Media Assets</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-val" id="countSoftwares">5</div>
@@ -171,7 +179,46 @@
                     </div>
                 </section>
 
-                <!-- TAB 2: Hero & Header Settings -->
+                <!-- TAB 2: Media Gallery Manager (Upload & Copy URLs) -->
+                <section class="tab-pane" id="tab-gallery">
+                    <div class="card-panel">
+                        <div class="panel-header-flex">
+                            <div>
+                                <h3>🖼️ MEDIA ASSETS GALLERY</h3>
+                                <p class="panel-desc">Upload photos, mascots, esports vectors, and artwork here. Click <strong>"Copy URL"</strong> to copy the image link and use it in your projects or hero section!</p>
+                            </div>
+                            <label class="btn btn-primary btn-sm file-upload-btn">
+                                <span>+ UPLOAD NEW IMAGE</span>
+                                <input type="file" id="galleryUploadInput" accept="image/*" style="display: none;">
+                            </label>
+                        </div>
+
+                        <div class="gallery-admin-grid" id="galleryAdminGrid">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: Portfolio Projects Manager -->
+                <section class="tab-pane" id="tab-portfolio">
+                    <div class="card-panel">
+                        <div class="panel-header-flex">
+                            <div>
+                                <h3>PORTFOLIO PROJECTS</h3>
+                                <p class="panel-desc">Add, edit, delete, or update imagery and details for your showcase pieces.</p>
+                            </div>
+                            <button id="addProjectBtn" class="btn btn-primary btn-sm">
+                                <span>+ ADD NEW PROJECT</span>
+                            </button>
+                        </div>
+
+                        <div class="projects-admin-grid" id="projectsAdminList">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: Hero & Header Settings -->
                 <section class="tab-pane" id="tab-hero">
                     <div class="card-panel">
                         <h3>HERO SECTION & HEADER CONFIGURATION</h3>
@@ -243,26 +290,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 3: Portfolio Projects Manager -->
-                <section class="tab-pane" id="tab-portfolio">
-                    <div class="card-panel">
-                        <div class="panel-header-flex">
-                            <div>
-                                <h3>PORTFOLIO PROJECTS</h3>
-                                <p class="panel-desc">Add, edit, delete, or update imagery and details for your showcase pieces.</p>
-                            </div>
-                            <button id="addProjectBtn" class="btn btn-primary btn-sm">
-                                <span>+ ADD NEW PROJECT</span>
-                            </button>
-                        </div>
-
-                        <div class="projects-admin-grid" id="projectsAdminList">
-                            <!-- Populated dynamically via JS -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- TAB 4: About & Philosophy -->
+                <!-- TAB 5: About & Philosophy -->
                 <section class="tab-pane" id="tab-about">
                     <div class="card-panel">
                         <h3>ABOUT & DESIGN PHILOSOPHY</h3>
@@ -298,7 +326,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 5: Expertise Domains -->
+                <!-- TAB 6: Expertise Domains -->
                 <section class="tab-pane" id="tab-expertise">
                     <div class="card-panel">
                         <div class="panel-header-flex">
@@ -317,7 +345,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 6: Experience Timeline -->
+                <!-- TAB 7: Experience Timeline -->
                 <section class="tab-pane" id="tab-experience">
                     <div class="card-panel">
                         <div class="panel-header-flex">
@@ -336,7 +364,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 7: Software Stack -->
+                <!-- TAB 8: Software Stack -->
                 <section class="tab-pane" id="tab-stack">
                     <div class="card-panel">
                         <div class="panel-header-flex">
@@ -355,7 +383,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 8: Pages & Navigation Links -->
+                <!-- TAB 9: Pages & Navigation Links -->
                 <section class="tab-pane" id="tab-pages">
                     <div class="card-panel">
                         <div class="panel-header-flex">
@@ -374,7 +402,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 9: Contact & Footer -->
+                <!-- TAB 10: Contact & Footer -->
                 <section class="tab-pane" id="tab-contact">
                     <div class="card-panel">
                         <h3>CONTACT DETAILS & FOOTER</h3>
@@ -411,13 +439,60 @@
                     </div>
                 </section>
 
-                <!-- TAB 10: Security & Password -->
+                <!-- TAB 11: Backup & Cloud Sync (GitHub & JSON Export) -->
+                <section class="tab-pane" id="tab-backup">
+                    <div class="card-panel">
+                        <h3>☁️ OFFLINE BACKUP & RESTORE SYSTEM</h3>
+                        <p class="panel-desc">Download a complete snapshot backup of all your portfolio content, images, projects, and leads. You can restore this file anytime on any computer!</p>
+                        
+                        <div class="backup-action-row" style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:25px;">
+                            <button id="downloadBackupBtn" class="btn btn-primary">
+                                <span>📥 DOWNLOAD COMPLETE BACKUP (data.json)</span>
+                            </button>
+                            <label class="btn btn-outline file-upload-btn">
+                                <span>📤 RESTORE FROM BACKUP FILE</span>
+                                <input type="file" id="restoreBackupInput" accept=".json" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="card-panel">
+                        <div class="panel-header-flex">
+                            <div>
+                                <h3>🐙 GITHUB LIVE CLOUD COMMIT & SYNC</h3>
+                                <p class="panel-desc">Directly commit and push all portfolio edits from this dashboard straight to your live GitHub repository (<code>waizhussain9955/nibras-portfolio</code>) using GitHub API!</p>
+                            </div>
+                            <button id="syncToGithubBtn" class="btn btn-primary btn-sm">
+                                <span>🚀 PUSH LIVE TO GITHUB REPO</span>
+                            </button>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label>GITHUB REPOSITORY</label>
+                                <input type="text" id="ghRepo" class="admin-input" value="waizhussain9955/nibras-portfolio" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>TARGET BRANCH</label>
+                                <input type="text" id="ghBranch" class="admin-input" value="main" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>GITHUB PERSONAL ACCESS TOKEN (Optional for 1-Click Direct Cloud Push)</label>
+                            <input type="password" id="ghToken" class="admin-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                            <small class="text-muted">Generate a Classic Personal Access Token on GitHub with <code>repo</code> scope permission. Stored securely only in your local browser.</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 12: Security & Password -->
                 <section class="tab-pane" id="tab-security">
                     <div class="card-panel">
-                        <h3>SECURITY & CREDENTIAL SETTINGS</h3>
-                        <p class="panel-desc">Change the admin login email and password anytime.</p>
+                        <h3>🔒 SECURITY & CREDENTIAL SETTINGS</h3>
+                        <p class="panel-desc">Change your admin login email address and master password.</p>
                         
-                        <form id="changePasswordForm" class="security-form">
+                        <form id="changePasswordForm" class="security-form" style="max-width: 500px;">
                             <div class="form-group">
                                 <label for="adminEmailInput">ADMIN USERNAME / EMAIL</label>
                                 <input type="email" id="adminEmailInput" class="admin-input" required>
@@ -434,8 +509,8 @@
                                 <label for="adminConfirmPass">CONFIRM NEW PASSWORD</label>
                                 <input type="password" id="adminConfirmPass" class="admin-input" placeholder="Re-type new password" required minlength="6">
                             </div>
-                            <button type="submit" class="btn btn-primary">
-                                <span>UPDATE CREDENTIALS</span>
+                            <button type="submit" class="btn btn-primary mt-2">
+                                <span>UPDATE ADMIN CREDENTIALS</span>
                             </button>
                         </form>
                     </div>

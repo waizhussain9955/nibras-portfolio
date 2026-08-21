@@ -1,4 +1,4 @@
-// Cyber CMS Engine for Nibras Portfolio (Full CRUD, Auth, Live Sync & Leads Storage)
+// Cyber CMS Engine for Nibras Portfolio (Full CRUD, Gallery, Backup, GitHub Cloud Sync & Leads)
 document.addEventListener('DOMContentLoaded', () => {
 
     // Default Initial Master State
@@ -126,6 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 image: "assets/portfolio_page_1.png"
             }
         ],
+        gallery: [
+            { id: "gal_1", title: "Esports Cyber Wolf", url: "assets/portfolio_esports_1.png" },
+            { id: "gal_2", title: "Samurai Red Panda Mascot", url: "assets/portfolio_mascot_1.png" },
+            { id: "gal_3", title: "Chicago Bulls Athletics", url: "assets/portfolio_sports_1.png" },
+            { id: "gal_4", title: "Cyberpunk Street Racer", url: "assets/portfolio_character_1.png" },
+            { id: "gal_5", title: "Work Highlights Collage", url: "assets/portfolio_page_1.png" }
+        ],
         experience: [
             {
                 id: "exp_job_1",
@@ -163,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
             copyright: "© 2026 Nibras Ansari. All rights reserved.",
             credit: "Handcrafted with Cyber Neon & Interactive Code"
         },
+        githubConfig: {
+            repoOwner: "waizhussain9955",
+            repoName: "nibras-portfolio",
+            branch: "main",
+            token: ""
+        },
         leads: []
     };
 
@@ -174,7 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return JSON.parse(JSON.stringify(defaultData));
         }
         try {
-            return JSON.parse(stored);
+            const parsed = JSON.parse(stored);
+            if (!parsed.gallery) parsed.gallery = defaultData.gallery;
+            if (!parsed.githubConfig) parsed.githubConfig = defaultData.githubConfig;
+            return parsed;
         } catch (e) {
             return JSON.parse(JSON.stringify(defaultData));
         }
@@ -281,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Overview counts
         document.getElementById('countProjects').textContent = appData.portfolio.length;
-        document.getElementById('countExpertise').textContent = appData.expertise.length;
+        document.getElementById('countGallery').textContent = (appData.gallery || []).length;
         document.getElementById('countSoftwares').textContent = appData.software.length;
         document.getElementById('countLeads').textContent = (appData.leads || []).length;
         renderLeadsTable();
@@ -319,10 +335,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('footerCopyright').value = appData.contact.copyright || '';
         document.getElementById('footerCredit').value = appData.contact.credit || '';
 
-        // 5. Security email
+        // 5. GitHub Cloud Config
+        if (appData.githubConfig) {
+            document.getElementById('ghRepo').value = `${appData.githubConfig.repoOwner}/${appData.githubConfig.repoName}`;
+            document.getElementById('ghBranch').value = appData.githubConfig.branch || 'main';
+            document.getElementById('ghToken').value = appData.githubConfig.token || '';
+        }
+
+        // 6. Security email
         document.getElementById('adminEmailInput').value = appData.auth.email || '';
 
         // Dynamic Lists
+        renderGalleryGrid();
         renderProjectsList();
         renderExpertiseList();
         renderExperienceList();
@@ -330,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNavLinksList();
     };
 
-    // Render Leads / Submissions Table
+    // Render Leads Table
     const renderLeadsTable = () => {
         const tbody = document.getElementById('leadsTableBody');
         const leads = appData.leads || [];
@@ -368,6 +392,75 @@ document.addEventListener('DOMContentLoaded', () => {
             populateAllForms();
         }
     });
+
+    // -------------------------------------------------------------
+    // MEDIA GALLERY MANAGER (Upload, Preview, Copy URL, Delete)
+    // -------------------------------------------------------------
+    const renderGalleryGrid = () => {
+        const container = document.getElementById('galleryAdminGrid');
+        const gallery = appData.gallery || [];
+
+        if (gallery.length === 0) {
+            container.innerHTML = `<div class="text-muted" style="grid-column:1/-1;">No gallery images uploaded yet. Click "+ Upload New Image" above.</div>`;
+            return;
+        }
+
+        container.innerHTML = gallery.map((item, idx) => `
+            <div class="admin-gallery-card">
+                <div class="admin-gallery-thumb">
+                    <img src="${item.url}" alt="${item.title}">
+                </div>
+                <div class="admin-gallery-meta">
+                    <div class="gallery-asset-title">${item.title}</div>
+                    <div class="gallery-action-row">
+                        <button class="btn-copy-url" onclick="copyImageUrl('${item.url}')">
+                            <span>📋 Copy URL</span>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteGalleryItem(${idx})">Delete</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    };
+
+    window.copyImageUrl = (url) => {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast("Asset URL copied to clipboard! Paste it into your project or hero image.", "success");
+        }).catch(() => {
+            showToast("Failed to copy URL automatically. Please copy manually.", "error");
+        });
+    };
+
+    window.deleteGalleryItem = (idx) => {
+        if (confirm(`Delete "${appData.gallery[idx].title}" from media gallery?`)) {
+            appData.gallery.splice(idx, 1);
+            saveData(appData);
+            populateAllForms();
+        }
+    };
+
+    const galleryUploadInput = document.getElementById('galleryUploadInput');
+    if (galleryUploadInput) {
+        galleryUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    if (!appData.gallery) appData.gallery = [];
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    appData.gallery.unshift({
+                        id: "gal_" + Date.now(),
+                        title: fileName,
+                        url: re.target.result
+                    });
+                    saveData(appData);
+                    populateAllForms();
+                    showToast(`"${file.name}" uploaded to gallery! You can now copy its URL.`, "success");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 
     // -------------------------------------------------------------
     // RENDER LISTS & CARDS
@@ -526,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <textarea id="m_proj_desc" class="admin-textarea" rows="3">${item.desc}</textarea>
             </div>
             <div class="form-group">
-                <label>IMAGE URL OR LOCAL PATH</label>
+                <label>IMAGE URL (Paste Gallery URL or select file)</label>
                 <input type="text" id="m_proj_img" value="${item.image}" class="admin-input">
                 <input type="file" id="m_proj_img_file" accept="image/*" class="mt-2">
             </div>
@@ -544,7 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal();
         });
 
-        // File upload helper
         setTimeout(() => {
             const fileInput = document.getElementById('m_proj_img_file');
             if (fileInput) {
@@ -586,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <textarea id="m_proj_desc" placeholder="Describe the design concept, style, vectors..." class="admin-textarea" rows="3"></textarea>
             </div>
             <div class="form-group">
-                <label>IMAGE URL OR LOCAL ASSET PATH</label>
+                <label>IMAGE URL (Paste Gallery URL or select file)</label>
                 <input type="text" id="m_proj_img" placeholder="assets/portfolio_mascot_1.png" class="admin-input">
                 <input type="file" id="m_proj_img_file" accept="image/*" class="mt-2">
             </div>
@@ -934,6 +1026,132 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------
+    // BACKUP & RESTORE & GITHUB CLOUD SYNC ENGINE
+    // -------------------------------------------------------------
+
+    // 1. Download Backup as data.json
+    const downloadBackupBtn = document.getElementById('downloadBackupBtn');
+    if (downloadBackupBtn) {
+        downloadBackupBtn.addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `nibras_portfolio_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Complete backup file downloaded to your computer!", "success");
+        });
+    }
+
+    // 2. Restore Backup from File
+    const restoreBackupInput = document.getElementById('restoreBackupInput');
+    if (restoreBackupInput) {
+        restoreBackupInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    try {
+                        const parsed = JSON.parse(re.target.result);
+                        if (parsed.hero && parsed.about && parsed.portfolio) {
+                            appData = parsed;
+                            saveData(appData);
+                            populateAllForms();
+                            showToast("Backup restored successfully into live portfolio!", "success");
+                        } else {
+                            showToast("Invalid backup file format.", "error");
+                        }
+                    } catch (err) {
+                        showToast("Error parsing backup JSON file.", "error");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+
+    // 3. Direct GitHub Repository Push Engine (via GitHub REST API)
+    const syncToGithubBtn = document.getElementById('syncToGithubBtn');
+    if (syncToGithubBtn) {
+        syncToGithubBtn.addEventListener('click', async () => {
+            const token = document.getElementById('ghToken').value.trim();
+            if (!token) {
+                return showToast("Please enter your GitHub Personal Access Token to push directly.", "error");
+            }
+
+            syncToGithubBtn.disabled = true;
+            syncToGithubBtn.querySelector('span').textContent = "CONNECTING TO GITHUB...";
+
+            try {
+                const owner = "waizhussain9955";
+                const repo = "nibras-portfolio";
+                const path = "data.json";
+                const branch = "main";
+
+                // Save token to config
+                appData.githubConfig = {
+                    repoOwner: owner,
+                    repoName: repo,
+                    branch: branch,
+                    token: token
+                };
+                localStorage.setItem('nibras_portfolio_data', JSON.stringify(appData));
+
+                // 1. Get current file SHA from GitHub
+                const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+                const getRes = await fetch(getFileUrl, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                });
+
+                let sha = null;
+                if (getRes.ok) {
+                    const fileData = await getRes.json();
+                    sha = fileData.sha;
+                }
+
+                // 2. Encode updated data.json to Base64 (Unicode safe)
+                const jsonContent = JSON.stringify(appData, null, 2);
+                const encodedContent = btoa(unescape(encodeURIComponent(jsonContent)));
+
+                // 3. Commit and push directly to GitHub
+                const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                const putBody = {
+                    message: `CMS Live Update: ${new Date().toLocaleString()}`,
+                    content: encodedContent,
+                    branch: branch
+                };
+                if (sha) putBody.sha = sha;
+
+                const putRes = await fetch(putUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(putBody)
+                });
+
+                if (putRes.ok) {
+                    showToast("🚀 Pushed live directly to your GitHub repo (waizhussain9955/nibras-portfolio)!", "success");
+                } else {
+                    const errJson = await putRes.json();
+                    showToast(`GitHub error: ${errJson.message || 'Check token permissions (repo scope required)'}`, "error");
+                }
+            } catch (err) {
+                showToast(`Sync error: ${err.message}`, "error");
+            } finally {
+                syncToGithubBtn.disabled = false;
+                syncToGithubBtn.querySelector('span').textContent = "🚀 PUSH LIVE TO GITHUB REPO";
+            }
+        });
+    }
+
+    // -------------------------------------------------------------
     // MASTER SAVE ALL & RESET HANDLERS
     // -------------------------------------------------------------
     document.getElementById('saveAllBtn').addEventListener('click', () => {
@@ -970,6 +1188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         appData.contact.behance = document.getElementById('contactBehance').value.trim();
         appData.contact.copyright = document.getElementById('footerCopyright').value.trim();
         appData.contact.credit = document.getElementById('footerCredit').value.trim();
+
+        // Collect GitHub token if provided
+        const ghTokenVal = document.getElementById('ghToken').value.trim();
+        if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
+        appData.githubConfig.token = ghTokenVal;
 
         saveData(appData);
         populateAllForms();
@@ -1012,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('adminNewPass').value = '';
             document.getElementById('adminConfirmPass').value = '';
 
-            showToast("Admin credentials updated successfully!", "success");
+            showToast("Admin credentials updated successfully! Use new password on next login.", "success");
         });
     }
 

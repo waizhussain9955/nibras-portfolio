@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
-    // Default Initial Master State (Shared with Admin CMS)
+    // Default Initial Master State
     const defaultData = {
         hero: {
             badgeText: "AVAILABLE FOR NEW PROJECTS",
@@ -161,20 +161,30 @@ document.addEventListener('DOMContentLoaded', () => {
         leads: []
     };
 
-    // Load dynamic data from localStorage if edited via Admin CMS
-    const getLiveData = () => {
+    // Load dynamic data from localStorage or fetch data.json fallback
+    const getLiveData = async () => {
         const stored = localStorage.getItem('nibras_portfolio_data');
         if (stored) {
             try {
                 return JSON.parse(stored);
             } catch (e) {
-                return defaultData;
+                // parse error fallback
             }
+        }
+        try {
+            const res = await fetch('data.json?v=' + Date.now());
+            if (res.ok) {
+                const fetchedData = await res.json();
+                localStorage.setItem('nibras_portfolio_data', JSON.stringify(fetchedData));
+                return fetchedData;
+            }
+        } catch (e) {
+            // offline fallback
         }
         return defaultData;
     };
 
-    const liveData = getLiveData();
+    let liveData = await getLiveData();
 
     // Hydrate Dynamic Portfolio Content from CMS
     const hydrateDynamicDOM = () => {
