@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nibras Portfolio — Cyber CMS Admin Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,9 +19,9 @@
         <div class="login-card">
             <div class="login-header">
                 <div class="login-logo">// NIBRAS<span>.</span> CMS</div>
-                <div class="login-badge"><span class="live-dot"></span> SECURE CONTROL PORTAL</div>
+                <div class="login-badge"><span class="live-dot"></span> SECURE CONTROL</div>
             </div>
-            <p class="login-desc">Sign in to manage and edit all portfolio projects, media gallery, experience, custom pages, backup, and live content.</p>
+            <p class="login-desc">Sign in to manage projects, media gallery, experience, software stack, backup, and live content.</p>
             
             <form id="loginForm" class="login-form">
                 <div class="form-group">
@@ -45,11 +45,17 @@
     <!-- Admin Dashboard View (Shown after authentication) -->
     <div id="dashboardScreen" class="dashboard-screen" style="display: none;">
         
-        <!-- Sidebar Navigation -->
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- Sidebar Navigation Drawer -->
         <aside class="admin-sidebar" id="adminSidebar">
             <div class="sidebar-brand">
-                <div class="brand-title">// NIBRAS<span>.</span></div>
-                <div class="brand-subtitle">CMS CONTROL v8.0</div>
+                <div class="brand-text-col">
+                    <div class="brand-title">// NIBRAS<span>.</span></div>
+                    <div class="brand-subtitle">CMS CONTROL v8.0</div>
+                </div>
+                <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close sidebar">&times;</button>
             </div>
 
             <nav class="sidebar-nav">
@@ -117,14 +123,16 @@
         <main class="admin-main">
             <!-- Top Header Bar -->
             <header class="admin-topbar">
-                <button class="mobile-sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">☰</button>
-                <div class="topbar-title" id="currentSectionTitle">OVERVIEW & LIVE METRICS</div>
+                <div class="topbar-left">
+                    <button class="mobile-sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">☰</button>
+                    <div class="topbar-title" id="currentSectionTitle">OVERVIEW & LIVE METRICS</div>
+                </div>
                 <div class="topbar-actions">
                     <button id="saveAllBtn" class="btn btn-primary btn-sm">
-                        <span>💾 SAVE ALL CHANGES</span>
+                        <span>💾 SAVE</span>
                     </button>
                     <button id="resetDefaultsBtn" class="btn btn-outline btn-sm">
-                        <span>↺ RESET DEFAULT</span>
+                        <span>↺ RESET</span>
                     </button>
                 </div>
             </header>
@@ -185,7 +193,7 @@
                         <div class="panel-header-flex">
                             <div>
                                 <h3>🖼️ MEDIA ASSETS GALLERY</h3>
-                                <p class="panel-desc">Upload photos, mascots, esports vectors, and artwork here. Click <strong>"Copy URL"</strong> to copy the image link and use it in your projects or hero section!</p>
+                                <p class="panel-desc">Upload mascot photos, character art, and vector graphics. Click <strong>"Copy URL"</strong> to quickly paste the image link into projects or hero section!</p>
                             </div>
                             <label class="btn btn-primary btn-sm file-upload-btn">
                                 <span>+ UPLOAD NEW IMAGE</span>
@@ -277,7 +285,7 @@
                             <div class="image-upload-row">
                                 <input type="text" id="heroImage" class="admin-input" placeholder="assets/portfolio_esports_1.png">
                                 <label class="btn btn-outline btn-sm file-upload-btn">
-                                    Upload New Image
+                                    Upload Image
                                     <input type="file" id="heroImageFile" accept="image/*" style="display: none;">
                                 </label>
                             </div>
@@ -335,7 +343,7 @@
                                 <p class="panel-desc">Edit design services, titles, descriptions, and icon representations.</p>
                             </div>
                             <button id="addExpertiseBtn" class="btn btn-primary btn-sm">
-                                <span>+ ADD EXPERTISE CARD</span>
+                                <span>+ ADD EXPERTISE</span>
                             </button>
                         </div>
 
@@ -445,7 +453,7 @@
                         <h3>☁️ OFFLINE BACKUP & RESTORE SYSTEM</h3>
                         <p class="panel-desc">Download a complete snapshot backup of all your portfolio content, images, projects, and leads. You can restore this file anytime on any computer!</p>
                         
-                        <div class="backup-action-row" style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:25px;">
+                        <div class="backup-action-row" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
                             <button id="downloadBackupBtn" class="btn btn-primary">
                                 <span>📥 DOWNLOAD COMPLETE BACKUP (data.json)</span>
                             </button>
@@ -479,7 +487,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>GITHUB PERSONAL ACCESS TOKEN (Optional for 1-Click Direct Cloud Push)</label>
+                            <label>GITHUB PERSONAL ACCESS TOKEN</label>
                             <input type="password" id="ghToken" class="admin-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                             <small class="text-muted">Generate a Classic Personal Access Token on GitHub with <code>repo</code> scope permission. Stored securely only in your local browser.</small>
                         </div>

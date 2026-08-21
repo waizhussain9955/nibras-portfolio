@@ -1,4 +1,4 @@
-// Cyber CMS Engine for Nibras Portfolio (Full CRUD, Gallery, Backup, GitHub Cloud Sync & Leads)
+// Cyber CMS Engine for Nibras Portfolio (Full Responsive CRUD, Gallery, Backup, Cloud Sync & Leads)
 document.addEventListener('DOMContentLoaded', () => {
 
     // Default Initial Master State
@@ -259,12 +259,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sidebar Tab Navigation
+    // Sidebar Mobile Responsive Drawer Controls
     const navTabs = document.querySelectorAll('.nav-tab');
     const tabPanes = document.querySelectorAll('.tab-pane');
     const currentSectionTitle = document.getElementById('currentSectionTitle');
     const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const adminSidebar = document.getElementById('adminSidebar');
+
+    const openSidebar = () => {
+        adminSidebar.classList.add('open');
+        sidebarBackdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeSidebar = () => {
+        adminSidebar.classList.remove('open');
+        sidebarBackdrop.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+    if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
 
     navTabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -277,17 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetPane) targetPane.classList.add('active');
 
             currentSectionTitle.textContent = tab.querySelector('.tab-label').textContent.toUpperCase();
+            
+            // Auto close drawer on mobile tap
             if (window.innerWidth <= 768) {
-                adminSidebar.classList.remove('open');
+                closeSidebar();
             }
         });
     });
-
-    if (sidebarToggle && adminSidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            adminSidebar.classList.toggle('open');
-        });
-    }
 
     // -------------------------------------------------------------
     // DATA POPULATION & FORM SYNC
@@ -619,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <textarea id="m_proj_desc" class="admin-textarea" rows="3">${item.desc}</textarea>
             </div>
             <div class="form-group">
-                <label>IMAGE URL (Paste Gallery URL or select file)</label>
+                <label>IMAGE URL (Paste Gallery URL or upload file)</label>
                 <input type="text" id="m_proj_img" value="${item.image}" class="admin-input">
                 <input type="file" id="m_proj_img_file" accept="image/*" class="mt-2">
             </div>
@@ -678,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <textarea id="m_proj_desc" placeholder="Describe the design concept, style, vectors..." class="admin-textarea" rows="3"></textarea>
             </div>
             <div class="form-group">
-                <label>IMAGE URL (Paste Gallery URL or select file)</label>
+                <label>IMAGE URL (Paste Gallery URL or upload file)</label>
                 <input type="text" id="m_proj_img" placeholder="assets/portfolio_mascot_1.png" class="admin-input">
                 <input type="file" id="m_proj_img_file" accept="image/*" class="mt-2">
             </div>
@@ -1018,7 +1032,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const reader = new FileReader();
                 reader.onload = (re) => {
                     document.getElementById('heroImage').value = re.target.result;
-                    showToast("Hero image converted. Click Save All Changes to apply.", "success");
+                    showToast("Hero image converted. Click Save to apply.", "success");
                 };
                 reader.readAsDataURL(file);
             }
@@ -1040,7 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            showToast("Complete backup file downloaded to your computer!", "success");
+            showToast("Complete backup file downloaded to your device!", "success");
         });
     }
 
@@ -1137,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (putRes.ok) {
-                    showToast("🚀 Pushed live directly to your GitHub repo (waizhussain9955/nibras-portfolio)!", "success");
+                    showToast("🚀 Pushed live directly to your GitHub repo!", "success");
                 } else {
                     const errJson = await putRes.json();
                     showToast(`GitHub error: ${errJson.message || 'Check token permissions (repo scope required)'}`, "error");
@@ -1235,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('adminNewPass').value = '';
             document.getElementById('adminConfirmPass').value = '';
 
-            showToast("Admin credentials updated successfully! Use new password on next login.", "success");
+            showToast("Admin credentials updated successfully!", "success");
         });
     }
 
