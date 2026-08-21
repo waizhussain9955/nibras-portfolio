@@ -1,5 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // Web Audio API Cyber Synth SFX for subtle interactive audio feedback
+    let audioCtx = null;
+    const playCyberBlip = (freq = 440, type = 'sine', duration = 0.06) => {
+        try {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+            
+            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {
+            // AudioContext not allowed or not supported
+        }
+    };
+
     // 0. Custom Neon Cursor Animation, Stardust Trail & Click Ripples
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
@@ -75,6 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Click Multi-layered Spark Burst & Ripple Effect
     window.addEventListener('click', (e) => {
+        playCyberBlip(580, 'sine', 0.05);
+
         const ripple = document.createElement('div');
         ripple.className = 'click-ripple';
         ripple.style.left = `${e.clientX}px`;
@@ -318,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (backToTopBtn) {
         backToTopBtn.addEventListener('click', () => {
+            playCyberBlip(750, 'triangle', 0.08);
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
@@ -332,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mobileNavToggle && navMenu) {
         mobileNavToggle.addEventListener('click', () => {
+            playCyberBlip(480, 'sine', 0.04);
             mobileNavToggle.classList.toggle('open');
             navMenu.classList.toggle('open');
             document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
@@ -352,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filterTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            playCyberBlip(620, 'sine', 0.04);
             filterTabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
 
@@ -386,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lightboxModal && lightboxClose) {
         portfolioItems.forEach(item => {
             item.addEventListener('click', () => {
+                playCyberBlip(720, 'sine', 0.06);
                 const imgPath = item.getAttribute('data-image');
                 const titleText = item.getAttribute('data-title');
                 const descText = item.getAttribute('data-desc');
@@ -402,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         lightboxClose.addEventListener('click', () => {
+            playCyberBlip(380, 'sine', 0.04);
             lightboxModal.classList.remove('open');
             lightboxModal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
@@ -516,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
+    window.addEventListener('scroll', handleScrollEvents);
     window.addEventListener('scroll', highlightNavLink);
 
     // 12. Contact Form Simulation
@@ -525,6 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm && formFeedback) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            playCyberBlip(880, 'sine', 0.1);
             
             const submitBtn = contactForm.querySelector('.btn-submit');
             const submitBtnText = submitBtn.querySelector('span');
@@ -540,6 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formFeedback.className = 'form-feedback';
 
             setTimeout(() => {
+                playCyberBlip(1040, 'triangle', 0.12);
                 submitBtn.disabled = false;
                 submitBtnText.textContent = originalText;
                 submitBtn.style.opacity = '1';

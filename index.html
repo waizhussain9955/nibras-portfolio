@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="index.css?v=5.0">
+    <link rel="stylesheet" href="index.css?v=6.0">
 </head>
 <body>
 
@@ -80,7 +80,7 @@
         
         <!-- Cyber HUD Corner Brackets -->
         <div class="hud-bracket hud-top-left">
-            <span class="hud-dot"></span> // SYSTEM: V5.0 ULTRA ONLINE
+            <span class="hud-dot"></span> // SYSTEM: V6.0 ACTIVE
         </div>
         <div class="hud-bracket hud-top-right">
             <span class="hud-dot"></span> COORD: 24.8607° N, 67.0011° E
@@ -475,6 +475,8 @@
             <div class="timeline-container">
                 <!-- Card 1 -->
                 <div class="timeline-item">
+                    <!-- Concentric Radar Pulse Rings -->
+                    <div class="timeline-radar-pulse"></div>
                     <div class="timeline-badge glow-pulse">2023 - 2025</div>
                     <div class="timeline-content spotlight-card border-beam-card">
                         <div class="timeline-header-block">
@@ -514,9 +516,15 @@
             <div class="software-grid">
                 <!-- Photoshop -->
                 <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
-                    <div class="soft-logo-container ps-brand">Ps</div>
+                    <div class="soft-logo-container ps-brand">
+                        <div class="soft-icon-aura"></div>
+                        Ps
+                    </div>
                     <div class="soft-details">
-                        <h4 class="soft-title">Adobe Photoshop</h4>
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">Adobe Photoshop</h4>
+                            <span class="soft-skill-badge">PRO MASTER</span>
+                        </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill" data-progress="95%">
                                 <div class="progress-glow-spark"></div>
@@ -528,9 +536,15 @@
 
                 <!-- Illustrator -->
                 <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
-                    <div class="soft-logo-container ai-brand">Ai</div>
+                    <div class="soft-logo-container ai-brand">
+                        <div class="soft-icon-aura"></div>
+                        Ai
+                    </div>
                     <div class="soft-details">
-                        <h4 class="soft-title">Adobe Illustrator</h4>
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">Adobe Illustrator</h4>
+                            <span class="soft-skill-badge expert">VECTOR EXPERT</span>
+                        </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill" data-progress="98%">
                                 <div class="progress-glow-spark"></div>
@@ -542,9 +556,15 @@
 
                 <!-- Lightroom -->
                 <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
-                    <div class="soft-logo-container lr-brand">Lr</div>
+                    <div class="soft-logo-container lr-brand">
+                        <div class="soft-icon-aura"></div>
+                        Lr
+                    </div>
                     <div class="soft-details">
-                        <h4 class="soft-title">Adobe Lightroom</h4>
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">Adobe Lightroom</h4>
+                            <span class="soft-skill-badge">COLOR GRADE</span>
+                        </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill" data-progress="85%">
                                 <div class="progress-glow-spark"></div>
@@ -556,9 +576,15 @@
 
                 <!-- InDesign -->
                 <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
-                    <div class="soft-logo-container id-brand">Id</div>
+                    <div class="soft-logo-container id-brand">
+                        <div class="soft-icon-aura"></div>
+                        Id
+                    </div>
                     <div class="soft-details">
-                        <h4 class="soft-title">Adobe InDesign</h4>
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">Adobe InDesign</h4>
+                            <span class="soft-skill-badge">LAYOUT EDIT</span>
+                        </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill" data-progress="80%">
                                 <div class="progress-glow-spark"></div>
@@ -570,9 +596,15 @@
 
                 <!-- CorelDraw -->
                 <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
-                    <div class="soft-logo-container cd-brand">Cd</div>
+                    <div class="soft-logo-container cd-brand">
+                        <div class="soft-icon-aura"></div>
+                        Cd
+                    </div>
                     <div class="soft-details">
-                        <h4 class="soft-title">CorelDraw</h4>
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">CorelDraw</h4>
+                            <span class="soft-skill-badge expert">PRINT VECTOR</span>
+                        </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill" data-progress="90%">
                                 <div class="progress-glow-spark"></div>
@@ -625,15 +657,21 @@
                 </div>
 
                 <div class="contact-right">
-                    <!-- Premium Contact Form -->
+                    <!-- Premium Contact Form with Cyber Accents -->
                     <form class="premium-form spotlight-card border-beam-card" id="contactForm">
+                        <div class="form-cyber-header">
+                            <span class="form-hud-title">// CLIENT TRANSMISSION PORTAL</span>
+                            <span class="form-hud-status"><span class="live-blink-dot"></span> ENCRYPTED</span>
+                        </div>
                         <div class="form-group">
                             <label for="name" class="form-label">Full Name</label>
                             <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+                            <span class="input-focus-line"></span>
                         </div>
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+                            <span class="input-focus-line"></span>
                         </div>
                         <div class="form-group">
                             <label for="project-type" class="form-label">Project Domain</label>
@@ -645,10 +683,12 @@
                                 <option value="character">2D Character Illustration</option>
                                 <option value="other">General Graphic Design / Collaboration</option>
                             </select>
+                            <span class="input-focus-line"></span>
                         </div>
                         <div class="form-group">
                             <label for="message" class="form-label">Project Scope</label>
                             <textarea id="message" name="message" class="form-input form-textarea" placeholder="Outline your design requirements or project goals..." required></textarea>
+                            <span class="input-focus-line"></span>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-submit magnetic">
@@ -717,6 +757,6 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="index.js?v=5.0"></script>
+    <script src="index.js?v=6.0"></script>
 </body>
 </html>
