@@ -7,12 +7,12 @@
     <!-- Meta tags for SEO -->
     <meta name="description" content="Portfolio of Nibras Ansari, a Creative Graphic Designer specializing in mascot logos, esports branding, sports design, typography, and 2D character design.">
     <meta name="keywords" content="Graphic Designer, Mascot Logo, Esports Logo, Sports Logo, 2D Character Design, Typography, Branding, Nibras Ansari">
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Optimized weights) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="index.css?v=7.0">
+    <link rel="stylesheet" href="index.css?v=8.0">
 </head>
 <body>
 
@@ -23,14 +23,23 @@
         </div>
     </div>
 
-    <!-- Custom Neon Cursor Elements (Desktop only) -->
+    <!-- Custom Neon Cursor Elements -->
     <div class="custom-cursor-dot" id="cursorDot"></div>
     <div class="custom-cursor-circle" id="cursorCircle"></div>
+
+    <!-- Floating Cyber Geometric Parallax Particles -->
+    <div class="cyber-floating-elements" aria-hidden="true">
+        <div class="floating-geo geo-1">✦</div>
+        <div class="floating-geo geo-2">+</div>
+        <div class="floating-geo geo-3">▲</div>
+        <div class="floating-geo geo-4">✦</div>
+        <div class="floating-geo geo-5">✕</div>
+    </div>
 
     <!-- Sticky Navigation Bar -->
     <header class="main-header" id="mainHeader">
         <div class="container header-container">
-            <a href="#" class="logo magnetic">
+            <a href="#" class="logo magnetic cyber-glitch-target">
                 <span class="logo-slash">//</span> NIBRAS<span class="logo-dot">.</span>
             </a>
             <nav class="nav-menu" id="navMenu">
@@ -59,32 +68,45 @@
 
     <!-- Hero Section -->
     <section id="about" class="hero-section">
-        <!-- Interactive High-Performance Cyber Particle Canvas -->
+        <!-- Cyber Ambient Glow Orbs -->
+        <div class="cyber-ambient-light light-1"></div>
+        <div class="cyber-ambient-light light-2"></div>
+
+        <!-- High Performance Interactive Particle Canvas -->
         <canvas id="particleCanvas" class="hero-particle-canvas"></canvas>
-        <div class="hero-bg-text" aria-hidden="true">CREATIVE</div>
+        <div class="hero-bg-text animated-stroke" aria-hidden="true">CREATIVE</div>
         
+        <!-- Cyber HUD Corner Brackets -->
+        <div class="hud-bracket hud-top-left">
+            <span class="hud-dot"></span> // SYSTEM: V8.0 ACTIVE
+        </div>
+        <div class="hud-bracket hud-top-right">
+            <span class="hud-dot"></span> VECTOR GRAPHICS ENGINE
+        </div>
+
         <div class="container hero-container">
             <!-- Left Hero Details -->
             <div class="hero-content">
                 <!-- Staggered Sequence 1 -->
-                <div class="hero-badge-tag glow-pulse">
+                <div class="hero-badge-tag glow-pulse reveal-seq-1">
                     <span class="live-blink-dot"></span>
                     <span class="badge-text">AVAILABLE FOR NEW PROJECTS</span>
                     <span class="badge-cyber-code">2026</span>
                 </div>
                 
                 <!-- Staggered Sequence 2 (Solid White Bold Title) -->
-                <h1 class="hero-title">
-                    <span>NIBRAS</span><br>
-                    <span>ANSARI.</span>
+                <h1 class="hero-title reveal-seq-2">
+                    <span class="title-line">NIBRAS</span><br>
+                    <span class="title-line">ANSARI.</span>
                 </h1>
                 
                 <!-- Staggered Sequence 3 (Dynamic Typewriter Role Switcher) -->
-                <div class="hero-subtitle-wrapper">
+                <div class="hero-subtitle-wrapper reveal-seq-3">
                     <div class="cyber-equalizer">
                         <span class="eq-bar bar-1"></span>
                         <span class="eq-bar bar-2"></span>
                         <span class="eq-bar bar-3"></span>
+                        <span class="eq-bar bar-4"></span>
                     </div>
                     <h2 class="hero-subtitle">
                         <span class="subtitle-prefix">> </span>
@@ -94,12 +116,12 @@
                 </div>
                 
                 <!-- Staggered Sequence 4 -->
-                <p class="hero-intro-text" id="animatedIntro">
+                <p class="hero-intro-text reveal-seq-4" id="animatedIntro">
                     Specializing in bold branding, custom mascot logos, high-energy esports design, clean sports iconography, and personality-driven 2D character design. I craft impactful visuals that command attention.
                 </p>
                 
                 <!-- Staggered Sequence 5 -->
-                <div class="hero-actions-row">
+                <div class="hero-actions-row reveal-seq-5">
                     <a href="#portfolio" class="btn btn-primary magnetic">
                         <span>EXPLORE WORK</span>
                         <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,7 +134,7 @@
                 </div>
 
                 <!-- Quick Stats HUD Bar -->
-                <div class="hero-stats-bar">
+                <div class="hero-stats-bar reveal-seq-5">
                     <div class="stat-pill">
                         <span class="stat-num counter" data-target="50">50+</span>
                         <span class="stat-lbl">Mascots Created</span>
@@ -130,17 +152,18 @@
                 </div>
             </div>
 
-            <!-- Right Hero Visual Panel -->
-            <div class="hero-image-wrapper tilt-card" data-tilt id="heroMascotCard">
+            <!-- Right Hero Visual Panel (Staggered Sequence 6) -->
+            <div class="hero-image-wrapper tilt-card reveal-seq-6" data-tilt id="heroMascotCard">
                 <div class="glow-border-container float-animation">
                     <!-- Scanner beam line -->
                     <div class="scanner-beam"></div>
+                    <!-- Cyber corner reticles -->
                     <span class="card-reticle reticle-tl"></span>
                     <span class="card-reticle reticle-tr"></span>
                     <span class="card-reticle reticle-bl"></span>
                     <span class="card-reticle reticle-br"></span>
                     
-                    <img src="assets/portfolio_esports_1.png" alt="Featured Esports Cyber Wolf Design by Nibras" class="hero-img" loading="eager">
+                    <img src="assets/portfolio_esports_1.png" alt="Featured Esports Cyber Wolf Design by Nibras" class="hero-img">
                 </div>
                 <div class="hero-label-tag">
                     <span class="hud-chip">// FEATURED DESIGN</span>
@@ -612,8 +635,8 @@
                     <!-- Premium Contact Form with Cyber Accents -->
                     <form class="premium-form spotlight-card border-beam-card" id="contactForm">
                         <div class="form-cyber-header">
-                            <span class="form-hud-title">// TRANSMISSION PORTAL</span>
-                            <span class="form-hud-status"><span class="live-blink-dot"></span> SECURE</span>
+                            <span class="form-hud-title">// CLIENT TRANSMISSION PORTAL</span>
+                            <span class="form-hud-status"><span class="live-blink-dot"></span> ENCRYPTED</span>
                         </div>
                         <div class="form-group">
                             <label for="name" class="form-label">Full Name</label>
@@ -672,9 +695,9 @@
 
     <!-- Floating Back-to-Top HUD Button with Circular Scroll Progress -->
     <button class="back-to-top-btn" id="backToTopBtn" aria-label="Back to top">
-        <svg class="progress-ring" width="46" height="46" viewBox="0 0 46 46">
-            <circle class="progress-ring-circle-bg" cx="23" cy="23" r="19" stroke-width="2.5" fill="transparent" />
-            <circle class="progress-ring-circle" id="progressRingCircle" cx="23" cy="23" r="19" stroke-width="2.5" fill="transparent" />
+        <svg class="progress-ring" width="50" height="50" viewBox="0 0 50 50">
+            <circle class="progress-ring-circle-bg" cx="25" cy="25" r="21" stroke-width="2.5" fill="transparent" />
+            <circle class="progress-ring-circle" id="progressRingCircle" cx="25" cy="25" r="21" stroke-width="2.5" fill="transparent" />
         </svg>
         <span class="back-to-top-arrow">▲</span>
     </button>
@@ -703,12 +726,12 @@
             
             <div class="footer-bottom">
                 <p class="footer-copyright">© 2026 Nibras Ansari. All rights reserved.</p>
-                <p class="footer-credit">Handcrafted for High-Performance & Cyber Aesthetics</p>
+                <p class="footer-credit">Handcrafted with Cyber Neon & Interactive Code</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="index.js?v=7.0"></script>
+    <script src="index.js?v=8.0"></script>
 </body>
 </html>

@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 0. Custom Neon Cursor (Desktop Pointer Only - Pure 60 FPS)
+    // 0. Custom Neon Cursor & Parallax (Desktop Only)
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
     const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
 
         const animateCursor = () => {
-            circleX += (mouseX - circleX) * 0.25;
-            circleY += (mouseY - circleY) * 0.25;
+            circleX += (mouseX - circleX) * 0.22;
+            circleY += (mouseY - circleY) * 0.22;
 
             cursorCircle.style.left = `${circleX}px`;
             cursorCircle.style.top = `${circleY}px`;
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCursor();
 
         // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select');
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -70,9 +70,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 cursorCircle.classList.remove('active');
             });
         });
+
+        // Floating geometric parallax on mouse move
+        const geoElements = document.querySelectorAll('.floating-geo');
+        window.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const deltaX = (e.clientX - centerX) / centerX;
+            const deltaY = (e.clientY - centerY) / centerY;
+
+            geoElements.forEach((geo, i) => {
+                const speed = (i + 1) * 8;
+                geo.style.transform = `translate3d(${deltaX * speed}px, ${deltaY * speed}px, 0)`;
+            });
+        }, { passive: true });
     }
 
-    // Click Ripple Effect
+    // Click Ripple & Sound Effect
     window.addEventListener('click', (e) => {
         playCyberBlip(580, 'sine', 0.04);
 
@@ -84,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             ripple.remove();
-        }, 450);
+        }, 500);
     });
 
     // Dynamic Typewriter Subtitle Role Switcher
@@ -112,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 typewriterText.textContent = currentRole.substring(0, charIndex + 1);
                 charIndex++;
-                typeSpeed = 75;
+                typeSpeed = 80;
             }
 
             if (!isDeleting && charIndex === currentRole.length) {
@@ -148,11 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.6;
-                this.vy = (Math.random() - 0.5) * 0.6;
-                this.radius = Math.random() * 1.8 + 1;
+                this.vx = (Math.random() - 0.5) * 0.7;
+                this.vy = (Math.random() - 0.5) * 0.7;
+                this.radius = Math.random() * 2 + 1;
                 this.color = Math.random() > 0.5 ? 'rgba(168, 85, 247, ' : 'rgba(217, 70, 239, ';
-                this.alpha = Math.random() * 0.4 + 0.2;
+                this.alpha = Math.random() * 0.45 + 0.25;
             }
 
             update() {
@@ -171,8 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Lightweight count (20-25 particles max for instantaneous performance)
-        const numParticles = Math.min(Math.floor(width / 45), 25);
+        const numParticles = Math.min(Math.floor(width / 35), 32);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
@@ -189,11 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 110) {
+                    if (dist < 120) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.2 * (1 - dist / 110)})`;
+                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.25 * (1 - dist / 120)})`;
                         ctx.lineWidth = 0.8;
                         ctx.stroke();
                     }
@@ -204,12 +217,52 @@ document.addEventListener('DOMContentLoaded', () => {
         renderParticles();
     }
 
-    // 2. Sticky Navigation Header & Scroll Progress Laser Bar & Back to Top Button
+    // 2. 3D Tilt Card Effect (Desktop Pointer Only)
+    if (isDesktopPointer) {
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -8;
+                const rotateY = ((x - centerX) / centerX) * 8;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            }, { passive: true });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // Magnetic Button Effect
+        const magneticBtns = document.querySelectorAll('.magnetic');
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                btn.style.transform = `translate3d(${x * 0.25}px, ${y * 0.25}px, 0)`;
+            }, { passive: true });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = `translate3d(0px, 0px, 0)`;
+            });
+        });
+    }
+
+    // 3. Sticky Navigation Header & Scroll Progress Laser Bar & Back to Top Button
     const header = document.getElementById('mainHeader');
     const scrollProgressBar = document.getElementById('scrollProgressBar');
     const backToTopBtn = document.getElementById('backToTopBtn');
     const progressRingCircle = document.getElementById('progressRingCircle');
-    const circumference = 2 * Math.PI * 19; // ~119.38
+    const circumference = 2 * Math.PI * 21; // ~131.95
 
     let ticking = false;
     const handleScrollEvents = () => {
@@ -218,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100);
 
         // Header Background
-        if (scrollTop > 40) {
+        if (scrollTop > 45) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
@@ -231,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Back to Top Button
         if (backToTopBtn && progressRingCircle) {
-            if (scrollTop > 350) {
+            if (scrollTop > 380) {
                 backToTopBtn.classList.add('visible');
                 const offset = circumference - (scrollPercentage / 100) * circumference;
                 progressRingCircle.style.strokeDashoffset = offset;
@@ -260,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Mobile Menu Toggle
+    // 4. Mobile Menu Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -282,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Portfolio Category Filtering
+    // 5. Portfolio Category Filtering
     const filterTabs = document.querySelectorAll('.filter-tab');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
 
@@ -307,13 +360,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (!item.classList.contains('show')) {
                             item.style.display = 'none';
                         }
-                    }, 280);
+                    }, 300);
                 }
             });
         });
     });
 
-    // 5. Lightbox Modal System
+    // 6. Lightbox Modal System
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxTitle = document.getElementById('lightboxTitle');
@@ -364,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Software Stack Progress Bars & Counters
+    // 7. Software Stack Progress Bars & Counters
     const softwareSection = document.getElementById('softwares');
     const progressFills = document.querySelectorAll('.progress-bar-fill');
     const counters = document.querySelectorAll('.counter');
@@ -406,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
         softwareObserver.observe(softwareSection);
     }
 
-    // 7. Scroll Reveal Animations
+    // 8. Scroll Reveal Animations
     const revealElements = [
         '.about-left', '.about-right',
         '.expertise-card', '.portfolio-item',
@@ -433,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.observe(el);
     });
 
-    // 8. Active Link Highlight on Scroll
+    // 9. Active Link Highlight on Scroll
     const sectionsNav = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
@@ -457,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', highlightNavLink, { passive: true });
 
-    // 9. Contact Form Simulation
+    // 10. Contact Form Simulation
     const contactForm = document.getElementById('contactForm');
     const formFeedback = document.getElementById('formFeedback');
 
