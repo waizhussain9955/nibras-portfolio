@@ -115,6 +115,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             {
                 id: "proj_5",
                 category: "mascot",
+                categoryLabel: "MASCOT BADGE",
+                title: "Ninja Tiger Esports",
+                desc: "Aggressive martial arts tiger mascot logo badge crafted for competitive gaming organizations and merchandise.",
+                image: "assets/mascot_badge.png"
+            },
+            {
+                id: "proj_6",
+                category: "esports",
                 categoryLabel: "WORK COLLAGE",
                 title: "Branding Highlights Collage",
                 desc: "Collage showcasing vector Mascot, Sports and Esports logos designed at Digital Cuberoot (2023 - 2025).",
@@ -143,12 +151,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             { id: "soft_5", name: "CorelDraw", code: "Cd", brandClass: "cd-brand", badge: "PRINT VECTOR", percent: 90, isExpert: true }
         ],
         navLinks: [
-            { id: "nav_1", num: "01.", label: "About", href: "#about" },
-            { id: "nav_2", num: "02.", label: "Expertise", href: "#expertise" },
-            { id: "nav_3", num: "03.", label: "Portfolio", href: "#portfolio" },
-            { id: "nav_4", num: "04.", label: "Experience", href: "#experience" },
-            { id: "nav_5", num: "05.", label: "Stack", href: "#softwares" },
-            { id: "nav_6", num: "06.", label: "Contact", href: "#contact" }
+            { id: "nav_1", num: "01.", label: "About", href: "index.html#about" },
+            { id: "nav_2", num: "02.", label: "Expertise", href: "index.html#expertise" },
+            { id: "nav_3", num: "03.", label: "Portfolio", href: "projects.html" },
+            { id: "nav_4", num: "04.", label: "Experience", href: "index.html#experience" },
+            { id: "nav_5", num: "05.", label: "Stack", href: "index.html#softwares" },
+            { id: "nav_6", num: "06.", label: "Contact", href: "index.html#contact" }
         ],
         contact: {
             email: "nibrasansari002@gmail.com",
@@ -168,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 return JSON.parse(stored);
             } catch (e) {
-                // parse error fallback
+                // fallback
             }
         }
         try {
@@ -186,17 +194,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let liveData = await getLiveData();
 
+    // Helper to generate Portfolio Item Card HTML
+    const createProjectCardHtml = (item) => `
+        <div class="portfolio-item show tilt-card" data-tilt data-category="${item.category}" data-image="${item.image}" data-title="${item.title}" data-desc="${item.desc}">
+            <div class="item-inner spotlight-card">
+                <div class="holographic-shimmer"></div>
+                <img src="${item.image}" alt="${item.title}" loading="lazy">
+                <div class="item-overlay">
+                    <span class="item-category">${item.categoryLabel || item.category.toUpperCase()}</span>
+                    <h4 class="item-title">${item.title}</h4>
+                    <span class="item-action-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+
     // Hydrate Dynamic Portfolio Content from CMS
     const hydrateDynamicDOM = () => {
         // 1. Navigation Links
         const navMenu = document.getElementById('navMenu');
         if (navMenu && liveData.navLinks && liveData.navLinks.length > 0) {
-            navMenu.innerHTML = liveData.navLinks.map(n => `
-                <a href="${n.href}" class="nav-link"><span class="nav-num">${n.num}</span> ${n.label}</a>
-            `).join('');
+            const isProjectsPage = window.location.pathname.includes('projects.html');
+            navMenu.innerHTML = liveData.navLinks.map(n => {
+                let targetHref = n.href;
+                if (!isProjectsPage && targetHref.startsWith('index.html#')) {
+                    targetHref = targetHref.replace('index.html', '');
+                }
+                const isActive = (isProjectsPage && n.label.toLowerCase() === 'portfolio') ? 'active' : '';
+                return `<a href="${targetHref}" class="nav-link ${isActive}"><span class="nav-num">${n.num}</span> ${n.label}</a>`;
+            }).join('');
         }
 
-        // 2. Hero Section
+        // 2. Hero Section (Home page)
         if (liveData.hero) {
             const badgeEl = document.querySelector('.hero-badge-tag');
             if (badgeEl) {
@@ -288,29 +321,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         }
 
-        // 5. Portfolio Section
+        // 5. Portfolio Section (Homepage: Max 6 Projects)
         const portfolioGrid = document.getElementById('portfolioGrid');
         if (portfolioGrid && liveData.portfolio) {
-            portfolioGrid.innerHTML = liveData.portfolio.map(item => `
-                <div class="portfolio-item show tilt-card" data-tilt data-category="${item.category}" data-image="${item.image}" data-title="${item.title}" data-desc="${item.desc}">
-                    <div class="item-inner spotlight-card">
-                        <div class="holographic-shimmer"></div>
-                        <img src="${item.image}" alt="${item.title}" loading="lazy">
-                        <div class="item-overlay">
-                            <span class="item-category">${item.categoryLabel || item.category.toUpperCase()}</span>
-                            <h4 class="item-title">${item.title}</h4>
-                            <span class="item-action-btn">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            const frontPageProjects = liveData.portfolio.slice(0, 6);
+            portfolioGrid.innerHTML = frontPageProjects.map(item => createProjectCardHtml(item)).join('');
         }
 
-        // 6. Experience Section
+        // 6. Portfolio Archive Page (Full Archive: All Projects)
+        const portfolioArchiveGrid = document.getElementById('portfolioArchiveGrid');
+        const archiveCountBadge = document.getElementById('archiveCountBadge');
+        if (portfolioArchiveGrid && liveData.portfolio) {
+            portfolioArchiveGrid.innerHTML = liveData.portfolio.map(item => createProjectCardHtml(item)).join('');
+            if (archiveCountBadge) {
+                archiveCountBadge.textContent = `${liveData.portfolio.length} PROJECTS`;
+            }
+        }
+
+        // 7. Experience Section
         const timelineContainer = document.querySelector('.timeline-container');
         if (timelineContainer && liveData.experience) {
             timelineContainer.innerHTML = liveData.experience.map(job => `
@@ -331,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         }
 
-        // 7. Software Stack Section
+        // 8. Software Stack Section
         const softwareGrid = document.querySelector('.software-grid');
         if (softwareGrid && liveData.software) {
             softwareGrid.innerHTML = liveData.software.map(soft => `
@@ -353,7 +381,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         }
 
-        // 8. Contact & Footer
+        // 9. Contact & Footer
         if (liveData.contact) {
             const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
             emailLinks.forEach(el => {
@@ -662,10 +690,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100);
 
-        if (scrollTop > 45) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (header) {
+            if (scrollTop > 45) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
 
         if (scrollProgressBar) {
@@ -724,37 +754,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Portfolio Category Filtering
+    // Portfolio Category Filtering & Search (Works on both Home & Archive)
     const filterTabs = document.querySelectorAll('.filter-tab');
+    const archiveSearchInput = document.getElementById('archiveSearchInput');
 
     const setupPortfolioFilter = () => {
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const applyFilters = () => {
+            const activeTab = document.querySelector('.filter-tab.active');
+            const filterValue = activeTab ? activeTab.getAttribute('data-filter') : 'all';
+            const searchTerm = archiveSearchInput ? archiveSearchInput.value.toLowerCase().trim() : '';
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+            portfolioItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                const title = (item.getAttribute('data-title') || '').toLowerCase();
+                const desc = (item.getAttribute('data-desc') || '').toLowerCase();
+
+                const matchesCat = (filterValue === 'all' || category === filterValue);
+                const matchesSearch = (!searchTerm || title.includes(searchTerm) || desc.includes(searchTerm));
+
+                if (matchesCat && matchesSearch) {
+                    item.style.display = 'block';
+                    void item.offsetWidth;
+                    item.classList.add('show');
+                } else {
+                    item.classList.remove('show');
+                    setTimeout(() => {
+                        if (!item.classList.contains('show')) {
+                            item.style.display = 'none';
+                        }
+                    }, 250);
+                }
+            });
+        };
+
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 playCyberBlip(620, 'sine', 0.04);
                 filterTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-
-                const filterValue = tab.getAttribute('data-filter');
-
-                portfolioItems.forEach(item => {
-                    const category = item.getAttribute('data-category');
-                    
-                    if (filterValue === 'all' || category === filterValue) {
-                        item.style.display = 'block';
-                        void item.offsetWidth;
-                        item.classList.add('show');
-                    } else {
-                        item.classList.remove('show');
-                        setTimeout(() => {
-                            if (!item.classList.contains('show')) {
-                                item.style.display = 'none';
-                            }
-                        }, 300);
-                    }
-                });
+                applyFilters();
             });
         });
+
+        if (archiveSearchInput) {
+            archiveSearchInput.addEventListener('input', applyFilters);
+        }
     };
     setupPortfolioFilter();
 
@@ -882,29 +927,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         revealObserver.observe(el);
     });
 
-    // Active Link Highlight on Scroll
+    // Active Link Highlight on Scroll (Homepage only)
     const sectionsNav = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
-    const highlightNavLink = () => {
-        let scrollY = window.pageYOffset;
-        
-        sectionsNav.forEach(current => {
-            const sectionHeight = current.offsetHeight;
-            const sectionTop = current.offsetTop - 120;
-            const sectionId = current.getAttribute('id');
+    if (sectionsNav.length > 0) {
+        const highlightNavLink = () => {
+            let scrollY = window.pageYOffset;
             
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                navMenuLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    };
-    window.addEventListener('scroll', highlightNavLink, { passive: true });
+            sectionsNav.forEach(current => {
+                const sectionHeight = current.offsetHeight;
+                const sectionTop = current.offsetTop - 120;
+                const sectionId = current.getAttribute('id');
+                
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    navMenuLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}` || link.getAttribute('href') === `index.html#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        };
+        window.addEventListener('scroll', highlightNavLink, { passive: true });
+    }
 
     // Contact Form Submission & Lead Storage for Admin Dashboard
     const contactForm = document.getElementById('contactForm');

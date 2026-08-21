@@ -120,6 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 id: "proj_5",
                 category: "mascot",
+                categoryLabel: "MASCOT BADGE",
+                title: "Ninja Tiger Esports",
+                desc: "Aggressive martial arts tiger mascot logo badge crafted for competitive gaming organizations and merchandise.",
+                image: "assets/mascot_badge.png"
+            },
+            {
+                id: "proj_6",
+                category: "esports",
                 categoryLabel: "WORK COLLAGE",
                 title: "Branding Highlights Collage",
                 desc: "Collage showcasing vector Mascot, Sports and Esports logos designed at Digital Cuberoot (2023 - 2025).",
@@ -131,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "gal_2", title: "Samurai Red Panda Mascot", url: "assets/portfolio_mascot_1.png" },
             { id: "gal_3", title: "Chicago Bulls Athletics", url: "assets/portfolio_sports_1.png" },
             { id: "gal_4", title: "Cyberpunk Street Racer", url: "assets/portfolio_character_1.png" },
-            { id: "gal_5", title: "Work Highlights Collage", url: "assets/portfolio_page_1.png" }
+            { id: "gal_5", title: "Ninja Tiger Mascot Badge", url: "assets/mascot_badge.png" },
+            { id: "gal_6", title: "Work Highlights Collage", url: "assets/portfolio_page_1.png" }
         ],
         experience: [
             {
