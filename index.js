@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCursor();
 
         // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select');
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Click Ripple Effect
+    // Click Multi-layered Ripple Effect
     window.addEventListener('click', (e) => {
         const ripple = document.createElement('div');
         ripple.className = 'click-ripple';
@@ -117,11 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.8;
-                this.vy = (Math.random() - 0.5) * 0.8;
-                this.radius = Math.random() * 2 + 1;
+                this.vx = (Math.random() - 0.5) * 0.9;
+                this.vy = (Math.random() - 0.5) * 0.9;
+                this.radius = Math.random() * 2.2 + 1;
                 this.color = Math.random() > 0.5 ? 'rgba(168, 85, 247, ' : 'rgba(115, 7, 148, ';
-                this.alpha = Math.random() * 0.5 + 0.2;
+                this.alpha = Math.random() * 0.55 + 0.25;
             }
 
             update() {
@@ -136,13 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = this.color + this.alpha + ')';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#730794';
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#a855f7';
                 ctx.fill();
             }
         }
 
-        const numParticles = Math.min(Math.floor(width / 25), 45);
+        const numParticles = Math.min(Math.floor(width / 22), 50);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
@@ -159,12 +159,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 120) {
+                    if (dist < 130) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.25 * (1 - dist / 120)})`;
-                        ctx.lineWidth = 0.8;
+                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.28 * (1 - dist / 130)})`;
+                        ctx.lineWidth = 0.9;
                         ctx.stroke();
                     }
                 }
@@ -353,15 +353,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     counters.forEach(counter => {
                         const target = parseInt(counter.getAttribute('data-target'));
+                        if (isNaN(target)) return;
                         let count = 0;
                         const duration = 1500;
                         const stepTime = Math.abs(Math.floor(duration / target));
 
                         const timer = setInterval(() => {
                             count += 1;
-                            counter.textContent = `${count}%`;
+                            const isPercent = counter.getAttribute('data-target').indexOf('%') !== -1 || counter.parentElement.classList.contains('soft-details');
+                            counter.textContent = isPercent ? `${count}%` : `${count}+`;
                             if (count >= target) {
-                                counter.textContent = `${target}%`;
+                                counter.textContent = isPercent ? `${target}%` : `${target}+`;
                                 clearInterval(timer);
                             }
                         }, stepTime);
@@ -375,12 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
         softwareObserver.observe(softwareSection);
     }
 
-    // 10. Scroll Reveal Animations
+    // 10. Scroll Reveal Animations (Staggered Children)
     const revealElements = [
         '.about-left', '.about-right',
         '.expertise-card', '.portfolio-item',
         '.timeline-item', '.software-card',
-        '.contact-left', '#contactForm'
+        '.contact-left', '#contactForm', '.marquee-strip-container'
     ];
 
     revealElements.forEach(selector => {
