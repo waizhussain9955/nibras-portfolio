@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         animateCursor();
 
         const attachCursorHover = () => {
-            const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
+            const interactiveElements = document.querySelectorAll('a, .nav-link, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse, .back-nav-btn');
             interactiveElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursorCircle.classList.add('active');
