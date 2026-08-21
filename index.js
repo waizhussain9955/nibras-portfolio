@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Spawn Stardust particles on cursor move (throttled)
             const now = Date.now();
-            if (now - lastTrailTime > 45) {
+            if (now - lastTrailTime > 40) {
                 lastTrailTime = now;
                 const trail = document.createElement('div');
                 trail.className = 'cursor-trail-dot';
@@ -73,13 +73,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Click Multi-layered Ripple Effect
+    // Click Multi-layered Spark Burst & Ripple Effect
     window.addEventListener('click', (e) => {
         const ripple = document.createElement('div');
         ripple.className = 'click-ripple';
         ripple.style.left = `${e.clientX}px`;
         ripple.style.top = `${e.clientY}px`;
         document.body.appendChild(ripple);
+
+        // Spawn 6 radial sparks
+        for (let i = 0; i < 6; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'cursor-trail-dot';
+            spark.style.left = `${e.clientX}px`;
+            spark.style.top = `${e.clientY}px`;
+            spark.style.transition = 'all 0.5s cubic-bezier(0.1, 0.8, 0.2, 1)';
+            document.body.appendChild(spark);
+
+            const angle = (i / 6) * Math.PI * 2;
+            const distance = 35 + Math.random() * 25;
+            
+            setTimeout(() => {
+                spark.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
+                spark.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => {
+                spark.remove();
+            }, 550);
+        }
 
         setTimeout(() => {
             ripple.remove();
@@ -256,17 +278,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5. Sticky Navigation Header
+    // 5. Sticky Navigation Header & Scroll Laser Progress Bar & Back to Top Button
     const header = document.getElementById('mainHeader');
-    const handleScroll = () => {
-        if (window.scrollY > 50) {
+    const scrollProgressBar = document.getElementById('scrollProgressBar');
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    const progressRingCircle = document.getElementById('progressRingCircle');
+    const circumference = 2 * Math.PI * 21; // ~131.95
+
+    const handleScrollEvents = () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100);
+
+        // Header Background
+        if (scrollTop > 50) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
+
+        // Top Reading Laser Bar
+        if (scrollProgressBar) {
+            scrollProgressBar.style.width = `${scrollPercentage}%`;
+        }
+
+        // Back to Top Button & Circle Progress
+        if (backToTopBtn && progressRingCircle) {
+            if (scrollTop > 400) {
+                backToTopBtn.classList.add('visible');
+                const offset = circumference - (scrollPercentage / 100) * circumference;
+                progressRingCircle.style.strokeDashoffset = offset;
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        }
     };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    window.addEventListener('scroll', handleScrollEvents);
+    handleScrollEvents();
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 
     // 6. Mobile Menu Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
@@ -459,7 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    window.addEventListener('scroll', handleScroll);
     window.addEventListener('scroll', highlightNavLink);
 
     // 12. Contact Form Simulation
