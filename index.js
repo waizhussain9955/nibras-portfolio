@@ -169,6 +169,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         leads: []
     };
 
+    const isProjectsPage = window.location.pathname.includes('projects');
+    const resolveAssetPath = (path) => {
+        if (!path) return '';
+        if (path.startsWith('http') || path.startsWith('data:')) return path;
+        if (isProjectsPage && !path.startsWith('../') && !path.startsWith('/')) {
+            return '../' + path;
+        }
+        return path;
+    };
+
     // Load dynamic data from localStorage or fetch data.json fallback
     const getLiveData = async () => {
         const stored = localStorage.getItem('nibras_portfolio_data');
@@ -180,7 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         try {
-            const res = await fetch('data.json?v=' + Date.now());
+            const dataUrl = isProjectsPage ? '../data.json' : 'data.json';
+            const res = await fetch(dataUrl + '?v=' + Date.now());
             if (res.ok) {
                 const fetchedData = await res.json();
                 localStorage.setItem('nibras_portfolio_data', JSON.stringify(fetchedData));
@@ -195,11 +206,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let liveData = await getLiveData();
 
     // Helper to generate Portfolio Item Card HTML
-    const createProjectCardHtml = (item) => `
-        <div class="portfolio-item show tilt-card" data-tilt data-category="${item.category}" data-image="${item.image}" data-title="${item.title}" data-desc="${item.desc}">
+    const createProjectCardHtml = (item) => {
+        const imgSrc = resolveAssetPath(item.image);
+        return `
+        <div class="portfolio-item show tilt-card" data-tilt data-category="${item.category}" data-image="${imgSrc}" data-title="${item.title}" data-desc="${item.desc}">
             <div class="item-inner spotlight-card">
                 <div class="holographic-shimmer"></div>
-                <img src="${item.image}" alt="${item.title}" loading="lazy">
+                <img src="${imgSrc}" alt="${item.title}" loading="lazy">
                 <div class="item-overlay">
                     <span class="item-category">${item.categoryLabel || item.category.toUpperCase()}</span>
                     <h4 class="item-title">${item.title}</h4>
@@ -212,19 +225,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         </div>
     `;
+    };
 
     // Hydrate Dynamic Portfolio Content from CMS
     const hydrateDynamicDOM = () => {
         // 1. Navigation Links
         const navMenu = document.getElementById('navMenu');
         if (navMenu && liveData.navLinks && liveData.navLinks.length > 0) {
-            const isProjectsPage = window.location.pathname.includes('projects.html');
             navMenu.innerHTML = liveData.navLinks.map(n => {
                 let targetHref = n.href;
-                if (!isProjectsPage && targetHref.startsWith('index.html#')) {
-                    targetHref = targetHref.replace('index.html', '');
-                } else if (isProjectsPage && targetHref.startsWith('#')) {
-                    targetHref = 'index.html' + targetHref;
+                if (!isProjectsPage) {
+                    if (targetHref.startsWith('index.html#')) targetHref = targetHref.replace('index.html', '');
+                    if (targetHref === 'projects.html') targetHref = 'projects/';
+                } else {
+                    if (targetHref.startsWith('#')) targetHref = '../' + targetHref;
+                    else if (targetHref.startsWith('index.html#')) targetHref = '../' + targetHref.replace('index.html', '');
+                    else if (targetHref === 'projects.html' || targetHref === 'projects/') targetHref = './';
                 }
                 const isPortfolio = n.label.toUpperCase() === 'PORTFOLIO';
                 const isActive = (isProjectsPage && isPortfolio) ? 'active' : '';
