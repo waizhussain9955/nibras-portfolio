@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroMascotCard = document.getElementById('heroMascotCard');
 
     if (scrollMascot && mascotInner && mascotStatusText) {
-        let currentX = window.innerWidth - 200;
-        let currentY = 160;
+        let currentX = window.innerWidth > 768 ? window.innerWidth - 190 : 20;
+        let currentY = 140;
         let targetX = currentX;
         let targetY = currentY;
         let currentRotZ = 0;
@@ -120,12 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let targetScale = 1;
 
         const sections = [
-            { id: 'about', status: '// DESIGN PHILOSOPHY', side: 'right', yRatio: 0.35, rotZ: -8, rotY: 15, scale: 1 },
-            { id: 'expertise', status: '// EXPLORING SKILLS', side: 'left', yRatio: 0.45, rotZ: 8, rotY: -15, scale: 1.05 },
-            { id: 'portfolio', status: '// SELECTED WORKS', side: 'right', yRatio: 0.3, rotZ: -5, rotY: 10, scale: 1.1 },
-            { id: 'experience', status: '// WORK HISTORY', side: 'left', yRatio: 0.45, rotZ: 6, rotY: -12, scale: 1 },
-            { id: 'softwares', status: '// CREATIVE TOOLKIT', side: 'right', yRatio: 0.4, rotZ: -6, rotY: 12, scale: 1 },
-            { id: 'contact', status: "// LET'S COLLABORATE!", side: 'right', yRatio: 0.55, rotZ: -4, rotY: 8, scale: 1.08 }
+            { id: 'about', status: '// READY TO EXPLORE', side: 'right', yRatio: 0.28, rotZ: 0, rotY: 0, scale: 1 },
+            { id: 'aboutDetail', status: '// DESIGN PHILOSOPHY', side: 'right', yRatio: 0.38, rotZ: -8, rotY: 15, scale: 1.05 },
+            { id: 'expertise', status: '// EXPLORING SKILLS', side: 'left', yRatio: 0.45, rotZ: 8, rotY: -15, scale: 1.08 },
+            { id: 'portfolio', status: '// SELECTED WORKS', side: 'right', yRatio: 0.32, rotZ: -6, rotY: 12, scale: 1.12 },
+            { id: 'experience', status: '// WORK HISTORY', side: 'left', yRatio: 0.45, rotZ: 6, rotY: -12, scale: 1.02 },
+            { id: 'softwares', status: '// CREATIVE TOOLKIT', side: 'right', yRatio: 0.42, rotZ: -6, rotY: 12, scale: 1.04 },
+            { id: 'contact', status: "// LET'S COLLABORATE!", side: 'right', yRatio: 0.55, rotZ: -4, rotY: 8, scale: 1.1 }
         ];
 
         const updateMascotTargets = () => {
@@ -133,24 +134,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const windowW = window.innerWidth;
             const windowH = window.innerHeight;
 
-            // Only activate floating companion after leaving initial Hero view
-            if (scrollY < 180 && windowW > 768) {
-                scrollMascot.classList.remove('active');
-                if (heroMascotCard) {
-                    heroMascotCard.style.opacity = '1';
-                    heroMascotCard.style.transform = `perspective(1000px) translateY(${scrollY * 0.25}px) rotateY(${scrollY * 0.05}deg)`;
-                }
-                return;
-            }
-
-            scrollMascot.classList.add('active');
-
             if (windowW <= 768) {
-                // Mobile layout is managed cleanly by CSS bottom-right fixed anchor
+                // Mobile layout is managed cleanly by fixed CSS bottom-right anchor
                 return;
             }
 
-            // Identify which section is currently in view
+            // In top hero, gentle parallax on featured mascot card
+            if (heroMascotCard) {
+                heroMascotCard.style.transform = `perspective(1000px) translateY(${scrollY * 0.18}px) rotateY(${scrollY * 0.03}deg)`;
+            }
+
+            // Identify which section is currently active in viewport
             let activeSection = sections[0];
             for (let i = sections.length - 1; i >= 0; i--) {
                 const secEl = document.getElementById(sections[i].id);
@@ -163,15 +157,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Calculate precise coordinates based on section
+            // Calculate target X
             if (activeSection.side === 'left') {
-                targetX = Math.max(35, windowW * 0.04);
+                targetX = Math.max(35, windowW * 0.035);
             } else {
-                targetX = windowW - Math.min(180, windowW * 0.14);
+                targetX = windowW - Math.min(185, windowW * 0.14);
             }
 
-            // Continuous smooth scroll wave offset
-            const waveY = Math.sin(scrollY * 0.005) * 20;
+            // Calculate target Y & rotation with smooth wave motion
+            const waveY = Math.sin(scrollY * 0.005) * 18;
             targetY = (windowH * activeSection.yRatio) + waveY;
             targetRotZ = activeSection.rotZ + Math.sin(scrollY * 0.008) * 4;
             targetRotY = activeSection.rotY;
@@ -184,15 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('scroll', updateMascotTargets, { passive: true });
         window.addEventListener('resize', updateMascotTargets);
+        updateMascotTargets();
 
-        // Smooth physics render loop
+        // Smooth physics interpolation loop
         const animateMascotPhysics = () => {
-            if (window.innerWidth > 768 && scrollMascot.classList.contains('active')) {
-                currentX += (targetX - currentX) * 0.075;
-                currentY += (targetY - currentY) * 0.075;
-                currentRotZ += (targetRotZ - currentRotZ) * 0.075;
-                currentRotY += (targetRotY - currentRotY) * 0.075;
-                currentScale += (targetScale - currentScale) * 0.075;
+            if (window.innerWidth > 768) {
+                currentX += (targetX - currentX) * 0.085;
+                currentY += (targetY - currentY) * 0.085;
+                currentRotZ += (targetRotZ - currentRotZ) * 0.085;
+                currentRotY += (targetRotY - currentRotY) * 0.085;
+                currentScale += (targetScale - currentScale) * 0.085;
 
                 scrollMascot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
                 mascotInner.style.transform = `perspective(800px) rotateZ(${currentRotZ}deg) rotateY(${currentRotY}deg) scale(${currentScale})`;
