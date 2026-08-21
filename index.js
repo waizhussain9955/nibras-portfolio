@@ -1,14 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 0. Custom Neon Cursor Animation & Click Ripples
+    // 0. Custom Neon Cursor Animation, Stardust Trail & Click Ripples
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
+    const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-    if (cursorDot && cursorCircle && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    if (cursorDot && cursorCircle && isDesktopPointer) {
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let circleX = mouseX;
         let circleY = mouseY;
+        let lastTrailTime = 0;
 
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
@@ -16,11 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
+
+            // Spawn Stardust particles on cursor move (throttled)
+            const now = Date.now();
+            if (now - lastTrailTime > 45) {
+                lastTrailTime = now;
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail-dot';
+                trail.style.left = `${mouseX}px`;
+                trail.style.top = `${mouseY}px`;
+                document.body.appendChild(trail);
+
+                setTimeout(() => {
+                    trail.remove();
+                }, 500);
+            }
         });
 
         const animateCursor = () => {
-            circleX += (mouseX - circleX) * 0.18;
-            circleY += (mouseY - circleY) * 0.18;
+            circleX += (mouseX - circleX) * 0.2;
+            circleY += (mouseY - circleY) * 0.2;
 
             cursorCircle.style.left = `${circleX}px`;
             cursorCircle.style.top = `${circleY}px`;
@@ -30,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCursor();
 
         // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card');
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -38,6 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             el.addEventListener('mouseleave', () => {
                 cursorCircle.classList.remove('active');
+            });
+        });
+
+        // Floating geometric parallax on mouse move
+        const geoElements = document.querySelectorAll('.floating-geo');
+        window.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const deltaX = (e.clientX - centerX) / centerX;
+            const deltaY = (e.clientY - centerY) / centerY;
+
+            geoElements.forEach((geo, i) => {
+                const speed = (i + 1) * 12;
+                geo.style.transform = `translate(${deltaX * speed}px, ${deltaY * speed}px)`;
             });
         });
     }
@@ -117,10 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.9;
-                this.vy = (Math.random() - 0.5) * 0.9;
-                this.radius = Math.random() * 2.2 + 1;
-                this.color = Math.random() > 0.5 ? 'rgba(168, 85, 247, ' : 'rgba(115, 7, 148, ';
+                this.vx = (Math.random() - 0.5) * 0.95;
+                this.vy = (Math.random() - 0.5) * 0.95;
+                this.radius = Math.random() * 2.4 + 1;
+                this.color = Math.random() > 0.4 ? 'rgba(168, 85, 247, ' : 'rgba(217, 70, 239, ';
                 this.alpha = Math.random() * 0.55 + 0.25;
             }
 
@@ -136,13 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = this.color + this.alpha + ')';
-                ctx.shadowBlur = 12;
+                ctx.shadowBlur = 14;
                 ctx.shadowColor = '#a855f7';
                 ctx.fill();
             }
         }
 
-        const numParticles = Math.min(Math.floor(width / 22), 50);
+        const numParticles = Math.min(Math.floor(width / 20), 55);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
@@ -159,11 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 130) {
+                    if (dist < 135) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.28 * (1 - dist / 130)})`;
+                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.3 * (1 - dist / 135)})`;
                         ctx.lineWidth = 0.9;
                         ctx.stroke();
                     }
@@ -198,10 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            const rotateX = ((y - centerY) / centerY) * -8;
-            const rotateY = ((x - centerX) / centerX) * 8;
+            const rotateX = ((y - centerY) / centerY) * -9;
+            const rotateY = ((x - centerX) / centerX) * 9;
 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
         });
 
         card.addEventListener('mouseleave', () => {
@@ -217,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
 
-            btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+            btn.style.transform = `translate(${x * 0.28}px, ${y * 0.28}px)`;
         });
 
         btn.addEventListener('mouseleave', () => {
@@ -342,6 +373,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFills = document.querySelectorAll('.progress-bar-fill');
     const counters = document.querySelectorAll('.counter');
 
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            if (isNaN(target)) return;
+            let count = 0;
+            const duration = 1600;
+            const stepTime = Math.abs(Math.floor(duration / target));
+
+            const timer = setInterval(() => {
+                count += 1;
+                const isPercent = counter.parentElement && counter.parentElement.classList.contains('soft-details');
+                counter.textContent = isPercent ? `${count}%` : `${count}+`;
+                if (count >= target) {
+                    counter.textContent = isPercent ? `${target}%` : `${target}+`;
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        });
+    };
+
     if (softwareSection) {
         const softwareObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -350,25 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const targetWidth = fill.getAttribute('data-progress');
                         fill.style.width = targetWidth;
                     });
-
-                    counters.forEach(counter => {
-                        const target = parseInt(counter.getAttribute('data-target'));
-                        if (isNaN(target)) return;
-                        let count = 0;
-                        const duration = 1500;
-                        const stepTime = Math.abs(Math.floor(duration / target));
-
-                        const timer = setInterval(() => {
-                            count += 1;
-                            const isPercent = counter.getAttribute('data-target').indexOf('%') !== -1 || counter.parentElement.classList.contains('soft-details');
-                            counter.textContent = isPercent ? `${count}%` : `${count}+`;
-                            if (count >= target) {
-                                counter.textContent = isPercent ? `${target}%` : `${target}+`;
-                                clearInterval(timer);
-                            }
-                        }, stepTime);
-                    });
-
+                    animateCounters();
                     softwareObserver.unobserve(softwareSection);
                 }
             });
@@ -426,6 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
+    window.addEventListener('scroll', handleScroll);
     window.addEventListener('scroll', highlightNavLink);
 
     // 12. Contact Form Simulation

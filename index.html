@@ -10,15 +10,24 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="index.css?v=3.0">
+    <link rel="stylesheet" href="index.css?v=4.0">
 </head>
 <body>
 
     <!-- Custom Neon Cursor Elements -->
     <div class="custom-cursor-dot" id="cursorDot"></div>
     <div class="custom-cursor-circle" id="cursorCircle"></div>
+
+    <!-- Floating Cyber Parallax Background Elements -->
+    <div class="cyber-floating-elements" aria-hidden="true">
+        <div class="floating-geo geo-1">✦</div>
+        <div class="floating-geo geo-2">+</div>
+        <div class="floating-geo geo-3">▲</div>
+        <div class="floating-geo geo-4">✦</div>
+        <div class="floating-geo geo-5">✕</div>
+    </div>
 
     <!-- Sticky Navigation Bar -->
     <header class="main-header" id="mainHeader">
@@ -56,21 +65,28 @@
         <div class="cyber-grid-overlay"></div>
         <div class="cyber-ambient-light light-1"></div>
         <div class="cyber-ambient-light light-2"></div>
+        <div class="cyber-ambient-light light-3"></div>
 
         <!-- Interactive Cyber Particle Canvas Background -->
         <canvas id="particleCanvas" class="hero-particle-canvas"></canvas>
         <div class="hero-bg-text animated-stroke" aria-hidden="true">CREATIVE</div>
         
         <!-- Cyber HUD Corner Brackets -->
-        <div class="hud-bracket hud-top-left">// SYSTEM: ONLINE</div>
-        <div class="hud-bracket hud-top-right">COORD: 24.8607° N, 67.0011° E</div>
+        <div class="hud-bracket hud-top-left">
+            <span class="hud-dot"></span> // SYSTEM: V3.4 ONLINE
+        </div>
+        <div class="hud-bracket hud-top-right">
+            <span class="hud-dot"></span> COORD: 24.8607° N, 67.0011° E
+        </div>
 
         <div class="container hero-container">
             <!-- Left Hero Details -->
             <div class="hero-content">
                 <!-- Staggered Sequence 1 -->
                 <div class="hero-badge-tag glow-pulse reveal-seq-1">
-                    <span class="live-blink-dot"></span> AVAILABLE FOR NEW PROJECTS
+                    <span class="live-blink-dot"></span>
+                    <span class="badge-text">AVAILABLE FOR NEW PROJECTS</span>
+                    <span class="badge-cyber-code">2026 // EXP</span>
                 </div>
                 
                 <!-- Staggered Sequence 2 (Solid White Bold Title) -->
@@ -80,11 +96,18 @@
                 </h1>
                 
                 <!-- Staggered Sequence 3 (Dynamic Typewriter Role Switcher) -->
-                <h2 class="hero-subtitle reveal-seq-3">
-                    <span class="subtitle-prefix">> </span>
-                    <span class="typewriter-text" id="typewriterText">CREATIVE GRAPHIC DESIGNER</span>
-                    <span class="typewriter-cursor">|</span>
-                </h2>
+                <div class="hero-subtitle-wrapper reveal-seq-3">
+                    <div class="cyber-equalizer">
+                        <span class="eq-bar bar-1"></span>
+                        <span class="eq-bar bar-2"></span>
+                        <span class="eq-bar bar-3"></span>
+                    </div>
+                    <h2 class="hero-subtitle">
+                        <span class="subtitle-prefix">> </span>
+                        <span class="typewriter-text" id="typewriterText">CREATIVE GRAPHIC DESIGNER</span>
+                        <span class="typewriter-cursor">|</span>
+                    </h2>
+                </div>
                 
                 <!-- Staggered Sequence 4 -->
                 <p class="hero-intro-text reveal-seq-4" id="animatedIntro">
@@ -128,6 +151,12 @@
                 <div class="glow-border-container float-animation">
                     <!-- Scanner beam line -->
                     <div class="scanner-beam"></div>
+                    <!-- Cyber corner reticles -->
+                    <span class="card-reticle reticle-tl"></span>
+                    <span class="card-reticle reticle-tr"></span>
+                    <span class="card-reticle reticle-bl"></span>
+                    <span class="card-reticle reticle-br"></span>
+                    
                     <img src="assets/portfolio_esports_1.png" alt="Featured Esports Cyber Wolf Design by Nibras" class="hero-img">
                     <div class="hologram-scanlines"></div>
                 </div>
@@ -174,7 +203,7 @@
                         FOCUSED ON<br>
                         DELIVERING BOLD,<br>
                         IMPACTFUL<br>
-                        <span class="highlight-green glow-text">VISUALS.</span>
+                        <span class="animated-gradient-heading glow-text">VISUALS.</span>
                     </h2>
                 </div>
                 <div class="about-right">
@@ -530,22 +559,22 @@
                     <h2 class="contact-title">
                         START A<br>
                         PROJECT<br>
-                        <span class="highlight-green glow-text">WITH ME.</span>
+                        <span class="animated-gradient-heading glow-text">WITH ME.</span>
                     </h2>
                     <p class="contact-intro">
                         Have a logo concept, esports branding project, or character design idea? Drop me a line, and let's create something memorable together.
                     </p>
                     
                     <div class="contact-info-list">
-                        <div class="contact-info-item">
+                        <div class="contact-info-item contact-card-pulse">
                             <span class="info-label">EMAIL DIRECT</span>
                             <a href="mailto:nibrasansari002@gmail.com" class="info-link magnetic">nibrasansari002@gmail.com</a>
                         </div>
-                        <div class="contact-info-item">
+                        <div class="contact-info-item contact-card-pulse">
                             <span class="info-label">PHONE / WHATSAPP</span>
                             <a href="tel:+923161183289" class="info-link magnetic">+92 316 1183289</a>
                         </div>
-                        <div class="contact-info-item">
+                        <div class="contact-info-item contact-card-pulse">
                             <span class="info-label">LOCATION</span>
                             <span class="info-text">Karachi, Pakistan (Available for Global Remote Projects)</span>
                         </div>
@@ -636,6 +665,6 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="index.js?v=3.0"></script>
+    <script src="index.js?v=4.0"></script>
 </body>
 </html>
