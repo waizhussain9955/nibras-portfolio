@@ -1,6 +1,382 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Web Audio API Cyber Synth SFX for subtle interactive audio feedback
+    // Default Initial Master State (Shared with Admin CMS)
+    const defaultData = {
+        hero: {
+            badgeText: "AVAILABLE FOR NEW PROJECTS",
+            badgeCode: "2026",
+            titleLine1: "NIBRAS",
+            titleLine2: "ANSARI.",
+            typewriterRoles: [
+                "CREATIVE GRAPHIC DESIGNER",
+                "MASCOT LOGO ARTIST",
+                "ESPORTS BRANDING EXPERT",
+                "2D CHARACTER ILLUSTRATOR",
+                "SPORTS ICONOGRAPHY DESIGNER"
+            ],
+            introText: "Specializing in bold branding, custom mascot logos, high-energy esports design, clean sports iconography, and personality-driven 2D character design. I craft impactful visuals that command attention.",
+            stat1: { num: "50+", lbl: "Mascots Created" },
+            stat2: { num: "100%", lbl: "Vector Precision" },
+            stat3: { num: "2+ YRS", lbl: "Industry XP" },
+            featuredImage: "assets/portfolio_esports_1.png",
+            marqueeItems: [
+                "MASCOT LOGOS",
+                "ESPORTS BRANDING",
+                "2D CHARACTER DESIGN",
+                "SPORTS ICONOGRAPHY",
+                "CUSTOM VECTOR ASSETS",
+                "BRAND IDENTITY SYSTEMS"
+            ]
+        },
+        about: {
+            title: "FOCUSED ON<br>DELIVERING BOLD,<br>IMPACTFUL<br><span class=\"animated-gradient-heading glow-text\">VISUALS.</span>",
+            quote: "\"A brand identity isn't just about graphics—it's about making a lasting impression that sets you apart from the noise.\"",
+            body: "With an education in Communication Design from <strong>Arena Multimedia Karachi</strong>, I combine strategic conceptual thinking with top-tier digital illustration. Whether structuring character guidelines, developing custom vector assets, or establishing full esports branding architectures, I deliver professional design.",
+            education: {
+                title: "Arena Multimedia Karachi",
+                sub: "Communication Design (2021)"
+            },
+            languages: {
+                title: "English & Urdu",
+                sub: "Fluent Global Communication"
+            }
+        },
+        expertise: [
+            {
+                id: "exp_1",
+                title: "MASCOT LOGOS",
+                desc: "High-impact mascots designed for esports teams, sports franchises, and modern businesses looking to establish a memorable character brand representation.",
+                icon: "mascot"
+            },
+            {
+                id: "exp_2",
+                title: "ESPORTS BRANDING",
+                desc: "Striking and aggressive gaming designs featuring high-energy vector mascots, custom logotypes, jersey mocks, and full streaming overlay packages.",
+                icon: "esports"
+            },
+            {
+                id: "exp_3",
+                title: "SPORTS ILLUSTRATION",
+                desc: "Bold and dynamic sports logos featuring strong typography, clean outlines, and energetic compositions designed to stand out on uniforms and digital platforms.",
+                icon: "sports"
+            },
+            {
+                id: "exp_4",
+                title: "2D CHARACTER DESIGN",
+                desc: "Expressive and personality-driven character designs optimized for digital media, focusing on strong silhouettes, clean vector geometry, and print scalability.",
+                icon: "character"
+            },
+            {
+                id: "exp_5",
+                title: "TYPOGRAPHY DESIGN",
+                desc: "Custom lettering structures and typography overlays. Creating bespoke layout hierarchy systems that complement primary illustration works.",
+                icon: "typography"
+            },
+            {
+                id: "exp_6",
+                title: "BRAND IDENTITIES",
+                desc: "Holistic brand guidelines and social media templates. Designing unified collateral assets (banners, avatars, posts) that ensure a consistent visual message.",
+                icon: "branding"
+            }
+        ],
+        portfolio: [
+            {
+                id: "proj_1",
+                category: "esports",
+                categoryLabel: "ESPORTS LOGO",
+                title: "Cyber Fangs Mascot",
+                desc: "Futuristic cybernetic wolf vector logo designed for a professional esports gaming team, featuring custom neon lighting highlights.",
+                image: "assets/portfolio_esports_1.png"
+            },
+            {
+                id: "proj_2",
+                category: "mascot",
+                categoryLabel: "MASCOT DESIGN",
+                title: "Samurai Red Panda",
+                desc: "Personality-driven red panda samurai character mascot, designed with detailed armor gradients and bold vector shapes.",
+                image: "assets/portfolio_mascot_1.png"
+            },
+            {
+                id: "proj_3",
+                category: "sports",
+                categoryLabel: "SPORTS LOGO",
+                title: "Chicago Bulls Concept",
+                desc: "Fierce charging bull mascot logo for sports organizations, showcasing clean dynamic vectors and custom typography layouts.",
+                image: "assets/portfolio_sports_1.png"
+            },
+            {
+                id: "proj_4",
+                category: "character",
+                categoryLabel: "2D CHARACTER DESIGN",
+                title: "Cyber Racer Character",
+                desc: "Detailed 2D character design of a cyberpunk racer holding key assets, emphasizing clean line execution and strong color highlights.",
+                image: "assets/portfolio_character_1.png"
+            },
+            {
+                id: "proj_5",
+                category: "mascot",
+                categoryLabel: "WORK COLLAGE",
+                title: "Branding Highlights Collage",
+                desc: "Collage showcasing vector Mascot, Sports and Esports logos designed at Digital Cuberoot (2023 - 2025).",
+                image: "assets/portfolio_page_1.png"
+            }
+        ],
+        experience: [
+            {
+                id: "exp_job_1",
+                badge: "2023 - 2025",
+                title: "GRAPHIC ILLUSTRATOR & DESIGNER",
+                company: "Digital Cuberoot",
+                desc: "Serving as lead vector designer specializing in character mascot creation, esports team branding, and customized merchandise line design.",
+                tasks: [
+                    "Designed high-impact brand characters and esport mascot logo structures with dynamic shadow details.",
+                    "Maintained clean vector coordinates across digital and print assets, supporting scalability.",
+                    "Engineered dynamic letterforms that integrate seamlessly with primary mascot frames."
+                ]
+            }
+        ],
+        software: [
+            { id: "soft_1", name: "Adobe Photoshop", code: "Ps", brandClass: "ps-brand", badge: "PRO MASTER", percent: 95 },
+            { id: "soft_2", name: "Adobe Illustrator", code: "Ai", brandClass: "ai-brand", badge: "VECTOR EXPERT", percent: 98, isExpert: true },
+            { id: "soft_3", name: "Adobe Lightroom", code: "Lr", brandClass: "lr-brand", badge: "COLOR GRADE", percent: 85 },
+            { id: "soft_4", name: "Adobe InDesign", code: "Id", brandClass: "id-brand", badge: "LAYOUT EDIT", percent: 80 },
+            { id: "soft_5", name: "CorelDraw", code: "Cd", brandClass: "cd-brand", badge: "PRINT VECTOR", percent: 90, isExpert: true }
+        ],
+        navLinks: [
+            { id: "nav_1", num: "01.", label: "About", href: "#about" },
+            { id: "nav_2", num: "02.", label: "Expertise", href: "#expertise" },
+            { id: "nav_3", num: "03.", label: "Portfolio", href: "#portfolio" },
+            { id: "nav_4", num: "04.", label: "Experience", href: "#experience" },
+            { id: "nav_5", num: "05.", label: "Stack", href: "#softwares" },
+            { id: "nav_6", num: "06.", label: "Contact", href: "#contact" }
+        ],
+        contact: {
+            email: "nibrasansari002@gmail.com",
+            phone: "+92 316 1183289",
+            location: "Karachi, Pakistan (Available for Global Remote Projects)",
+            behance: "https://behance.net/nibrasansari2",
+            copyright: "© 2026 Nibras Ansari. All rights reserved.",
+            credit: "Handcrafted with Cyber Neon & Interactive Code"
+        },
+        leads: []
+    };
+
+    // Load dynamic data from localStorage if edited via Admin CMS
+    const getLiveData = () => {
+        const stored = localStorage.getItem('nibras_portfolio_data');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                return defaultData;
+            }
+        }
+        return defaultData;
+    };
+
+    const liveData = getLiveData();
+
+    // Hydrate Dynamic Portfolio Content from CMS
+    const hydrateDynamicDOM = () => {
+        // 1. Navigation Links
+        const navMenu = document.getElementById('navMenu');
+        if (navMenu && liveData.navLinks && liveData.navLinks.length > 0) {
+            navMenu.innerHTML = liveData.navLinks.map(n => `
+                <a href="${n.href}" class="nav-link"><span class="nav-num">${n.num}</span> ${n.label}</a>
+            `).join('');
+        }
+
+        // 2. Hero Section
+        if (liveData.hero) {
+            const badgeEl = document.querySelector('.hero-badge-tag');
+            if (badgeEl) {
+                badgeEl.innerHTML = `
+                    <span class="live-blink-dot"></span>
+                    <span class="badge-text">${liveData.hero.badgeText}</span>
+                    <span class="badge-cyber-code">${liveData.hero.badgeCode}</span>
+                `;
+            }
+
+            const heroTitleEl = document.querySelector('.hero-title');
+            if (heroTitleEl) {
+                heroTitleEl.innerHTML = `<span>${liveData.hero.titleLine1}</span><br><span>${liveData.hero.titleLine2}</span>`;
+            }
+
+            const introEl = document.getElementById('animatedIntro');
+            if (introEl) {
+                introEl.textContent = liveData.hero.introText;
+            }
+
+            const heroImg = document.querySelector('.hero-img');
+            if (heroImg && liveData.hero.featuredImage) {
+                heroImg.src = liveData.hero.featuredImage;
+            }
+
+            // Stats
+            const statsBar = document.querySelector('.hero-stats-bar');
+            if (statsBar && liveData.hero.stat1) {
+                statsBar.innerHTML = `
+                    <div class="stat-pill">
+                        <span class="stat-num counter" data-target="${parseInt(liveData.hero.stat1.num) || 50}">${liveData.hero.stat1.num}</span>
+                        <span class="stat-lbl">${liveData.hero.stat1.lbl}</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-pill">
+                        <span class="stat-num">${liveData.hero.stat2.num}</span>
+                        <span class="stat-lbl">${liveData.hero.stat2.lbl}</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-pill">
+                        <span class="stat-num">${liveData.hero.stat3.num}</span>
+                        <span class="stat-lbl">${liveData.hero.stat3.lbl}</span>
+                    </div>
+                `;
+            }
+
+            // Marquee
+            const marqueeTracks = document.querySelectorAll('.marquee-content');
+            if (marqueeTracks.length > 0 && liveData.hero.marqueeItems) {
+                const marqueeHtml = liveData.hero.marqueeItems.map(m => `<span>${m}</span><span class="marquee-star">✦</span>`).join('');
+                marqueeTracks.forEach(track => track.innerHTML = marqueeHtml);
+            }
+        }
+
+        // 3. About Section
+        if (liveData.about) {
+            const aboutTitleEl = document.querySelector('.about-title-large');
+            if (aboutTitleEl) aboutTitleEl.innerHTML = liveData.about.title;
+
+            const aboutQuoteEl = document.querySelector('.about-lead');
+            if (aboutQuoteEl) aboutQuoteEl.textContent = liveData.about.quote;
+
+            const aboutBodyP = document.querySelector('.about-body p');
+            if (aboutBodyP) aboutBodyP.innerHTML = liveData.about.body;
+
+            const metaValues = document.querySelectorAll('.about-meta-row .meta-item');
+            if (metaValues.length >= 2) {
+                metaValues[0].querySelector('.meta-value').textContent = liveData.about.education.title;
+                metaValues[0].querySelector('.meta-sub').textContent = liveData.about.education.sub;
+
+                metaValues[1].querySelector('.meta-value').textContent = liveData.about.languages.title;
+                metaValues[1].querySelector('.meta-sub').textContent = liveData.about.languages.sub;
+            }
+        }
+
+        // 4. Expertise Section
+        const expertiseGrid = document.querySelector('.expertise-grid');
+        if (expertiseGrid && liveData.expertise) {
+            expertiseGrid.innerHTML = liveData.expertise.map(exp => `
+                <div class="expertise-card spotlight-card tilt-card border-beam-card" data-tilt>
+                    <div class="card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM12 20.2C9.39 20.2 7.11 18.85 5.8 16.8C5.83 14.81 9.8 13.7 12 13.7C14.19 13.7 18.17 14.81 18.2 16.8C16.89 18.85 14.61 20.2 12 20.2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="card-title">${exp.title}</h4>
+                    <p class="card-desc">${exp.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // 5. Portfolio Section
+        const portfolioGrid = document.getElementById('portfolioGrid');
+        if (portfolioGrid && liveData.portfolio) {
+            portfolioGrid.innerHTML = liveData.portfolio.map(item => `
+                <div class="portfolio-item show tilt-card" data-tilt data-category="${item.category}" data-image="${item.image}" data-title="${item.title}" data-desc="${item.desc}">
+                    <div class="item-inner spotlight-card">
+                        <div class="holographic-shimmer"></div>
+                        <img src="${item.image}" alt="${item.title}" loading="lazy">
+                        <div class="item-overlay">
+                            <span class="item-category">${item.categoryLabel || item.category.toUpperCase()}</span>
+                            <h4 class="item-title">${item.title}</h4>
+                            <span class="item-action-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 6. Experience Section
+        const timelineContainer = document.querySelector('.timeline-container');
+        if (timelineContainer && liveData.experience) {
+            timelineContainer.innerHTML = liveData.experience.map(job => `
+                <div class="timeline-item">
+                    <div class="timeline-radar-pulse"></div>
+                    <div class="timeline-badge glow-pulse">${job.badge}</div>
+                    <div class="timeline-content spotlight-card border-beam-card">
+                        <div class="timeline-header-block">
+                            <h4 class="timeline-title">${job.title}</h4>
+                            <h5 class="timeline-company">${job.company}</h5>
+                        </div>
+                        <p class="timeline-desc">${job.desc}</p>
+                        <ul class="timeline-tasks">
+                            ${(job.tasks || []).map(task => `<li>${task}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 7. Software Stack Section
+        const softwareGrid = document.querySelector('.software-grid');
+        if (softwareGrid && liveData.software) {
+            softwareGrid.innerHTML = liveData.software.map(soft => `
+                <div class="software-card spotlight-card tilt-card border-beam-card" data-tilt>
+                    <div class="soft-logo-container ${soft.brandClass || 'ps-brand'}">${soft.code}</div>
+                    <div class="soft-details">
+                        <div class="soft-title-row">
+                            <h4 class="soft-title">${soft.name}</h4>
+                            <span class="soft-skill-badge ${soft.isExpert ? 'expert' : ''}">${soft.badge}</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" data-progress="${soft.percent}%">
+                                <div class="progress-glow-spark"></div>
+                            </div>
+                        </div>
+                        <span class="soft-percent counter" data-target="${soft.percent}">0%</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 8. Contact & Footer
+        if (liveData.contact) {
+            const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
+            emailLinks.forEach(el => {
+                el.href = `mailto:${liveData.contact.email}`;
+                el.textContent = liveData.contact.email;
+            });
+
+            const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+            phoneLinks.forEach(el => {
+                el.href = `tel:${liveData.contact.phone}`;
+                el.textContent = liveData.contact.phone;
+            });
+
+            const locEl = document.querySelector('.contact-info-list .info-text');
+            if (locEl) locEl.textContent = liveData.contact.location;
+
+            const behanceLinks = document.querySelectorAll('a.btn-behance, a.btn-talk-footer');
+            behanceLinks.forEach(el => {
+                el.href = liveData.contact.behance || 'https://behance.net/nibrasansari2';
+            });
+
+            const copyEl = document.querySelector('.footer-copyright');
+            if (copyEl) copyEl.textContent = liveData.contact.copyright;
+
+            const creditEl = document.querySelector('.footer-credit');
+            if (creditEl) creditEl.textContent = liveData.contact.credit;
+        }
+    };
+
+    // Run dynamic hydration
+    hydrateDynamicDOM();
+
+    // Web Audio API Cyber Synth SFX
     let audioCtx = null;
     const playCyberBlip = (freq = 440, type = 'sine', duration = 0.05) => {
         try {
@@ -29,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 0. Custom Neon Cursor & Parallax (Desktop Only)
+    // Custom Neon Cursor & Parallax (Desktop Only)
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
     const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -59,17 +435,18 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         animateCursor();
 
-        // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
-        
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorCircle.classList.add('active');
+        const attachCursorHover = () => {
+            const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorCircle.classList.add('active');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorCircle.classList.remove('active');
+                });
             });
-            el.addEventListener('mouseleave', () => {
-                cursorCircle.classList.remove('active');
-            });
-        });
+        };
+        attachCursorHover();
 
         // Floating geometric parallax on mouse move
         const geoElements = document.querySelectorAll('.floating-geo');
@@ -104,13 +481,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic Typewriter Subtitle Role Switcher
     const typewriterText = document.getElementById('typewriterText');
     if (typewriterText) {
-        const roles = [
-            "CREATIVE GRAPHIC DESIGNER",
-            "MASCOT LOGO ARTIST",
-            "ESPORTS BRANDING EXPERT",
-            "2D CHARACTER ILLUSTRATOR",
-            "SPORTS ICONOGRAPHY DESIGNER"
-        ];
+        const roles = (liveData.hero && liveData.hero.typewriterRoles && liveData.hero.typewriterRoles.length > 0)
+            ? liveData.hero.typewriterRoles
+            : [
+                "CREATIVE GRAPHIC DESIGNER",
+                "MASCOT LOGO ARTIST",
+                "ESPORTS BRANDING EXPERT",
+                "2D CHARACTER ILLUSTRATOR",
+                "SPORTS ICONOGRAPHY DESIGNER"
+            ];
+
         let roleIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -144,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeRole, 1000);
     }
 
-    // 1. High-Performance Particle Canvas (Zero shadowBlur Lag, Pure 60 FPS)
+    // High-Performance Particle Canvas
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -185,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const numParticles = Math.min(Math.floor(width / 35), 32);
+        const numParticles = Math.min(Math.floor(width / 35), 30);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
@@ -217,47 +597,49 @@ document.addEventListener('DOMContentLoaded', () => {
         renderParticles();
     }
 
-    // 2. 3D Tilt Card Effect (Desktop Pointer Only)
+    // 3D Tilt Card Effect (Desktop Pointer Only)
     if (isDesktopPointer) {
-        const tiltCards = document.querySelectorAll('.tilt-card');
-        tiltCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+        const attachTilt = () => {
+            const tiltCards = document.querySelectorAll('.tilt-card');
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
 
-                const rotateX = ((y - centerY) / centerY) * -8;
-                const rotateY = ((x - centerX) / centerX) * 8;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            }, { passive: true });
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                }, { passive: true });
 
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
             });
-        });
 
-        // Magnetic Button Effect
-        const magneticBtns = document.querySelectorAll('.magnetic');
-        magneticBtns.forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
+            const magneticBtns = document.querySelectorAll('.magnetic');
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
 
-                btn.style.transform = `translate3d(${x * 0.25}px, ${y * 0.25}px, 0)`;
-            }, { passive: true });
+                    btn.style.transform = `translate3d(${x * 0.25}px, ${y * 0.25}px, 0)`;
+                }, { passive: true });
 
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = `translate3d(0px, 0px, 0)`;
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = `translate3d(0px, 0px, 0)`;
+                });
             });
-        });
+        };
+        attachTilt();
     }
 
-    // 3. Sticky Navigation Header & Scroll Progress Laser Bar & Back to Top Button
+    // Sticky Navigation Header & Scroll Progress Laser Bar & Back to Top Button
     const header = document.getElementById('mainHeader');
     const scrollProgressBar = document.getElementById('scrollProgressBar');
     const backToTopBtn = document.getElementById('backToTopBtn');
@@ -270,19 +652,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100);
 
-        // Header Background
         if (scrollTop > 45) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
         }
 
-        // Top Reading Laser Bar
         if (scrollProgressBar) {
             scrollProgressBar.style.width = `${scrollPercentage}%`;
         }
 
-        // Back to Top Button
         if (backToTopBtn && progressRingCircle) {
             if (scrollTop > 380) {
                 backToTopBtn.classList.add('visible');
@@ -313,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Mobile Menu Toggle
+    // Mobile Menu Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -335,89 +714,96 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Portfolio Category Filtering
+    // Portfolio Category Filtering
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
 
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            playCyberBlip(620, 'sine', 0.04);
-            filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+    const setupPortfolioFilter = () => {
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                playCyberBlip(620, 'sine', 0.04);
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
 
-            const filterValue = tab.getAttribute('data-filter');
+                const filterValue = tab.getAttribute('data-filter');
 
-            portfolioItems.forEach(item => {
-                const category = item.getAttribute('data-category');
-                
-                if (filterValue === 'all' || category === filterValue) {
-                    item.style.display = 'block';
-                    void item.offsetWidth;
-                    item.classList.add('show');
-                } else {
-                    item.classList.remove('show');
-                    setTimeout(() => {
-                        if (!item.classList.contains('show')) {
-                            item.style.display = 'none';
-                        }
-                    }, 300);
-                }
+                portfolioItems.forEach(item => {
+                    const category = item.getAttribute('data-category');
+                    
+                    if (filterValue === 'all' || category === filterValue) {
+                        item.style.display = 'block';
+                        void item.offsetWidth;
+                        item.classList.add('show');
+                    } else {
+                        item.classList.remove('show');
+                        setTimeout(() => {
+                            if (!item.classList.contains('show')) {
+                                item.style.display = 'none';
+                            }
+                        }, 300);
+                    }
+                });
             });
         });
-    });
+    };
+    setupPortfolioFilter();
 
-    // 6. Lightbox Modal System
+    // Lightbox Modal System
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxTitle = document.getElementById('lightboxTitle');
     const lightboxDesc = document.getElementById('lightboxDesc');
     const lightboxClose = document.getElementById('lightboxClose');
 
-    if (lightboxModal && lightboxClose) {
-        portfolioItems.forEach(item => {
-            item.addEventListener('click', () => {
-                playCyberBlip(720, 'sine', 0.05);
-                const imgPath = item.getAttribute('data-image');
-                const titleText = item.getAttribute('data-title');
-                const descText = item.getAttribute('data-desc');
+    const setupLightbox = () => {
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        if (lightboxModal && lightboxClose) {
+            portfolioItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    playCyberBlip(720, 'sine', 0.05);
+                    const imgPath = item.getAttribute('data-image');
+                    const titleText = item.getAttribute('data-title');
+                    const descText = item.getAttribute('data-desc');
 
-                lightboxImg.src = imgPath;
-                lightboxImg.alt = titleText;
-                lightboxTitle.textContent = titleText;
-                lightboxDesc.textContent = descText;
+                    lightboxImg.src = imgPath;
+                    lightboxImg.alt = titleText;
+                    lightboxTitle.textContent = titleText;
+                    lightboxDesc.textContent = descText;
 
-                lightboxModal.classList.add('open');
-                lightboxModal.setAttribute('aria-hidden', 'false');
-                document.body.style.overflow = 'hidden';
+                    lightboxModal.classList.add('open');
+                    lightboxModal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                });
             });
-        });
 
-        lightboxClose.addEventListener('click', () => {
-            playCyberBlip(380, 'sine', 0.04);
-            lightboxModal.classList.remove('open');
-            lightboxModal.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-            setTimeout(() => {
-                if (!lightboxModal.classList.contains('open')) {
-                    lightboxImg.src = '';
+            lightboxClose.addEventListener('click', () => {
+                playCyberBlip(380, 'sine', 0.04);
+                lightboxModal.classList.remove('open');
+                lightboxModal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    if (!lightboxModal.classList.contains('open')) {
+                        lightboxImg.src = '';
+                    }
+                }, 250);
+            });
+
+            lightboxModal.addEventListener('click', (e) => {
+                if (e.target === lightboxModal) {
+                    lightboxClose.click();
                 }
-            }, 250);
-        });
+            });
 
-        lightboxModal.addEventListener('click', (e) => {
-            if (e.target === lightboxModal) {
-                lightboxClose.click();
-            }
-        });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightboxModal.classList.contains('open')) {
+                    lightboxClose.click();
+                }
+            });
+        }
+    };
+    setupLightbox();
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightboxModal.classList.contains('open')) {
-                lightboxClose.click();
-            }
-        });
-    }
-
-    // 7. Software Stack Progress Bars & Counters
+    // Software Stack Progress Bars & Counters
     const softwareSection = document.getElementById('softwares');
     const progressFills = document.querySelectorAll('.progress-bar-fill');
     const counters = document.querySelectorAll('.counter');
@@ -459,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
         softwareObserver.observe(softwareSection);
     }
 
-    // 8. Scroll Reveal Animations
+    // Scroll Reveal Animations
     const revealElements = [
         '.about-left', '.about-right',
         '.expertise-card', '.portfolio-item',
@@ -486,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
         revealObserver.observe(el);
     });
 
-    // 9. Active Link Highlight on Scroll
+    // Active Link Highlight on Scroll
     const sectionsNav = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
@@ -510,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', highlightNavLink, { passive: true });
 
-    // 10. Contact Form Simulation
+    // Contact Form Submission & Lead Storage for Admin Dashboard
     const contactForm = document.getElementById('contactForm');
     const formFeedback = document.getElementById('formFeedback');
 
@@ -524,7 +910,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = submitBtnText.textContent;
             
             const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const projectInput = document.getElementById('project-type');
+            const messageInput = document.getElementById('message');
+
             const clientName = nameInput ? nameInput.value.trim() : 'there';
+            const clientEmail = emailInput ? emailInput.value.trim() : '';
+            const clientProject = projectInput ? projectInput.value : 'general';
+            const clientMsg = messageInput ? messageInput.value.trim() : '';
             
             submitBtn.disabled = true;
             submitBtnText.textContent = 'TRANSMITTING BRIEF...';
@@ -532,13 +925,30 @@ document.addEventListener('DOMContentLoaded', () => {
             formFeedback.textContent = '';
             formFeedback.className = 'form-feedback';
 
+            // Store lead into CMS localStorage
+            try {
+                const stored = localStorage.getItem('nibras_portfolio_data');
+                let curData = stored ? JSON.parse(stored) : defaultData;
+                if (!curData.leads) curData.leads = [];
+                curData.leads.unshift({
+                    name: clientName,
+                    email: clientEmail,
+                    project: clientProject,
+                    message: clientMsg,
+                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+                localStorage.setItem('nibras_portfolio_data', JSON.stringify(curData));
+            } catch (err) {
+                console.error("Lead storage error", err);
+            }
+
             setTimeout(() => {
                 playCyberBlip(1040, 'triangle', 0.1);
                 submitBtn.disabled = false;
                 submitBtnText.textContent = originalText;
                 submitBtn.style.opacity = '1';
                 
-                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been sent successfully. Nibras will connect with you via email shortly.`;
+                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully. Nibras will connect with you via email shortly.`;
                 formFeedback.className = 'form-feedback success';
                 
                 contactForm.reset();
