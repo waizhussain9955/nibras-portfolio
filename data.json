@@ -233,37 +233,37 @@
     {
       "id": "nav_1",
       "num": "01.",
-      "label": "About",
+      "label": "ABOUT",
       "href": "index.html#about"
     },
     {
       "id": "nav_2",
       "num": "02.",
-      "label": "Expertise",
+      "label": "EXPERTISE",
       "href": "index.html#expertise"
     },
     {
       "id": "nav_3",
       "num": "03.",
-      "label": "Portfolio",
-      "href": "projects.html"
+      "label": "PORTFOLIO",
+      "href": "index.html#portfolio"
     },
     {
       "id": "nav_4",
       "num": "04.",
-      "label": "Experience",
+      "label": "EXPERIENCE",
       "href": "index.html#experience"
     },
     {
       "id": "nav_5",
       "num": "05.",
-      "label": "Stack",
+      "label": "STACK",
       "href": "index.html#softwares"
     },
     {
       "id": "nav_6",
       "num": "06.",
-      "label": "Contact",
+      "label": "CONTACT",
       "href": "index.html#contact"
     }
   ],

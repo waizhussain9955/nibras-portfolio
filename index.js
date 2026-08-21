@@ -223,9 +223,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let targetHref = n.href;
                 if (!isProjectsPage && targetHref.startsWith('index.html#')) {
                     targetHref = targetHref.replace('index.html', '');
+                } else if (isProjectsPage && targetHref.startsWith('#')) {
+                    targetHref = 'index.html' + targetHref;
                 }
-                const isActive = (isProjectsPage && n.label.toLowerCase() === 'portfolio') ? 'active' : '';
-                return `<a href="${targetHref}" class="nav-link ${isActive}"><span class="nav-num">${n.num}</span> ${n.label}</a>`;
+                const isPortfolio = n.label.toUpperCase() === 'PORTFOLIO';
+                const isActive = (isProjectsPage && isPortfolio) ? 'active' : '';
+                return `<a href="${targetHref}" class="nav-link ${isActive}"><span class="nav-num">${n.num}</span> ${n.label.toUpperCase()}</a>`;
             }).join('');
         }
 
