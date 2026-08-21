@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Web Audio API Cyber Synth SFX for subtle interactive audio feedback
     let audioCtx = null;
-    const playCyberBlip = (freq = 440, type = 'sine', duration = 0.06) => {
+    const playCyberBlip = (freq = 440, type = 'sine', duration = 0.05) => {
         try {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const gain = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.4, audioCtx.currentTime + duration);
             
-            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             
             osc.connect(gain);
@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
         } catch (e) {
-            // AudioContext not allowed or not supported
+            // Audio context safely ignored if blocked by browser policy
         }
     };
 
-    // 0. Custom Neon Cursor Animation, Stardust Trail & Click Ripples
+    // 0. Custom Neon Cursor (Desktop Pointer Only - Pure 60 FPS)
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');
     const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let mouseY = window.innerHeight / 2;
         let circleX = mouseX;
         let circleY = mouseY;
-        let lastTrailTime = 0;
 
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
@@ -47,26 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
-
-            // Spawn Stardust particles on cursor move (throttled)
-            const now = Date.now();
-            if (now - lastTrailTime > 40) {
-                lastTrailTime = now;
-                const trail = document.createElement('div');
-                trail.className = 'cursor-trail-dot';
-                trail.style.left = `${mouseX}px`;
-                trail.style.top = `${mouseY}px`;
-                document.body.appendChild(trail);
-
-                setTimeout(() => {
-                    trail.remove();
-                }, 500);
-            }
-        });
+        }, { passive: true });
 
         const animateCursor = () => {
-            circleX += (mouseX - circleX) * 0.2;
-            circleY += (mouseY - circleY) * 0.2;
+            circleX += (mouseX - circleX) * 0.25;
+            circleY += (mouseY - circleY) * 0.25;
 
             cursorCircle.style.left = `${circleX}px`;
             cursorCircle.style.top = `${circleY}px`;
@@ -76,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCursor();
 
         // Cursor Hover Magnification Effect
-        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select, .border-beam-card, .contact-card-pulse');
+        const interactiveElements = document.querySelectorAll('a, button, .btn, .portfolio-item, .expertise-card, .filter-tab, input, textarea, select');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -86,25 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 cursorCircle.classList.remove('active');
             });
         });
-
-        // Floating geometric parallax on mouse move
-        const geoElements = document.querySelectorAll('.floating-geo');
-        window.addEventListener('mousemove', (e) => {
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            const deltaX = (e.clientX - centerX) / centerX;
-            const deltaY = (e.clientY - centerY) / centerY;
-
-            geoElements.forEach((geo, i) => {
-                const speed = (i + 1) * 12;
-                geo.style.transform = `translate(${deltaX * speed}px, ${deltaY * speed}px)`;
-            });
-        });
     }
 
-    // Click Multi-layered Spark Burst & Ripple Effect
+    // Click Ripple Effect
     window.addEventListener('click', (e) => {
-        playCyberBlip(580, 'sine', 0.05);
+        playCyberBlip(580, 'sine', 0.04);
 
         const ripple = document.createElement('div');
         ripple.className = 'click-ripple';
@@ -112,31 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ripple.style.top = `${e.clientY}px`;
         document.body.appendChild(ripple);
 
-        // Spawn 6 radial sparks
-        for (let i = 0; i < 6; i++) {
-            const spark = document.createElement('div');
-            spark.className = 'cursor-trail-dot';
-            spark.style.left = `${e.clientX}px`;
-            spark.style.top = `${e.clientY}px`;
-            spark.style.transition = 'all 0.5s cubic-bezier(0.1, 0.8, 0.2, 1)';
-            document.body.appendChild(spark);
-
-            const angle = (i / 6) * Math.PI * 2;
-            const distance = 35 + Math.random() * 25;
-            
-            setTimeout(() => {
-                spark.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
-                spark.style.opacity = '0';
-            }, 10);
-
-            setTimeout(() => {
-                spark.remove();
-            }, 550);
-        }
-
         setTimeout(() => {
             ripple.remove();
-        }, 600);
+        }, 450);
     });
 
     // Dynamic Typewriter Subtitle Role Switcher
@@ -152,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let roleIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
-        let typeSpeed = 100;
+        let typeSpeed = 90;
 
         const typeRole = () => {
             const currentRole = roles[roleIndex];
@@ -160,30 +108,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isDeleting) {
                 typewriterText.textContent = currentRole.substring(0, charIndex - 1);
                 charIndex--;
-                typeSpeed = 35;
+                typeSpeed = 30;
             } else {
                 typewriterText.textContent = currentRole.substring(0, charIndex + 1);
                 charIndex++;
-                typeSpeed = 85;
+                typeSpeed = 75;
             }
 
             if (!isDeleting && charIndex === currentRole.length) {
                 isDeleting = true;
-                typeSpeed = 2200; // Pause at end of full title
+                typeSpeed = 2000;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 roleIndex = (roleIndex + 1) % roles.length;
-                typeSpeed = 350;
+                typeSpeed = 300;
             }
 
             setTimeout(typeRole, typeSpeed);
         };
 
-        // Start typing after initial entrance sequence
-        setTimeout(typeRole, 1400);
+        setTimeout(typeRole, 1000);
     }
 
-    // 1. Interactive Cyber Particle Canvas Background (Purple Theme)
+    // 1. High-Performance Particle Canvas (Zero shadowBlur Lag, Pure 60 FPS)
     const canvas = document.getElementById('particleCanvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -195,17 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!canvas.parentElement) return;
             width = canvas.width = canvas.parentElement.offsetWidth;
             height = canvas.height = canvas.parentElement.offsetHeight;
-        });
+        }, { passive: true });
 
         class Particle {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.95;
-                this.vy = (Math.random() - 0.5) * 0.95;
-                this.radius = Math.random() * 2.4 + 1;
-                this.color = Math.random() > 0.4 ? 'rgba(168, 85, 247, ' : 'rgba(217, 70, 239, ';
-                this.alpha = Math.random() * 0.55 + 0.25;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 1.8 + 1;
+                this.color = Math.random() > 0.5 ? 'rgba(168, 85, 247, ' : 'rgba(217, 70, 239, ';
+                this.alpha = Math.random() * 0.4 + 0.2;
             }
 
             update() {
@@ -220,13 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = this.color + this.alpha + ')';
-                ctx.shadowBlur = 14;
-                ctx.shadowColor = '#a855f7';
                 ctx.fill();
             }
         }
 
-        const numParticles = Math.min(Math.floor(width / 20), 55);
+        // Lightweight count (20-25 particles max for instantaneous performance)
+        const numParticles = Math.min(Math.floor(width / 45), 25);
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
@@ -243,12 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 135) {
+                    if (dist < 110) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.3 * (1 - dist / 135)})`;
-                        ctx.lineWidth = 0.9;
+                        ctx.strokeStyle = `rgba(168, 85, 247, ${0.2 * (1 - dist / 110)})`;
+                        ctx.lineWidth = 0.8;
                         ctx.stroke();
                     }
                 }
@@ -258,71 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
         renderParticles();
     }
 
-    // 2. Interactive Spotlight Radial Card Effect
-    const spotlightCards = document.querySelectorAll('.spotlight-card');
-    spotlightCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
-        });
-    });
-
-    // 3. 3D Tilt Card Effect
-    const tiltCards = document.querySelectorAll('.tilt-card');
-    tiltCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-
-            const rotateX = ((y - centerY) / centerY) * -9;
-            const rotateY = ((x - centerX) / centerX) * 9;
-
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-        });
-    });
-
-    // 4. Interactive Magnetic Buttons
-    const magneticBtns = document.querySelectorAll('.magnetic');
-    magneticBtns.forEach(btn => {
-        btn.addEventListener('mousemove', (e) => {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-
-            btn.style.transform = `translate(${x * 0.28}px, ${y * 0.28}px)`;
-        });
-
-        btn.addEventListener('mouseleave', () => {
-            btn.style.transform = `translate(0px, 0px)`;
-        });
-    });
-
-    // 5. Sticky Navigation Header & Scroll Laser Progress Bar & Back to Top Button
+    // 2. Sticky Navigation Header & Scroll Progress Laser Bar & Back to Top Button
     const header = document.getElementById('mainHeader');
     const scrollProgressBar = document.getElementById('scrollProgressBar');
     const backToTopBtn = document.getElementById('backToTopBtn');
     const progressRingCircle = document.getElementById('progressRingCircle');
-    const circumference = 2 * Math.PI * 21; // ~131.95
+    const circumference = 2 * Math.PI * 19; // ~119.38
 
+    let ticking = false;
     const handleScrollEvents = () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrollPercentage = Math.min((scrollTop / scrollHeight) * 100, 100);
 
         // Header Background
-        if (scrollTop > 50) {
+        if (scrollTop > 40) {
             header.classList.add('scrolled');
         } else {
             header.classList.remove('scrolled');
@@ -333,9 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
             scrollProgressBar.style.width = `${scrollPercentage}%`;
         }
 
-        // Back to Top Button & Circle Progress
+        // Back to Top Button
         if (backToTopBtn && progressRingCircle) {
-            if (scrollTop > 400) {
+            if (scrollTop > 350) {
                 backToTopBtn.classList.add('visible');
                 const offset = circumference - (scrollPercentage / 100) * circumference;
                 progressRingCircle.style.strokeDashoffset = offset;
@@ -343,13 +239,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 backToTopBtn.classList.remove('visible');
             }
         }
+        ticking = false;
     };
-    window.addEventListener('scroll', handleScrollEvents);
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(handleScrollEvents);
+            ticking = true;
+        }
+    }, { passive: true });
     handleScrollEvents();
 
     if (backToTopBtn) {
         backToTopBtn.addEventListener('click', () => {
-            playCyberBlip(750, 'triangle', 0.08);
+            playCyberBlip(750, 'triangle', 0.06);
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
@@ -357,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Mobile Menu Toggle
+    // 3. Mobile Menu Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -379,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. Portfolio Category Filtering
+    // 4. Portfolio Category Filtering
     const filterTabs = document.querySelectorAll('.filter-tab');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
 
@@ -404,13 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (!item.classList.contains('show')) {
                             item.style.display = 'none';
                         }
-                    }, 350);
+                    }, 280);
                 }
             });
         });
     });
 
-    // 8. Lightbox Modal System
+    // 5. Lightbox Modal System
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxTitle = document.getElementById('lightboxTitle');
@@ -420,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lightboxModal && lightboxClose) {
         portfolioItems.forEach(item => {
             item.addEventListener('click', () => {
-                playCyberBlip(720, 'sine', 0.06);
+                playCyberBlip(720, 'sine', 0.05);
                 const imgPath = item.getAttribute('data-image');
                 const titleText = item.getAttribute('data-title');
                 const descText = item.getAttribute('data-desc');
@@ -445,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!lightboxModal.classList.contains('open')) {
                     lightboxImg.src = '';
                 }
-            }, 300);
+            }, 250);
         });
 
         lightboxModal.addEventListener('click', (e) => {
@@ -461,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. Animated Software Stack Progress Bars & Number Counters
+    // 6. Software Stack Progress Bars & Counters
     const softwareSection = document.getElementById('softwares');
     const progressFills = document.querySelectorAll('.progress-bar-fill');
     const counters = document.querySelectorAll('.counter');
@@ -471,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = parseInt(counter.getAttribute('data-target'));
             if (isNaN(target)) return;
             let count = 0;
-            const duration = 1600;
+            const duration = 1400;
             const stepTime = Math.abs(Math.floor(duration / target));
 
             const timer = setInterval(() => {
@@ -498,12 +401,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     softwareObserver.unobserve(softwareSection);
                 }
             });
-        }, { threshold: 0.2 });
+        }, { threshold: 0.15 });
 
         softwareObserver.observe(softwareSection);
     }
 
-    // 10. Scroll Reveal Animations (Staggered Children)
+    // 7. Scroll Reveal Animations
     const revealElements = [
         '.about-left', '.about-right',
         '.expertise-card', '.portfolio-item',
@@ -524,13 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => {
         revealObserver.observe(el);
     });
 
-    // 11. Active Link Highlight on Scroll
+    // 8. Active Link Highlight on Scroll
     const sectionsNav = document.querySelectorAll('section[id]');
     const navMenuLinks = document.querySelectorAll('.nav-link');
 
@@ -552,17 +455,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    window.addEventListener('scroll', handleScrollEvents);
-    window.addEventListener('scroll', highlightNavLink);
+    window.addEventListener('scroll', highlightNavLink, { passive: true });
 
-    // 12. Contact Form Simulation
+    // 9. Contact Form Simulation
     const contactForm = document.getElementById('contactForm');
     const formFeedback = document.getElementById('formFeedback');
 
     if (contactForm && formFeedback) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            playCyberBlip(880, 'sine', 0.1);
+            playCyberBlip(880, 'sine', 0.08);
             
             const submitBtn = contactForm.querySelector('.btn-submit');
             const submitBtnText = submitBtn.querySelector('span');
@@ -578,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formFeedback.className = 'form-feedback';
 
             setTimeout(() => {
-                playCyberBlip(1040, 'triangle', 0.12);
+                playCyberBlip(1040, 'triangle', 0.1);
                 submitBtn.disabled = false;
                 submitBtnText.textContent = originalText;
                 submitBtn.style.opacity = '1';
@@ -593,10 +495,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         formFeedback.textContent = '';
                         formFeedback.style.opacity = '1';
-                    }, 500);
+                    }, 400);
                 }, 6000);
                 
-            }, 1800);
+            }, 1400);
         });
     }
 });
