@@ -516,6 +516,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // -------------------------------------------------------------
+    // THEME SWITCHER (DARK / LIGHT MODE)
+    // -------------------------------------------------------------
+    const initThemeToggle = () => {
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const getCurrentTheme = () => document.documentElement.getAttribute('data-theme') || 'dark';
+
+        const setTheme = (theme, playAudio = true) => {
+            document.documentElement.setAttribute('data-theme', theme);
+            try {
+                localStorage.setItem('nibras_portfolio_theme', theme);
+            } catch (e) {
+                console.warn('LocalStorage unavailable for theme storage', e);
+            }
+            if (playAudio) {
+                if (theme === 'light') {
+                    playCyberBlip(720, 'triangle', 0.08);
+                } else {
+                    playCyberBlip(480, 'sine', 0.08);
+                }
+            }
+        };
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const current = getCurrentTheme();
+                const targetTheme = (current === 'light') ? 'dark' : 'light';
+                setTheme(targetTheme, true);
+            });
+        }
+    };
+
+    initThemeToggle();
+
     // Custom Neon Cursor & Parallax (Desktop Only)
     const cursorDot = document.getElementById('cursorDot');
     const cursorCircle = document.getElementById('cursorCircle');

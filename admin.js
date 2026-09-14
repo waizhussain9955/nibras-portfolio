@@ -226,6 +226,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3500);
     };
 
+    // Theme Toggle for Admin
+    const adminThemeToggleBtn = document.getElementById('themeToggleBtn');
+    if (adminThemeToggleBtn) {
+        adminThemeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const targetTheme = (currentTheme === 'light') ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            try {
+                localStorage.setItem('nibras_portfolio_theme', targetTheme);
+            } catch (e) {
+                console.warn('LocalStorage unavailable for theme storage', e);
+            }
+            showToast(`Switched to ${targetTheme.toUpperCase()} theme`, "success");
+        });
+    }
+
     // Authentication Checks
     const loginScreen = document.getElementById('loginScreen');
     const dashboardScreen = document.getElementById('dashboardScreen');
