@@ -14,11 +14,12 @@
       "ESPORTS LOGOS",
       "SPORTS LOGOS",
       "BRAND IDENTITY",
+      "SOCIAL MEDIA DESIGN",
       "2D CHARACTER ILLUSTRATION"
     ],
     "introText": "Specializing in bold branding, custom mascot logos, high-energy esports design, clean sports iconography, and personality-driven 2D character design. I craft impactful visuals that command attention.",
     "stat1": {
-      "num": "50+",
+      "num": "500+",
       "lbl": "Mascots Created"
     },
     "stat2": {
@@ -26,11 +27,18 @@
       "lbl": "Vector Precision"
     },
     "stat3": {
-      "num": "2+ YRS",
+      "num": "5+ YRS",
       "lbl": "Industry XP"
     },
     "featuredImage": "assets/portfolio_esports_1.png",
-    "marqueeItems": []
+    "marqueeItems": [
+      "MASCOT LOGOS",
+      "ESPORTS LOGOS",
+      "SPORTS LOGOS",
+      "BRAND IDENTITY",
+      "SOCIAL MEDIA DESIGN",
+      "2D CHARACTER ILLUSTRATION"
+    ]
   },
   "about": {
     "title": "FOCUSED ON<br>DELIVERING BOLD,<br>IMPACTFUL<br><span class=\"animated-gradient-heading glow-text\">VISUALS.</span>",
