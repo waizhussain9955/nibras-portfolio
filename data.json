@@ -30,14 +30,7 @@
       "lbl": "Industry XP"
     },
     "featuredImage": "assets/portfolio_esports_1.png",
-    "marqueeItems": [
-      "MASCOT LOGOS",
-      "ESPORTS BRANDING",
-      "2D CHARACTER DESIGN",
-      "SPORTS ICONOGRAPHY",
-      "CUSTOM VECTOR ASSETS",
-      "BRAND IDENTITY SYSTEMS"
-    ]
+    "marqueeItems": []
   },
   "about": {
     "title": "FOCUSED ON<br>DELIVERING BOLD,<br>IMPACTFUL<br><span class=\"animated-gradient-heading glow-text\">VISUALS.</span>",
