@@ -196,13 +196,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const repo = "nibras-portfolio";
         const filePath = "data.json";
         const branch = "main";
+        const cleanToken = (token || '').trim();
 
         try {
             // 1. Get current file SHA from GitHub
             const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`;
             const getRes = await fetch(getFileUrl, {
                 headers: {
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${cleanToken}`,
                     "Accept": "application/vnd.github.v3+json"
                 }
             });
@@ -211,6 +212,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (getRes.ok) {
                 const fileData = await getRes.json();
                 sha = fileData.sha;
+            } else {
+                const errGet = await getRes.json().catch(() => ({}));
+                console.error("GitHub GET SHA error:", errGet);
+                showToast(`GitHub error (${getRes.status}): ${errGet.message || 'Could not reach repo'}`, "error");
+                return false;
             }
 
             // 2. Encode updated data.json to Base64 (Unicode safe)
@@ -229,16 +235,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const putRes = await fetch(putUrl, {
                 method: "PUT",
                 headers: {
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${cleanToken}`,
                     "Accept": "application/vnd.github.v3+json",
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(putBody)
             });
 
-            return putRes.ok;
+            if (putRes.ok) {
+                return true;
+            } else {
+                const errPut = await putRes.json().catch(() => ({}));
+                console.error("GitHub PUT error:", errPut);
+                showToast(`GitHub push error: ${errPut.message || 'Permission denied'}`, "error");
+                return false;
+            }
         } catch (e) {
-            console.error("GitHub Sync error:", e);
+            console.error("GitHub Sync exception:", e);
+            showToast(`Sync exception: ${e.message}`, "error");
             return false;
         }
     };
@@ -311,7 +325,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 showToast("🚀 Changes committed & published live on GitHub Pages!", "success");
                 return true;
             } else {
-                showToast("⚠️ GitHub push failed. Saved to browser cache.", "error");
                 return false;
             }
         }
