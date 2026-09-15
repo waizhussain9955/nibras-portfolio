@@ -206,14 +206,6 @@
       "isExpert": true
     },
     {
-      "id": "soft_3",
-      "name": "Adobe Lightroom",
-      "code": "Lr",
-      "brandClass": "lr-brand",
-      "badge": "COLOR GRADE",
-      "percent": 85
-    },
-    {
       "id": "soft_4",
       "name": "Adobe InDesign",
       "code": "Id",
