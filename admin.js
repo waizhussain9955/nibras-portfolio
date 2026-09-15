@@ -219,8 +219,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return false;
             }
 
-            // 2. Encode updated data.json to Base64 (Unicode safe)
-            const jsonContent = JSON.stringify(data, null, 2);
+            // 2. Prepare clean data payload (do not expose personal access token in public data.json)
+            const cleanData = JSON.parse(JSON.stringify(data));
+            if (cleanData.githubConfig) {
+                cleanData.githubConfig.token = "";
+            }
+
+            // Encode updated data.json to Base64 (Unicode safe)
+            const jsonContent = JSON.stringify(cleanData, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(jsonContent)));
 
             // 3. Commit and push directly to GitHub
@@ -1255,12 +1261,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const path = "data.json";
                 const branch = "main";
 
-                // Save token to config
+                // Save token only in browser localStorage and sanitize config in appData
+                localStorage.setItem('nibras_portfolio_gh_token', token);
                 appData.githubConfig = {
                     repoOwner: owner,
                     repoName: repo,
                     branch: branch,
-                    token: token
+                    token: ""
                 };
                 localStorage.setItem('nibras_portfolio_data', JSON.stringify(appData));
 
@@ -1279,8 +1286,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     sha = fileData.sha;
                 }
 
-                // 2. Encode updated data.json to Base64 (Unicode safe)
-                const jsonContent = JSON.stringify(appData, null, 2);
+                // 2. Prepare clean data payload (without exposed token)
+                const cleanData = JSON.parse(JSON.stringify(appData));
+                if (cleanData.githubConfig) {
+                    cleanData.githubConfig.token = "";
+                }
+                const jsonContent = JSON.stringify(cleanData, null, 2);
                 const encodedContent = btoa(unescape(encodeURIComponent(jsonContent)));
 
                 // 3. Commit and push directly to GitHub
@@ -1355,10 +1366,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         appData.contact.copyright = document.getElementById('footerCopyright').value.trim();
         appData.contact.credit = document.getElementById('footerCredit').value.trim();
 
-        // Collect GitHub token if provided
+        // Collect GitHub token if provided (store locally in browser)
         const ghTokenVal = document.getElementById('ghToken').value.trim();
+        if (ghTokenVal) {
+            localStorage.setItem('nibras_portfolio_gh_token', ghTokenVal);
+        }
         if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
-        appData.githubConfig.token = ghTokenVal;
+        appData.githubConfig.token = "";
 
         await saveData(appData);
         populateAllForms();
