@@ -220,15 +220,6 @@
       "brandClass": "id-brand",
       "badge": "LAYOUT EDIT",
       "percent": 80
-    },
-    {
-      "id": "soft_5",
-      "name": "CorelDraw",
-      "code": "Cd",
-      "brandClass": "cd-brand",
-      "badge": "PRINT VECTOR",
-      "percent": 90,
-      "isExpert": true
     }
   ],
   "navLinks": [
