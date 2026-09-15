@@ -1188,11 +1188,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const NEON_CONN_STR = 'postgresql://neondb_owner:npg_c4Xbr2UyZnPE@ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
 
             try {
-                // 1. Direct Neon Cloud Database Insert
+                // 1. Direct Neon Cloud Database Insert (text/plain avoids CORS preflight blockage)
                 const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                         'Neon-Connection-String': NEON_CONN_STR
                     },
                     body: JSON.stringify({
@@ -1206,10 +1206,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     responseMessage = 'Inquiry transmitted';
                 } else {
                     const errObj = await neonRes.json().catch(() => ({}));
-                    responseMessage = errObj.message || 'Submission error';
+                    responseMessage = errObj.message || 'Database rejected transmission';
                 }
             } catch (err) {
-                console.warn("Neon direct fetch warning:", err);
+                console.error("Neon direct fetch error:", err);
+                responseMessage = err.message || 'Connection error';
             }
 
             // Fallback to local /api/leads if running locally
@@ -1222,9 +1223,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     });
                     if (res.ok) apiSuccess = true;
                 } catch (e) {}
-            } else if (!apiSuccess) {
-                // If offline, still preserve in browser
-                apiSuccess = true;
             }
 
             playCyberBlip(1040, 'triangle', 0.1);

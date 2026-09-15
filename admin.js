@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Neon-Connection-String': NEON_CONN_STR
                 },
                 body: JSON.stringify({
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Neon-Connection-String': NEON_CONN_STR
                 },
                 body: JSON.stringify({
@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                     'Neon-Connection-String': NEON_CONN_STR
                 },
                 body: JSON.stringify({
@@ -655,7 +655,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     await fetch(NEON_SQL_ENDPOINT, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain',
                             'Neon-Connection-String': NEON_CONN_STR
                         },
                         body: JSON.stringify({
@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 await fetch(NEON_SQL_ENDPOINT, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                         'Neon-Connection-String': NEON_CONN_STR
                     },
                     body: JSON.stringify({ query: 'TRUNCATE TABLE leads;' })
