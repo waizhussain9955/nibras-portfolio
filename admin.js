@@ -300,8 +300,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // On GitHub Pages or static host, check for GitHub Token
         const tokenInput = document.getElementById('ghToken');
-        const token = (tokenInput && tokenInput.value.trim()) || (data.githubConfig && data.githubConfig.token);
+        const token = (tokenInput && tokenInput.value.trim()) || localStorage.getItem('nibras_portfolio_gh_token') || (data.githubConfig && data.githubConfig.token);
         if (token) {
+            try {
+                localStorage.setItem('nibras_portfolio_gh_token', token);
+            } catch (e) {}
             showToast("Pushing updates live to GitHub Repository...", "info");
             const ghOk = await pushToGithubDirectly(data, token);
             if (ghOk) {
@@ -489,7 +492,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (appData.githubConfig) {
             document.getElementById('ghRepo').value = `${appData.githubConfig.repoOwner}/${appData.githubConfig.repoName}`;
             document.getElementById('ghBranch').value = appData.githubConfig.branch || 'main';
-            document.getElementById('ghToken').value = appData.githubConfig.token || '';
+            document.getElementById('ghToken').value = localStorage.getItem('nibras_portfolio_gh_token') || appData.githubConfig.token || '';
         }
 
         // 6. Security email
