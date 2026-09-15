@@ -208,17 +208,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // Load dynamic data from Backend API, data.json, or localStorage fallback
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
     const getLiveData = async () => {
-        try {
-            const apiRes = await fetch('/api/data?v=' + Date.now());
-            if (apiRes.ok) {
-                const data = await apiRes.json();
-                if (data && data.hero) {
-                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-                    return data;
+        if (isLocalhost) {
+            try {
+                const apiRes = await fetch('/api/data?v=' + Date.now());
+                if (apiRes.ok) {
+                    const data = await apiRes.json();
+                    if (data && data.hero) {
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
+                        return data;
+                    }
                 }
-            }
-        } catch (e) {}
+            } catch (e) {}
+        }
 
         try {
             const dataUrl = isSubfolder ? '../data.json' : 'data.json';
@@ -1118,13 +1122,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error("Lead storage error", err);
             }
 
-            try {
-                fetch('/api/leads', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newLead)
-                }).catch(() => {});
-            } catch (e) {}
+            if (isLocalhost) {
+                try {
+                    fetch('/api/leads', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newLead)
+                    }).catch(() => {});
+                } catch (e) {}
+            }
 
             setTimeout(() => {
                 playCyberBlip(1040, 'triangle', 0.1);

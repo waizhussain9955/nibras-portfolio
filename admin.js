@@ -188,18 +188,75 @@ document.addEventListener('DOMContentLoaded', async () => {
         leads: []
     };
 
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    // Direct GitHub REST API Sync Helper
+    const pushToGithubDirectly = async (data, token) => {
+        const owner = "waizhussain9955";
+        const repo = "nibras-portfolio";
+        const filePath = "data.json";
+        const branch = "main";
+
+        try {
+            // 1. Get current file SHA from GitHub
+            const getFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}`;
+            const getRes = await fetch(getFileUrl, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            });
+
+            let sha = null;
+            if (getRes.ok) {
+                const fileData = await getRes.json();
+                sha = fileData.sha;
+            }
+
+            // 2. Encode updated data.json to Base64 (Unicode safe)
+            const jsonContent = JSON.stringify(data, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(jsonContent)));
+
+            // 3. Commit and push directly to GitHub
+            const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+            const putBody = {
+                message: `CMS Live Update: ${new Date().toLocaleString()}`,
+                content: encodedContent,
+                branch: branch
+            };
+            if (sha) putBody.sha = sha;
+
+            const putRes = await fetch(putUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(putBody)
+            });
+
+            return putRes.ok;
+        } catch (e) {
+            console.error("GitHub Sync error:", e);
+            return false;
+        }
+    };
+
     // Load from Database API, data.json, or LocalStorage
     const loadData = async () => {
-        try {
-            const apiRes = await fetch('/api/data?v=' + Date.now());
-            if (apiRes.ok) {
-                const data = await apiRes.json();
-                if (data && data.hero) {
-                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-                    return data;
+        if (isLocalhost) {
+            try {
+                const apiRes = await fetch('/api/data?v=' + Date.now());
+                if (apiRes.ok) {
+                    const data = await apiRes.json();
+                    if (data && data.hero) {
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
+                        return data;
+                    }
                 }
-            }
-        } catch (e) {}
+            } catch (e) {}
+        }
 
         try {
             const jsonRes = await fetch('data.json?v=' + Date.now());
@@ -226,20 +283,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const saveData = async (data) => {
         localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-        try {
-            const res = await fetch('/api/save-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (res.ok) {
-                showToast("✅ Changes saved directly to database (data.json) on disk!", "success");
-                return;
-            }
-        } catch (e) {
-            // Static server fallback
+
+        if (isLocalhost) {
+            try {
+                const res = await fetch('/api/save-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    showToast("✅ Changes saved directly to database (data.json) on disk!", "success");
+                    return true;
+                }
+            } catch (e) {}
         }
-        showToast("Changes saved to local browser cache!", "success");
+
+        // On GitHub Pages or static host, check for GitHub Token
+        const tokenInput = document.getElementById('ghToken');
+        const token = (tokenInput && tokenInput.value.trim()) || (data.githubConfig && data.githubConfig.token);
+        if (token) {
+            showToast("Pushing updates live to GitHub Repository...", "info");
+            const ghOk = await pushToGithubDirectly(data, token);
+            if (ghOk) {
+                showToast("🚀 Changes committed & published live on GitHub Pages!", "success");
+                return true;
+            } else {
+                showToast("⚠️ GitHub push failed. Saved to browser cache.", "error");
+                return false;
+            }
+        }
+
+        if (!isLocalhost) {
+            showToast("💾 Saved in this browser! To publish live on GitHub Pages, enter your GitHub Token in 'Cloud Sync' tab.", "warning");
+        } else {
+            showToast("Changes saved to local browser cache!", "success");
+        }
+        return true;
     };
 
     let appData = await loadData();
