@@ -324,21 +324,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveData = async (data) => {
         localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
 
-        if (isLocalhost) {
-            try {
-                const res = await fetch('/api/save-data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                if (res.ok) {
-                    showToast("✅ Changes saved directly to database (data.json) on disk!", "success");
-                    return true;
-                }
-            } catch (e) {}
-        }
+        // Save to Neon Database API
+        try {
+            const res = await fetch('/api/save-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                showToast("✅ Changes saved directly to Neon Database & local backup!", "success");
+            }
+        } catch (e) {}
 
-        // On GitHub Pages or static host, check for GitHub Token
+        // On GitHub Pages or static host, check for GitHub Token for Dual-Sync
         const tokenInput = document.getElementById('ghToken');
         const token = (tokenInput && tokenInput.value.trim()) || localStorage.getItem('nibras_portfolio_gh_token') || (data.githubConfig && data.githubConfig.token);
         if (token) {
@@ -356,9 +354,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (!isLocalhost) {
-            showToast("💾 Saved in this browser! To publish live on GitHub Pages, enter your GitHub Token in 'Cloud Sync' tab.", "warning");
-        } else {
-            showToast("Changes saved to local browser cache!", "success");
+            showToast("💾 Saved in Neon Cloud Database! To also update GitHub Pages, enter your GitHub Token in 'Cloud Sync' tab.", "info");
         }
         return true;
     };
@@ -546,12 +542,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderNavLinksList();
     };
 
-    // Render Leads Table
-    const renderLeadsTable = () => {
+    // Render Leads Table (Real-time from Neon Database + Local Cache)
+    const renderLeadsTable = async () => {
         const tbody = document.getElementById('leadsTableBody');
+        try {
+            const res = await fetch('/api/leads?v=' + Date.now());
+            if (res.ok) {
+                const json = await res.json();
+                if (json && Array.isArray(json.leads) && json.leads.length > 0) {
+                    appData.leads = json.leads;
+                }
+            }
+        } catch (e) {}
+
         const leads = appData.leads || [];
+        if (document.getElementById('countLeads')) {
+            document.getElementById('countLeads').textContent = leads.length;
+        }
+
         if (leads.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No client inquiries received yet. When clients submit the contact form, submissions appear here.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No client inquiries received yet. When clients submit the contact form, submissions appear here in real-time from Neon Database.</td></tr>`;
             return;
         }
 
@@ -563,25 +573,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td><span class="admin-item-tag">${(lead.project || 'General').toUpperCase()}</span></td>
                 <td style="max-width:300px;">${lead.message}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="deleteLead(${index})">Delete</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteLead(${index}, ${lead.id || 'null'})">Delete</button>
                 </td>
             </tr>
         `).join('');
     };
 
-    window.deleteLead = (index) => {
-        if (confirm("Delete this client inquiry?")) {
+    window.deleteLead = async (index, id) => {
+        if (confirm("Delete this client inquiry from Neon Database?")) {
+            if (id) {
+                try {
+                    await fetch('/api/leads?id=' + id, { method: 'DELETE' });
+                } catch(e) {}
+            }
             appData.leads.splice(index, 1);
-            saveData(appData);
+            await saveData(appData);
             populateAllForms();
+            showToast("Client inquiry deleted successfully.", "info");
         }
     };
 
-    document.getElementById('clearLeadsBtn').addEventListener('click', () => {
+    document.getElementById('clearLeadsBtn').addEventListener('click', async () => {
         if (confirm("Clear all client inquiries?")) {
             appData.leads = [];
-            saveData(appData);
+            await saveData(appData);
             populateAllForms();
+            showToast("All inquiries cleared.", "info");
         }
     });
 

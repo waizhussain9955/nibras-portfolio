@@ -1,0 +1,25 @@
+{
+  "name": "nibras-portfolio",
+  "version": "1.0.0",
+  "description": "[![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-waizhussain9955.github.io-9333ea?style=for-the-badge&logo=github)](https://waizhussain9955.github.io/nibras-portfolio/) [![Admin CMS](https://img.shields.io/badge/Admin%20CMS-Live%20Panel-06b6d4?style=for-the-badge&logo=codepen)](https://waizhussain9955.github.io/nibras-portfolio/admin-nibras2026.html) [![License](https://img.shields.io/badge/License-MIT-a855f7?style=for-the-badge)](LICENSE)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waizhussain9955/nibras-portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/waizhussain9955/nibras-portfolio/issues"
+  },
+  "homepage": "https://github.com/waizhussain9955/nibras-portfolio#readme",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "dotenv": "^17.4.2"
+  }
+}

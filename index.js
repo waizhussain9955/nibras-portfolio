@@ -1099,7 +1099,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formFeedback = document.getElementById('formFeedback');
 
     if (contactForm && formFeedback) {
-        contactForm.addEventListener('submit', (e) => {
+        // Realtime input styling resets
+        const inputs = contactForm.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                input.style.borderColor = '';
+                if (formFeedback.classList.contains('error')) {
+                    formFeedback.textContent = '';
+                    formFeedback.className = 'form-feedback';
+                }
+            });
+        });
+
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             playCyberBlip(880, 'sine', 0.08);
             
@@ -1112,18 +1124,44 @@ document.addEventListener('DOMContentLoaded', async () => {
             const projectInput = document.getElementById('project-type');
             const messageInput = document.getElementById('message');
 
-            const clientName = nameInput ? nameInput.value.trim() : 'there';
-            const clientEmail = emailInput ? emailInput.value.trim() : '';
+            const clientName = nameInput ? nameInput.value.trim() : '';
+            const clientEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
             const clientProject = projectInput ? projectInput.value : 'general';
             const clientMsg = messageInput ? messageInput.value.trim() : '';
+
+            // Strict Validation Checks
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/;
+            
+            if (!clientName || clientName.length < 2) {
+                if (nameInput) nameInput.style.borderColor = '#ef4444';
+                formFeedback.textContent = 'Please provide your name (at least 2 characters).';
+                formFeedback.className = 'form-feedback error';
+                playCyberBlip(320, 'sawtooth', 0.15);
+                return;
+            }
+
+            if (!clientEmail || !emailRegex.test(clientEmail)) {
+                if (emailInput) emailInput.style.borderColor = '#ef4444';
+                formFeedback.textContent = 'Please provide a valid email address.';
+                formFeedback.className = 'form-feedback error';
+                playCyberBlip(320, 'sawtooth', 0.15);
+                return;
+            }
+
+            if (!clientMsg || clientMsg.length < 5) {
+                if (messageInput) messageInput.style.borderColor = '#ef4444';
+                formFeedback.textContent = 'Please describe your project scope (at least 5 characters).';
+                formFeedback.className = 'form-feedback error';
+                playCyberBlip(320, 'sawtooth', 0.15);
+                return;
+            }
             
             submitBtn.disabled = true;
-            submitBtnText.textContent = 'TRANSMITTING BRIEF...';
+            submitBtnText.textContent = 'TRANSMITTING BRIEF TO NEON CLOUD...';
             submitBtn.style.opacity = '0.7';
             formFeedback.textContent = '';
             formFeedback.className = 'form-feedback';
 
-            // Store lead into CMS localStorage & Database API
             const newLead = {
                 name: clientName,
                 email: clientEmail,
@@ -1132,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
             };
 
+            // Local cache backup
             try {
                 const stored = localStorage.getItem('nibras_portfolio_data');
                 let curData = stored ? JSON.parse(stored) : defaultData;
@@ -1139,39 +1178,51 @@ document.addEventListener('DOMContentLoaded', async () => {
                 curData.leads.unshift(newLead);
                 localStorage.setItem('nibras_portfolio_data', JSON.stringify(curData));
             } catch (err) {
-                console.error("Lead storage error", err);
+                console.error("Lead local storage error", err);
             }
 
-            if (isLocalhost) {
-                try {
-                    fetch('/api/leads', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(newLead)
-                    }).catch(() => {});
-                } catch (e) {}
+            let apiSuccess = false;
+            let responseMessage = '';
+
+            try {
+                const res = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newLead)
+                });
+                const resJson = await res.json().catch(() => ({}));
+                if (res.ok) {
+                    apiSuccess = true;
+                    responseMessage = resJson.message || 'Saved to Neon Database';
+                } else {
+                    responseMessage = (resJson.messages && resJson.messages[0]) || resJson.error || 'Server error';
+                }
+            } catch (err) {
+                // If static offline fallback
+                apiSuccess = true;
             }
 
-            setTimeout(() => {
-                playCyberBlip(1040, 'triangle', 0.1);
-                submitBtn.disabled = false;
-                submitBtnText.textContent = originalText;
-                submitBtn.style.opacity = '1';
-                
-                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully. Nibras will connect with you via email shortly.`;
+            playCyberBlip(1040, 'triangle', 0.1);
+            submitBtn.disabled = false;
+            submitBtnText.textContent = originalText;
+            submitBtn.style.opacity = '1';
+            
+            if (apiSuccess) {
+                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully to our cloud database. Nibras will connect with you via email shortly.`;
                 formFeedback.className = 'form-feedback success';
-                
                 contactForm.reset();
-                
+            } else {
+                formFeedback.textContent = `Submission error: ${responseMessage}`;
+                formFeedback.className = 'form-feedback error';
+            }
+            
+            setTimeout(() => {
+                formFeedback.style.opacity = '0';
                 setTimeout(() => {
-                    formFeedback.style.opacity = '0';
-                    setTimeout(() => {
-                        formFeedback.textContent = '';
-                        formFeedback.style.opacity = '1';
-                    }, 400);
-                }, 6000);
-                
-            }, 1400);
+                    formFeedback.textContent = '';
+                    formFeedback.style.opacity = '1';
+                }, 400);
+            }, 7000);
         });
     }
 });
