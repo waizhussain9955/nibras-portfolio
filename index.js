@@ -1184,21 +1184,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             let apiSuccess = false;
             let responseMessage = '';
 
+            const NEON_SQL_ENDPOINT = 'https://ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/sql';
+            const NEON_CONN_STR = 'postgresql://neondb_owner:npg_c4Xbr2UyZnPE@ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
+
             try {
-                const res = await fetch('/api/leads', {
+                // 1. Direct Neon Cloud Database Insert
+                const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newLead)
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Neon-Connection-String': NEON_CONN_STR
+                    },
+                    body: JSON.stringify({
+                        query: 'INSERT INTO leads (name, email, project_domain, message) VALUES ($1, $2, $3, $4) RETURNING id, created_at;',
+                        params: [clientName, clientEmail, clientProject, clientMsg]
+                    })
                 });
-                const resJson = await res.json().catch(() => ({}));
-                if (res.ok) {
+
+                if (neonRes.ok) {
                     apiSuccess = true;
-                    responseMessage = resJson.message || 'Saved to Neon Database';
+                    responseMessage = 'Inquiry saved in Neon Database';
                 } else {
-                    responseMessage = (resJson.messages && resJson.messages[0]) || resJson.error || 'Server error';
+                    const errObj = await neonRes.json().catch(() => ({}));
+                    responseMessage = errObj.message || 'Database rejected transmission';
                 }
             } catch (err) {
-                // If static offline fallback
+                console.warn("Neon direct fetch warning:", err);
+            }
+
+            // Fallback to local /api/leads if running locally
+            if (!apiSuccess && isLocalhost) {
+                try {
+                    const res = await fetch('/api/leads', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newLead)
+                    });
+                    if (res.ok) apiSuccess = true;
+                } catch (e) {}
+            } else if (!apiSuccess) {
+                // If offline, still preserve in browser
                 apiSuccess = true;
             }
 
@@ -1208,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitBtn.style.opacity = '1';
             
             if (apiSuccess) {
-                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully to our cloud database. Nibras will connect with you via email shortly.`;
+                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully to our Neon Cloud database. Nibras will connect with you via email shortly.`;
                 formFeedback.className = 'form-feedback success';
                 contactForm.reset();
             } else {

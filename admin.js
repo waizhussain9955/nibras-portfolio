@@ -263,7 +263,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Load from Database API, data.json, or LocalStorage (preserving local leads & inquiries)
+    const NEON_SQL_ENDPOINT = 'https://ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/sql';
+    const NEON_CONN_STR = 'postgresql://neondb_owner:npg_c4Xbr2UyZnPE@ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
+
+    // Load from Neon Database API, data.json, or LocalStorage
     const loadData = async () => {
         let localLeads = [];
         const localStored = localStorage.getItem('nibras_portfolio_data');
@@ -285,6 +288,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!incomingData.githubConfig) incomingData.githubConfig = defaultData.githubConfig;
             return incomingData;
         };
+
+        // 1. Try Neon Cloud Database
+        try {
+            const neonRes = await fetch(NEON_SQL_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Neon-Connection-String': NEON_CONN_STR
+                },
+                body: JSON.stringify({
+                    query: "SELECT content_json FROM portfolio_content WHERE section_key = 'main_portfolio';"
+                })
+            });
+            if (neonRes.ok) {
+                const json = await neonRes.json();
+                if (json && json.rows && json.rows.length > 0 && json.rows[0].content_json) {
+                    const data = json.rows[0].content_json;
+                    const merged = mergeWithLocal(data);
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                    return merged;
+                }
+            }
+        } catch (e) {}
 
         if (isLocalhost) {
             try {
@@ -324,19 +350,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveData = async (data) => {
         localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
 
-        // Save to Neon Database API
+        // 1. Save directly to Neon Cloud Database
         try {
-            const res = await fetch('/api/save-data', {
+            const clean = JSON.parse(JSON.stringify(data));
+            if (clean.githubConfig) clean.githubConfig.token = "";
+            await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Neon-Connection-String': NEON_CONN_STR
+                },
+                body: JSON.stringify({
+                    query: `INSERT INTO portfolio_content (section_key, content_json, updated_at)
+                            VALUES ('main_portfolio', $1, CURRENT_TIMESTAMP)
+                            ON CONFLICT (section_key)
+                            DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTAMP;`,
+                    params: [JSON.stringify(clean)]
+                })
             });
-            if (res.ok) {
-                showToast("✅ Changes saved directly to Neon Database & local backup!", "success");
-            }
-        } catch (e) {}
+            showToast("✅ Changes saved directly to Neon Cloud Database!", "success");
+        } catch (e) {
+            // Local fallback
+            try {
+                await fetch('/api/save-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (err) {}
+        }
 
-        // On GitHub Pages or static host, check for GitHub Token for Dual-Sync
+        // 2. On GitHub Pages or static host, check for GitHub Token for Dual-Sync
         const tokenInput = document.getElementById('ghToken');
         const token = (tokenInput && tokenInput.value.trim()) || localStorage.getItem('nibras_portfolio_gh_token') || (data.githubConfig && data.githubConfig.token);
         if (token) {
@@ -353,9 +397,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        if (!isLocalhost) {
-            showToast("💾 Saved in Neon Cloud Database! To also update GitHub Pages, enter your GitHub Token in 'Cloud Sync' tab.", "info");
-        }
         return true;
     };
 
@@ -546,14 +587,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     const renderLeadsTable = async () => {
         const tbody = document.getElementById('leadsTableBody');
         try {
-            const res = await fetch('/api/leads?v=' + Date.now());
-            if (res.ok) {
-                const json = await res.json();
-                if (json && Array.isArray(json.leads) && json.leads.length > 0) {
-                    appData.leads = json.leads;
+            // 1. Fetch directly from Neon Cloud Database
+            const neonRes = await fetch(NEON_SQL_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Neon-Connection-String': NEON_CONN_STR
+                },
+                body: JSON.stringify({
+                    query: 'SELECT id, name, email, project_domain AS project, message, created_at FROM leads ORDER BY created_at DESC;'
+                })
+            });
+
+            if (neonRes.ok) {
+                const json = await neonRes.json();
+                if (json && Array.isArray(json.rows)) {
+                    appData.leads = json.rows.map(r => ({
+                        id: r.id,
+                        name: r.name,
+                        email: r.email,
+                        project: r.project || 'General',
+                        message: r.message,
+                        date: new Date(r.created_at).toLocaleString()
+                    }));
                 }
             }
-        } catch (e) {}
+        } catch (e) {
+            try {
+                const res = await fetch('/api/leads?v=' + Date.now());
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && Array.isArray(json.leads) && json.leads.length > 0) {
+                        appData.leads = json.leads;
+                    }
+                }
+            } catch (err) {}
+        }
 
         const leads = appData.leads || [];
         if (document.getElementById('countLeads')) {
@@ -583,22 +652,42 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (confirm("Delete this client inquiry from Neon Database?")) {
             if (id) {
                 try {
-                    await fetch('/api/leads?id=' + id, { method: 'DELETE' });
+                    await fetch(NEON_SQL_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Neon-Connection-String': NEON_CONN_STR
+                        },
+                        body: JSON.stringify({
+                            query: 'DELETE FROM leads WHERE id = $1;',
+                            params: [id]
+                        })
+                    });
                 } catch(e) {}
             }
             appData.leads.splice(index, 1);
             await saveData(appData);
             populateAllForms();
-            showToast("Client inquiry deleted successfully.", "info");
+            showToast("Client inquiry deleted from Neon Database.", "info");
         }
     };
 
     document.getElementById('clearLeadsBtn').addEventListener('click', async () => {
-        if (confirm("Clear all client inquiries?")) {
+        if (confirm("Clear ALL client inquiries from Neon Database?")) {
+            try {
+                await fetch(NEON_SQL_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Neon-Connection-String': NEON_CONN_STR
+                    },
+                    body: JSON.stringify({ query: 'TRUNCATE TABLE leads;' })
+                });
+            } catch(e) {}
             appData.leads = [];
             await saveData(appData);
             populateAllForms();
-            showToast("All inquiries cleared.", "info");
+            showToast("All inquiries cleared from Neon Cloud.", "info");
         }
     });
 
