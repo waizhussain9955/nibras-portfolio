@@ -7,7 +7,7 @@
     "badgeText": "AVAILABLE FOR NEW PROJECTS",
     "badgeCode": "2026",
     "titleLine1": "NIBRAS",
-    "titleLine2": "ANSARI",
+    "titleLine2": "ANSARI....",
     "typewriterRoles": [
       "CREATIVE GRAPHIC DESIGNER",
       "MASCOT LOGO ARTIST",
@@ -281,5 +281,38 @@
     "branch": "main",
     "token": ""
   },
-  "leads": []
+  "leads": [
+    {
+      "id": 4,
+      "name": "Browser Subagent Test",
+      "email": "subagent@test.com",
+      "project": "esports",
+      "message": "This is an automated test from browser subagent verifying Neon DB insertion.",
+      "date": "16/09/2026, 03:30:25"
+    },
+    {
+      "id": 3,
+      "name": "Browser Subagent Test",
+      "email": "subagent@test.com",
+      "project": "esports",
+      "message": "This is an automated test from browser subagent verifying Neon DB insertion.",
+      "date": "16/09/2026, 03:29:21"
+    },
+    {
+      "id": 2,
+      "name": "Plain Text Test",
+      "email": "test@text.com",
+      "project": "Branding",
+      "message": "Testing plain text content type",
+      "date": "16/09/2026, 03:15:46"
+    },
+    {
+      "id": 1,
+      "name": "Waiz Hussain",
+      "email": "waizhussainaptech@gmail.com",
+      "project": "Athletic Sports Emblem",
+      "message": "Test inquiry message from portfolio",
+      "date": "15/09/2026, 21:14:41"
+    }
+  ]
 }
