@@ -1,5 +1,5 @@
 // Cyber CMS Engine for Nibras Portfolio (Full Responsive CRUD, Gallery, Backup, Cloud Sync & Leads)
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
     // Default Initial Master State
     const defaultData = {
@@ -188,29 +188,61 @@ document.addEventListener('DOMContentLoaded', () => {
         leads: []
     };
 
-    // Load from LocalStorage or initialize
-    const loadData = () => {
-        const stored = localStorage.getItem('nibras_portfolio_data');
-        if (!stored) {
-            localStorage.setItem('nibras_portfolio_data', JSON.stringify(defaultData));
-            return JSON.parse(JSON.stringify(defaultData));
-        }
+    // Load from Database API, data.json, or LocalStorage
+    const loadData = async () => {
         try {
-            const parsed = JSON.parse(stored);
-            if (!parsed.gallery) parsed.gallery = defaultData.gallery;
-            if (!parsed.githubConfig) parsed.githubConfig = defaultData.githubConfig;
-            return parsed;
-        } catch (e) {
-            return JSON.parse(JSON.stringify(defaultData));
+            const apiRes = await fetch('/api/data?v=' + Date.now());
+            if (apiRes.ok) {
+                const data = await apiRes.json();
+                if (data && data.hero) {
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
+                    return data;
+                }
+            }
+        } catch (e) {}
+
+        try {
+            const jsonRes = await fetch('data.json?v=' + Date.now());
+            if (jsonRes.ok) {
+                const data = await jsonRes.json();
+                if (data && data.hero) {
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
+                    return data;
+                }
+            }
+        } catch (e) {}
+
+        const stored = localStorage.getItem('nibras_portfolio_data');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (!parsed.gallery) parsed.gallery = defaultData.gallery;
+                if (!parsed.githubConfig) parsed.githubConfig = defaultData.githubConfig;
+                return parsed;
+            } catch (e) {}
         }
+        return JSON.parse(JSON.stringify(defaultData));
     };
 
-    const saveData = (data) => {
+    const saveData = async (data) => {
         localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-        showToast("Changes saved successfully to live website!", "success");
+        try {
+            const res = await fetch('/api/save-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                showToast("✅ Changes saved directly to database (data.json) on disk!", "success");
+                return;
+            }
+        } catch (e) {
+            // Static server fallback
+        }
+        showToast("Changes saved to local browser cache!", "success");
     };
 
-    let appData = loadData();
+    let appData = await loadData();
 
     // Toast System
     const showToast = (message, type = "success") => {
@@ -332,12 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // DATA POPULATION & FORM SYNC
     // -------------------------------------------------------------
     const populateAllForms = () => {
-        appData = loadData();
+        if (!appData) return;
 
         // 1. Overview counts
-        document.getElementById('countProjects').textContent = appData.portfolio.length;
+        document.getElementById('countProjects').textContent = (appData.portfolio || []).length;
         document.getElementById('countGallery').textContent = (appData.gallery || []).length;
-        document.getElementById('countSoftwares').textContent = appData.software.length;
+        document.getElementById('countSoftwares').textContent = (appData.software || []).length;
         document.getElementById('countLeads').textContent = (appData.leads || []).length;
         renderLeadsTable();
 
@@ -626,9 +658,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalCloseBtn.addEventListener('click', closeModal);
     modalCancelBtn.addEventListener('click', closeModal);
-    modalSaveBtn.addEventListener('click', () => {
+    modalSaveBtn.addEventListener('click', async () => {
         if (typeof currentModalAction === 'function') {
-            currentModalAction();
+            await currentModalAction();
         }
     });
 
@@ -1193,7 +1225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------
     // MASTER SAVE ALL & RESET HANDLERS
     // -------------------------------------------------------------
-    document.getElementById('saveAllBtn').addEventListener('click', () => {
+    document.getElementById('saveAllBtn').addEventListener('click', async () => {
         // Collect Hero
         appData.hero.badgeText = document.getElementById('heroBadgeText').value.trim();
         appData.hero.badgeCode = document.getElementById('heroBadgeCode').value.trim();
@@ -1233,14 +1265,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
         appData.githubConfig.token = ghTokenVal;
 
-        saveData(appData);
+        await saveData(appData);
         populateAllForms();
     });
 
-    document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+    document.getElementById('resetDefaultsBtn').addEventListener('click', async () => {
         if (confirm("Reset ALL data back to default template content?")) {
-            localStorage.setItem('nibras_portfolio_data', JSON.stringify(defaultData));
             appData = JSON.parse(JSON.stringify(defaultData));
+            await saveData(appData);
             populateAllForms();
             showToast("Portfolio reset to default successfully.", "success");
         }

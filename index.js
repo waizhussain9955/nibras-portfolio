@@ -207,30 +207,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Load dynamic data from localStorage or fetch data.json fallback
+    // Load dynamic data from Backend API, data.json, or localStorage fallback
     const getLiveData = async () => {
-        const stored = localStorage.getItem('nibras_portfolio_data');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                // Ensure default projects are clean if old dirty cache exists
-                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
-                    return parsed;
+        try {
+            const apiRes = await fetch('/api/data?v=' + Date.now());
+            if (apiRes.ok) {
+                const data = await apiRes.json();
+                if (data && data.hero) {
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
+                    return data;
                 }
-            } catch (e) {
-                // fallback
             }
-        }
+        } catch (e) {}
+
         try {
             const dataUrl = isSubfolder ? '../data.json' : 'data.json';
             const res = await fetch(dataUrl + '?v=' + Date.now());
             if (res.ok) {
                 const fetchedData = await res.json();
-                localStorage.setItem('nibras_portfolio_data', JSON.stringify(fetchedData));
-                return fetchedData;
+                if (fetchedData && fetchedData.hero) {
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(fetchedData));
+                    return fetchedData;
+                }
             }
-        } catch (e) {
-            // offline fallback
+        } catch (e) {}
+
+        const stored = localStorage.getItem('nibras_portfolio_data');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
+                    return parsed;
+                }
+            } catch (e) {}
         }
         return defaultData;
     };
@@ -1090,22 +1099,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             formFeedback.textContent = '';
             formFeedback.className = 'form-feedback';
 
-            // Store lead into CMS localStorage
+            // Store lead into CMS localStorage & Database API
+            const newLead = {
+                name: clientName,
+                email: clientEmail,
+                project: clientProject,
+                message: clientMsg,
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+
             try {
                 const stored = localStorage.getItem('nibras_portfolio_data');
                 let curData = stored ? JSON.parse(stored) : defaultData;
                 if (!curData.leads) curData.leads = [];
-                curData.leads.unshift({
-                    name: clientName,
-                    email: clientEmail,
-                    project: clientProject,
-                    message: clientMsg,
-                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                });
+                curData.leads.unshift(newLead);
                 localStorage.setItem('nibras_portfolio_data', JSON.stringify(curData));
             } catch (err) {
                 console.error("Lead storage error", err);
             }
+
+            try {
+                fetch('/api/leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newLead)
+                }).catch(() => {});
+            } catch (e) {}
 
             setTimeout(() => {
                 playCyberBlip(1040, 'triangle', 0.1);
