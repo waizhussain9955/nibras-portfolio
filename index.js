@@ -211,14 +211,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
     const getLiveData = async () => {
+        let localLeads = [];
+        const localStored = localStorage.getItem('nibras_portfolio_data');
+        if (localStored) {
+            try {
+                const parsed = JSON.parse(localStored);
+                if (Array.isArray(parsed.leads)) localLeads = parsed.leads;
+            } catch (e) {}
+        }
+
+        const mergeWithLocal = (incomingData) => {
+            if (!incomingData) return defaultData;
+            const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
+            const combined = [...localLeads, ...incomingLeads];
+            incomingData.leads = combined.filter((item, index, self) =>
+                index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.name === item.name)
+            );
+            return incomingData;
+        };
+
         if (isLocalhost) {
             try {
                 const apiRes = await fetch('/api/data?v=' + Date.now());
                 if (apiRes.ok) {
                     const data = await apiRes.json();
                     if (data && data.hero) {
-                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-                        return data;
+                        const merged = mergeWithLocal(data);
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                        return merged;
                     }
                 }
             } catch (e) {}
@@ -230,18 +250,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (res.ok) {
                 const fetchedData = await res.json();
                 if (fetchedData && fetchedData.hero) {
-                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(fetchedData));
-                    return fetchedData;
+                    const merged = mergeWithLocal(fetchedData);
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                    return merged;
                 }
             }
         } catch (e) {}
 
-        const stored = localStorage.getItem('nibras_portfolio_data');
-        if (stored) {
+        if (localStored) {
             try {
-                const parsed = JSON.parse(stored);
+                const parsed = JSON.parse(localStored);
                 if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
-                    return parsed;
+                    return mergeWithLocal(parsed);
                 }
             } catch (e) {}
         }

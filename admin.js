@@ -263,16 +263,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Load from Database API, data.json, or LocalStorage
+    // Load from Database API, data.json, or LocalStorage (preserving local leads & inquiries)
     const loadData = async () => {
+        let localLeads = [];
+        const localStored = localStorage.getItem('nibras_portfolio_data');
+        if (localStored) {
+            try {
+                const parsed = JSON.parse(localStored);
+                if (Array.isArray(parsed.leads)) localLeads = parsed.leads;
+            } catch (e) {}
+        }
+
+        const mergeWithLocal = (incomingData) => {
+            if (!incomingData) return defaultData;
+            const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
+            const combined = [...localLeads, ...incomingLeads];
+            incomingData.leads = combined.filter((item, index, self) =>
+                index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.message === item.message)
+            );
+            if (!incomingData.gallery) incomingData.gallery = defaultData.gallery;
+            if (!incomingData.githubConfig) incomingData.githubConfig = defaultData.githubConfig;
+            return incomingData;
+        };
+
         if (isLocalhost) {
             try {
                 const apiRes = await fetch('/api/data?v=' + Date.now());
                 if (apiRes.ok) {
                     const data = await apiRes.json();
                     if (data && data.hero) {
-                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-                        return data;
+                        const merged = mergeWithLocal(data);
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                        return merged;
                     }
                 }
             } catch (e) {}
@@ -283,19 +305,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (jsonRes.ok) {
                 const data = await jsonRes.json();
                 if (data && data.hero) {
-                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
-                    return data;
+                    const merged = mergeWithLocal(data);
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                    return merged;
                 }
             }
         } catch (e) {}
 
-        const stored = localStorage.getItem('nibras_portfolio_data');
-        if (stored) {
+        if (localStored) {
             try {
-                const parsed = JSON.parse(stored);
-                if (!parsed.gallery) parsed.gallery = defaultData.gallery;
-                if (!parsed.githubConfig) parsed.githubConfig = defaultData.githubConfig;
-                return parsed;
+                const parsed = JSON.parse(localStored);
+                return mergeWithLocal(parsed);
             } catch (e) {}
         }
         return JSON.parse(JSON.stringify(defaultData));
