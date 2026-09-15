@@ -1157,7 +1157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             submitBtn.disabled = true;
-            submitBtnText.textContent = 'TRANSMITTING BRIEF TO NEON CLOUD...';
+            submitBtnText.textContent = 'TRANSMITTING BRIEF...';
             submitBtn.style.opacity = '0.7';
             formFeedback.textContent = '';
             formFeedback.className = 'form-feedback';
@@ -1203,10 +1203,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (neonRes.ok) {
                     apiSuccess = true;
-                    responseMessage = 'Inquiry saved in Neon Database';
+                    responseMessage = 'Inquiry transmitted';
                 } else {
                     const errObj = await neonRes.json().catch(() => ({}));
-                    responseMessage = errObj.message || 'Database rejected transmission';
+                    responseMessage = errObj.message || 'Submission error';
                 }
             } catch (err) {
                 console.warn("Neon direct fetch warning:", err);
@@ -1233,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitBtn.style.opacity = '1';
             
             if (apiSuccess) {
-                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully to our Neon Cloud database. Nibras will connect with you via email shortly.`;
+                formFeedback.textContent = `Thanks, ${clientName}! Your design brief has been transmitted successfully. Nibras will connect with you via email shortly.`;
                 formFeedback.className = 'form-feedback success';
                 contactForm.reset();
             } else {
