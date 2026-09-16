@@ -8,7 +8,8 @@
 - **Domain / Target Audience:** Esports Gaming Teams, Sports Franchises, Brands, and Clients seeking custom Mascot Logos, Vector Illustrations, and 2D Character Art.
 - **Author / Designer:** Nibras Ansari
 - **Maintainer:** Waiz Hussain (`waizhussain9955`)
-- **Live Deployment:** GitHub Pages (`https://waizhussain9955.github.io/nibras-portfolio/`)
+- **Live Deployment (Primary):** Vercel (`https://nibras-ansari-portfolio.vercel.app/`)
+- **Live Deployment (Mirror):** GitHub Pages (`https://waizhussain9955.github.io/nibras-portfolio/`)
 - **Local Dev Server:** Node.js standalone HTTP Server (`http://localhost:8000`)
 
 ---
@@ -16,12 +17,14 @@
 ## 2. Technical Stack & Dependencies
 - **Frontend Core:** Vanilla HTML5, Vanilla JavaScript (ES6+ Modules & Async/Await), Vanilla CSS3 (Custom CSS Variables & Modern Flex/Grid Layouts).
 - **Audio Engine:** Web Audio API (Synthesized oscillators with zero external MP3 assets for ultra-lightweight instantaneous sound effects).
+- **Cloud Database:** Neon Serverless PostgreSQL (`@neondatabase/serverless`) for persistent global client leads (`leads` table) and CMS backups (`portfolio_content` table).
+- **Serverless Compute:** Vercel Serverless Functions (`/api/leads.js`, `/api/data.js`) with honeypot spam protection and RFC 5322 validation.
 - **Data Persistence Architecture:**
-  1. `data.json`: Centralized single source of truth database.
-  2. `localStorage`: In-browser client-side caching & instant hydration.
-  3. Node.js REST API (`server.js`): Local disk synchronization via `fs.writeFileSync`.
-  4. GitHub REST API (`v3`): Direct Git Commit & Push from static browser via Personal Access Token (`data.json` base64 PUT endpoint).
-- **External Dependencies:** Zero heavy NPM packages required. Runs anywhere with native Node.js or static HTTP server.
+  1. Neon PostgreSQL Database: Real-time global database persistence.
+  2. `data.json`: Centralized single source of truth database.
+  3. `localStorage`: In-browser client-side caching & instant hydration.
+  4. Node.js REST API (`server.js`): Local disk synchronization via `fs.writeFileSync`.
+  5. GitHub REST API (`v3`): Direct Git Commit & Push from static browser via Personal Access Token (`data.json` base64 PUT endpoint).
 
 ---
 
