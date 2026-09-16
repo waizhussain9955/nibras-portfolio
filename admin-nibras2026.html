@@ -30,22 +30,19 @@
             </div>
             <p class="login-desc">Sign in to manage projects, media gallery, experience, software stack, backup, and live content.</p>
             
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" autocomplete="off">
                 <div class="form-group">
                     <label for="loginEmail">ADMIN EMAIL</label>
-                    <input type="email" id="loginEmail" placeholder="nibrasansari002@gmail.com" required value="nibrasansari002@gmail.com">
+                    <input type="email" id="loginEmail" placeholder="Enter admin email" required autocomplete="username">
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">PASSWORD</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required value="nibras2026">
+                    <input type="password" id="loginPassword" placeholder="Enter password" required autocomplete="current-password">
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">
+                <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn">
                     <span>AUTHENTICATE & ACCESS</span>
                 </button>
             </form>
-            <div class="login-footer">
-                <small>Default Access: <code>nibrasansari002@gmail.com</code> / <code>nibras2026</code></small>
-            </div>
         </div>
     </div>
 

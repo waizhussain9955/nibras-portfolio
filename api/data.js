@@ -17,15 +17,8 @@ module.exports = async (req, res) => {
     }
 
     try {
-        await sql`
-            CREATE TABLE IF NOT EXISTS portfolio_content (
-                section_key VARCHAR(100) PRIMARY KEY,
-                content_json JSONB NOT NULL,
-                updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );
-        `;
-
         if (req.method === 'GET') {
+            res.setHeader('Cache-Control', 'public, s-maxage=5, stale-while-revalidate=59');
             // Check if Neon has data
             const rows = await sql`SELECT section_key, content_json FROM portfolio_content WHERE section_key = 'main_portfolio'`;
             if (rows.length > 0) {

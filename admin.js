@@ -266,16 +266,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     const NEON_SQL_ENDPOINT = 'https://ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/sql';
     const NEON_CONN_STR = 'postgresql://neondb_owner:npg_c4Xbr2UyZnPE@ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
 
-    // Load from Neon Database API, data.json, or LocalStorage
+    // Toast System
+    const showToast = (message, type = "success") => {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    };
+
+    // Immediate Synchronous State Initialization (Zero Network Blocking)
+    let localStoredData = null;
+    try {
+        const stored = localStorage.getItem('nibras_portfolio_data');
+        if (stored) localStoredData = JSON.parse(stored);
+    } catch (e) {}
+
+    let appData = localStoredData || JSON.parse(JSON.stringify(defaultData));
+    if (!appData.auth) {
+        appData.auth = {
+            email: "nibrasansari002@gmail.com",
+            password: "nibras2026"
+        };
+    }
+
+    // Load from Neon Database API, data.json, or LocalStorage in background
     const loadData = async () => {
         let localLeads = [];
-        const localStored = localStorage.getItem('nibras_portfolio_data');
-        if (localStored) {
-            try {
+        try {
+            const localStored = localStorage.getItem('nibras_portfolio_data');
+            if (localStored) {
                 const parsed = JSON.parse(localStored);
                 if (Array.isArray(parsed.leads)) localLeads = parsed.leads;
-            } catch (e) {}
-        }
+            }
+        } catch (e) {}
 
         const mergeWithLocal = (incomingData) => {
             if (!incomingData) return defaultData;
@@ -289,8 +319,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             return incomingData;
         };
 
-        // 1. Try Neon Cloud Database
+        // 1. Try Neon Cloud Database with 3.5s timeout
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
             const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
                 headers: {
@@ -299,8 +331,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 body: JSON.stringify({
                     query: "SELECT content_json FROM portfolio_content WHERE section_key = 'main_portfolio';"
-                })
+                }),
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
+
             if (neonRes.ok) {
                 const json = await neonRes.json();
                 if (json && json.rows && json.rows.length > 0 && json.rows[0].content_json) {
@@ -312,20 +347,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (e) {}
 
-        if (isLocalhost) {
-            try {
-                const apiRes = await fetch('/api/data?v=' + Date.now());
-                if (apiRes.ok) {
-                    const data = await apiRes.json();
-                    if (data && data.hero) {
-                        const merged = mergeWithLocal(data);
-                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
-                        return merged;
-                    }
+        // 2. Try same-origin /api/data with 2.5s timeout
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2500);
+            const apiRes = await fetch('/api/data?v=' + Date.now(), { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (apiRes.ok) {
+                const data = await apiRes.json();
+                if (data && data.hero) {
+                    const merged = mergeWithLocal(data);
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                    return merged;
                 }
-            } catch (e) {}
-        }
+            }
+        } catch (e) {}
 
+        // 3. Fallback to data.json
         try {
             const jsonRes = await fetch('data.json?v=' + Date.now());
             if (jsonRes.ok) {
@@ -338,49 +376,71 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (e) {}
 
-        if (localStored) {
-            try {
-                const parsed = JSON.parse(localStored);
-                return mergeWithLocal(parsed);
-            } catch (e) {}
-        }
-        return JSON.parse(JSON.stringify(defaultData));
+        return appData;
     };
 
     const saveData = async (data) => {
+        // 1. Immediately persist to localStorage
         localStorage.setItem('nibras_portfolio_data', JSON.stringify(data));
 
-        // 1. Save directly to Neon Cloud Database
+        let neonSaved = false;
+
+        // 2. Save directly to Neon Cloud Database (escaped json literal)
         try {
             const clean = JSON.parse(JSON.stringify(data));
             if (clean.githubConfig) clean.githubConfig.token = "";
-            await fetch(NEON_SQL_ENDPOINT, {
+            const escapedJson = JSON.stringify(clean).replace(/'/g, "''");
+            const query = `INSERT INTO portfolio_content (section_key, content_json, updated_at)
+VALUES ('main_portfolio', '${escapedJson}'::jsonb, CURRENT_TIMESTAMP)
+ON CONFLICT (section_key)
+DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTAMP;`;
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            const neonRes = await fetch(NEON_SQL_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain',
                     'Neon-Connection-String': NEON_CONN_STR
                 },
-                body: JSON.stringify({
-                    query: `INSERT INTO portfolio_content (section_key, content_json, updated_at)
-                            VALUES ('main_portfolio', $1, CURRENT_TIMESTAMP)
-                            ON CONFLICT (section_key)
-                            DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTAMP;`,
-                    params: [JSON.stringify(clean)]
-                })
+                body: JSON.stringify({ query }),
+                signal: controller.signal
             });
-            showToast("✅ Changes saved directly to Neon Cloud Database!", "success");
+            clearTimeout(timeoutId);
+
+            if (neonRes.ok) {
+                neonSaved = true;
+            }
         } catch (e) {
-            // Local fallback
-            try {
-                await fetch('/api/save-data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-            } catch (err) {}
+            console.warn("Neon Cloud save notice:", e);
         }
 
-        // 2. On GitHub Pages or static host, check for GitHub Token for Dual-Sync
+        // 3. Also sync to /api/data (Vercel Serverless / Node server)
+        try {
+            const apiRes = await fetch('/api/data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (apiRes.ok) neonSaved = true;
+        } catch (err) {}
+
+        // Local server save fallback
+        try {
+            await fetch('/api/save-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } catch (err) {}
+
+        if (neonSaved) {
+            showToast("✅ Changes saved live to Neon Cloud Database!", "success");
+        } else {
+            showToast("💾 Saved locally in browser cache!", "info");
+        }
+
+        // 4. On GitHub Pages or static host, check for GitHub Token for Dual-Sync
         const tokenInput = document.getElementById('ghToken');
         const token = (tokenInput && tokenInput.value.trim()) || localStorage.getItem('nibras_portfolio_gh_token') || (data.githubConfig && data.githubConfig.token);
         if (token) {
@@ -391,29 +451,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const ghOk = await pushToGithubDirectly(data, token);
             if (ghOk) {
                 showToast("🚀 Changes committed & published live on GitHub Pages!", "success");
-                return true;
-            } else {
-                return false;
             }
         }
 
         return true;
-    };
-
-    let appData = await loadData();
-
-    // Toast System
-    const showToast = (message, type = "success") => {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.textContent = message;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3500);
     };
 
     // Theme Toggle for Admin
@@ -432,7 +473,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Authentication Checks
+    // Authentication Checks (Synchronous & Instant 0ms verification)
     const loginScreen = document.getElementById('loginScreen');
     const dashboardScreen = document.getElementById('dashboardScreen');
     const loginForm = document.getElementById('loginForm');
@@ -455,13 +496,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail').value.trim();
             const passInput = document.getElementById('loginPassword').value.trim();
+            const submitBtn = document.getElementById('loginSubmitBtn');
 
-            if (emailInput === appData.auth.email && passInput === appData.auth.password) {
+            if (!emailInput || !passInput) {
+                return showToast("Please enter both email and password.", "error");
+            }
+
+            const expectedEmail = (appData.auth && appData.auth.email ? appData.auth.email : "nibrasansari002@gmail.com").toLowerCase();
+            const expectedPass = appData.auth && appData.auth.password ? appData.auth.password : "nibras2026";
+
+            if (emailInput.toLowerCase() === expectedEmail && passInput === expectedPass) {
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span>ACCESS GRANTED...</span>';
+                }
                 sessionStorage.setItem('nibras_cms_auth', 'true');
                 showToast("Access Granted. Welcome Nibras!", "success");
-                checkAuthSession();
+                setTimeout(() => {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<span>AUTHENTICATE & ACCESS</span>';
+                    }
+                    checkAuthSession();
+                }, 100);
             } else {
-                showToast("Invalid credentials. Please verify email and password.", "error");
+                showToast("Invalid credentials. Please verify your email and password.", "error");
             }
         });
     }
@@ -1457,52 +1516,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     // -------------------------------------------------------------
     // MASTER SAVE ALL & RESET HANDLERS
     // -------------------------------------------------------------
-    document.getElementById('saveAllBtn').addEventListener('click', async () => {
-        // Collect Hero
-        appData.hero.badgeText = document.getElementById('heroBadgeText').value.trim();
-        appData.hero.badgeCode = document.getElementById('heroBadgeCode').value.trim();
-        appData.hero.titleLine1 = document.getElementById('heroTitleLine1').value.trim();
-        appData.hero.titleLine2 = document.getElementById('heroTitleLine2').value.trim();
-        appData.hero.typewriterRoles = document.getElementById('heroTypewriterRoles').value.split(',').map(s => s.trim()).filter(Boolean);
-        appData.hero.introText = document.getElementById('heroIntroText').value.trim();
-        appData.hero.stat1 = { num: document.getElementById('heroStat1Num').value.trim(), lbl: document.getElementById('heroStat1Lbl').value.trim() };
-        appData.hero.stat2 = { num: document.getElementById('heroStat2Num').value.trim(), lbl: document.getElementById('heroStat2Lbl').value.trim() };
-        appData.hero.stat3 = { num: document.getElementById('heroStat3Num').value.trim(), lbl: document.getElementById('heroStat3Lbl').value.trim() };
-        appData.hero.featuredImage = document.getElementById('heroImage').value.trim();
-        appData.hero.marqueeItems = document.getElementById('marqueeText').value.split(',').map(s => s.trim()).filter(Boolean);
+    const saveAllBtn = document.getElementById('saveAllBtn');
+    if (saveAllBtn) {
+        saveAllBtn.addEventListener('click', async () => {
+            saveAllBtn.disabled = true;
+            const originalContent = saveAllBtn.innerHTML;
+            saveAllBtn.innerHTML = '<span>⏳ SAVING...</span>';
 
-        // Collect About
-        appData.about.title = document.getElementById('aboutTitle').value.trim();
-        appData.about.quote = document.getElementById('aboutQuote').value.trim();
-        appData.about.body = document.getElementById('aboutBody').value.trim();
-        appData.about.education = {
-            title: document.getElementById('aboutEduTitle').value.trim(),
-            sub: document.getElementById('aboutEduSub').value.trim()
-        };
-        appData.about.languages = {
-            title: document.getElementById('aboutLangTitle').value.trim(),
-            sub: document.getElementById('aboutLangSub').value.trim()
-        };
+            try {
+                // Collect Hero
+                appData.hero.badgeText = document.getElementById('heroBadgeText').value.trim();
+                appData.hero.badgeCode = document.getElementById('heroBadgeCode').value.trim();
+                appData.hero.titleLine1 = document.getElementById('heroTitleLine1').value.trim();
+                appData.hero.titleLine2 = document.getElementById('heroTitleLine2').value.trim();
+                appData.hero.typewriterRoles = document.getElementById('heroTypewriterRoles').value.split(',').map(s => s.trim()).filter(Boolean);
+                appData.hero.introText = document.getElementById('heroIntroText').value.trim();
+                appData.hero.stat1 = { num: document.getElementById('heroStat1Num').value.trim(), lbl: document.getElementById('heroStat1Lbl').value.trim() };
+                appData.hero.stat2 = { num: document.getElementById('heroStat2Num').value.trim(), lbl: document.getElementById('heroStat2Lbl').value.trim() };
+                appData.hero.stat3 = { num: document.getElementById('heroStat3Num').value.trim(), lbl: document.getElementById('heroStat3Lbl').value.trim() };
+                appData.hero.featuredImage = document.getElementById('heroImage').value.trim();
+                appData.hero.marqueeItems = document.getElementById('marqueeText').value.split(',').map(s => s.trim()).filter(Boolean);
 
-        // Collect Contact & Footer
-        appData.contact.email = document.getElementById('contactEmail').value.trim();
-        appData.contact.phone = document.getElementById('contactPhone').value.trim();
-        appData.contact.location = document.getElementById('contactLocation').value.trim();
-        appData.contact.behance = document.getElementById('contactBehance').value.trim();
-        appData.contact.copyright = document.getElementById('footerCopyright').value.trim();
-        appData.contact.credit = document.getElementById('footerCredit').value.trim();
+                // Collect About
+                appData.about.title = document.getElementById('aboutTitle').value.trim();
+                appData.about.quote = document.getElementById('aboutQuote').value.trim();
+                appData.about.body = document.getElementById('aboutBody').value.trim();
+                appData.about.education = {
+                    title: document.getElementById('aboutEduTitle').value.trim(),
+                    sub: document.getElementById('aboutEduSub').value.trim()
+                };
+                appData.about.languages = {
+                    title: document.getElementById('aboutLangTitle').value.trim(),
+                    sub: document.getElementById('aboutLangSub').value.trim()
+                };
 
-        // Collect GitHub token if provided (store locally in browser)
-        const ghTokenVal = document.getElementById('ghToken').value.trim();
-        if (ghTokenVal) {
-            localStorage.setItem('nibras_portfolio_gh_token', ghTokenVal);
-        }
-        if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
-        appData.githubConfig.token = "";
+                // Collect Contact & Footer
+                appData.contact.email = document.getElementById('contactEmail').value.trim();
+                appData.contact.phone = document.getElementById('contactPhone').value.trim();
+                appData.contact.location = document.getElementById('contactLocation').value.trim();
+                appData.contact.behance = document.getElementById('contactBehance').value.trim();
+                appData.contact.copyright = document.getElementById('footerCopyright').value.trim();
+                appData.contact.credit = document.getElementById('footerCredit').value.trim();
 
-        await saveData(appData);
-        populateAllForms();
-    });
+                // Collect GitHub token if provided (store locally in browser)
+                const ghTokenVal = document.getElementById('ghToken').value.trim();
+                if (ghTokenVal) {
+                    localStorage.setItem('nibras_portfolio_gh_token', ghTokenVal);
+                }
+                if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
+                appData.githubConfig.token = "";
+
+                await saveData(appData);
+                populateAllForms();
+            } catch (err) {
+                console.error("Save error:", err);
+                showToast("Error saving changes: " + (err.message || 'Network error'), "error");
+            } finally {
+                saveAllBtn.disabled = false;
+                saveAllBtn.innerHTML = originalContent;
+            }
+        });
+    }
 
     document.getElementById('resetDefaultsBtn').addEventListener('click', async () => {
         if (confirm("Reset ALL data back to default template content?")) {
@@ -1547,4 +1621,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initial check
     checkAuthSession();
+
+    // Background sync of fresh cloud data (non-blocking)
+    loadData().then(freshData => {
+        if (freshData) {
+            appData = freshData;
+            if (sessionStorage.getItem('nibras_cms_auth') === 'true') {
+                populateAllForms();
+            }
+        }
+    }).catch(() => {});
 });

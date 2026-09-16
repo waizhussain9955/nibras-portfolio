@@ -30,18 +30,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // Ensure table exists
-        await sql`
-            CREATE TABLE IF NOT EXISTS leads (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                email VARCHAR(255) NOT NULL,
-                project_domain VARCHAR(100) DEFAULT 'General',
-                message TEXT NOT NULL,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );
-        `;
-
         // 1. GET ALL LEADS (for Admin Panel)
         if (req.method === 'GET') {
             const rows = await sql`

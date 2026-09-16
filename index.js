@@ -230,23 +230,36 @@ document.addEventListener('DOMContentLoaded', async () => {
             return incomingData;
         };
 
-        if (isLocalhost) {
+        // Fast path: Immediate 0ms hydration from local cache if present
+        if (localStored) {
             try {
-                const apiRes = await fetch('/api/data?v=' + Date.now());
-                if (apiRes.ok) {
-                    const data = await apiRes.json();
-                    if (data && data.hero) {
-                        const merged = mergeWithLocal(data);
-                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
-                        return merged;
-                    }
+                const parsed = JSON.parse(localStored);
+                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
+                    // Refresh in background without blocking initial paint
+                    setTimeout(async () => {
+                        try {
+                            const dataUrl = isSubfolder ? '../data.json' : 'data.json';
+                            const res = await fetch(dataUrl);
+                            if (res.ok) {
+                                const fetched = await res.json();
+                                if (fetched && fetched.hero) {
+                                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(mergeWithLocal(fetched)));
+                                }
+                            }
+                        } catch (err) {}
+                    }, 200);
+                    return mergeWithLocal(parsed);
                 }
             } catch (e) {}
         }
 
+        // First-time visitor: fetch data with fast timeout
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
             const dataUrl = isSubfolder ? '../data.json' : 'data.json';
-            const res = await fetch(dataUrl + '?v=' + Date.now());
+            const res = await fetch(dataUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
             if (res.ok) {
                 const fetchedData = await res.json();
                 if (fetchedData && fetchedData.hero) {
@@ -257,14 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (e) {}
 
-        if (localStored) {
-            try {
-                const parsed = JSON.parse(localStored);
-                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
-                    return mergeWithLocal(parsed);
-                }
-            } catch (e) {}
-        }
         return defaultData;
     };
 
