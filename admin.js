@@ -282,22 +282,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // Immediate Synchronous State Initialization (Zero Network Blocking)
-    let localStoredData = null;
-    try {
-        const stored = localStorage.getItem('nibras_portfolio_data');
-        if (stored) localStoredData = JSON.parse(stored);
-    } catch (e) {}
+    const mergeWithLocal = (incomingData) => {
+        const cleanDefault = JSON.parse(JSON.stringify(defaultData));
+        if (!incomingData || typeof incomingData !== 'object') {
+            return cleanDefault;
+        }
 
-    let appData = localStoredData || JSON.parse(JSON.stringify(defaultData));
-    if (!appData.auth) {
-        appData.auth = {
-            email: "nibrasansari002@gmail.com",
-            password: "nibras2026"
+        const merged = {
+            ...cleanDefault,
+            ...incomingData,
+            auth: { ...cleanDefault.auth, ...(incomingData.auth || {}) },
+            hero: { ...cleanDefault.hero, ...(incomingData.hero || {}) },
+            about: { ...cleanDefault.about, ...(incomingData.about || {}) },
+            contact: { ...cleanDefault.contact, ...(incomingData.contact || {}) },
+            githubConfig: { ...cleanDefault.githubConfig, ...(incomingData.githubConfig || {}) },
+            portfolio: Array.isArray(incomingData.portfolio) && incomingData.portfolio.length > 0 ? incomingData.portfolio : cleanDefault.portfolio,
+            gallery: Array.isArray(incomingData.gallery) ? incomingData.gallery : cleanDefault.gallery,
+            expertise: Array.isArray(incomingData.expertise) ? incomingData.expertise : cleanDefault.expertise,
+            experience: Array.isArray(incomingData.experience) ? incomingData.experience : cleanDefault.experience,
+            software: Array.isArray(incomingData.software) ? incomingData.software : cleanDefault.software,
+            navLinks: Array.isArray(incomingData.navLinks) ? incomingData.navLinks : cleanDefault.navLinks,
         };
-    }
 
-    // Load from Neon Database API, data.json, or LocalStorage in background
-    const loadData = async () => {
+        // Guarantee hero sub-objects
+        if (!merged.hero.stat1) merged.hero.stat1 = cleanDefault.hero.stat1;
+        if (!merged.hero.stat2) merged.hero.stat2 = cleanDefault.hero.stat2;
+        if (!merged.hero.stat3) merged.hero.stat3 = cleanDefault.hero.stat3;
+        if (!Array.isArray(merged.hero.typewriterRoles)) merged.hero.typewriterRoles = cleanDefault.hero.typewriterRoles;
+        if (!Array.isArray(merged.hero.marqueeItems)) merged.hero.marqueeItems = cleanDefault.hero.marqueeItems;
+
+        // Guarantee about sub-objects
+        if (!merged.about.education) merged.about.education = cleanDefault.about.education;
+        if (!merged.about.languages) merged.about.languages = cleanDefault.about.languages;
+
         let localLeads = [];
         try {
             const localStored = localStorage.getItem('nibras_portfolio_data');
@@ -307,18 +324,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (e) {}
 
-        const mergeWithLocal = (incomingData) => {
-            if (!incomingData) return defaultData;
-            const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
-            const combined = [...localLeads, ...incomingLeads];
-            incomingData.leads = combined.filter((item, index, self) =>
-                index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.message === item.message)
-            );
-            if (!incomingData.gallery) incomingData.gallery = defaultData.gallery;
-            if (!incomingData.githubConfig) incomingData.githubConfig = defaultData.githubConfig;
-            return incomingData;
-        };
+        const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
+        const combined = [...localLeads, ...incomingLeads];
+        merged.leads = combined.filter((item, index, self) =>
+            index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.message === item.message)
+        );
+        return merged;
+    };
 
+    let localStoredData = null;
+    try {
+        const stored = localStorage.getItem('nibras_portfolio_data');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.hero && parsed.portfolio) {
+                localStoredData = parsed;
+            } else {
+                localStorage.removeItem('nibras_portfolio_data');
+            }
+        }
+    } catch (e) {}
+
+    let appData = mergeWithLocal(localStoredData);
+
+    // Load from Neon Database API, data.json, or LocalStorage in background
+    const loadData = async () => {
         // 1. Try Neon Cloud Database with 3.5s timeout
         try {
             const controller = new AbortController();
@@ -340,9 +370,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const json = await neonRes.json();
                 if (json && json.rows && json.rows.length > 0 && json.rows[0].content_json) {
                     const data = json.rows[0].content_json;
-                    const merged = mergeWithLocal(data);
-                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
-                    return merged;
+                    if (data && data.hero && data.portfolio) {
+                        const merged = mergeWithLocal(data);
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                        return merged;
+                    }
                 }
             }
         } catch (e) {}
@@ -581,7 +613,10 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
     // DATA POPULATION & FORM SYNC
     // -------------------------------------------------------------
     const populateAllForms = () => {
-        if (!appData) return;
+        if (!appData || typeof appData !== 'object') {
+            appData = JSON.parse(JSON.stringify(defaultData));
+        }
+        appData = mergeWithLocal(appData);
 
         // 1. Overview counts
         document.getElementById('countProjects').textContent = (appData.portfolio || []).length;
@@ -1524,46 +1559,62 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
             saveAllBtn.innerHTML = '<span>⏳ SAVING...</span>';
 
             try {
+                // Ensure complete structure exists
+                if (!appData || typeof appData !== 'object') {
+                    appData = JSON.parse(JSON.stringify(defaultData));
+                }
+                appData = mergeWithLocal(appData);
+
                 // Collect Hero
-                appData.hero.badgeText = document.getElementById('heroBadgeText').value.trim();
-                appData.hero.badgeCode = document.getElementById('heroBadgeCode').value.trim();
-                appData.hero.titleLine1 = document.getElementById('heroTitleLine1').value.trim();
-                appData.hero.titleLine2 = document.getElementById('heroTitleLine2').value.trim();
-                appData.hero.typewriterRoles = document.getElementById('heroTypewriterRoles').value.split(',').map(s => s.trim()).filter(Boolean);
-                appData.hero.introText = document.getElementById('heroIntroText').value.trim();
-                appData.hero.stat1 = { num: document.getElementById('heroStat1Num').value.trim(), lbl: document.getElementById('heroStat1Lbl').value.trim() };
-                appData.hero.stat2 = { num: document.getElementById('heroStat2Num').value.trim(), lbl: document.getElementById('heroStat2Lbl').value.trim() };
-                appData.hero.stat3 = { num: document.getElementById('heroStat3Num').value.trim(), lbl: document.getElementById('heroStat3Lbl').value.trim() };
-                appData.hero.featuredImage = document.getElementById('heroImage').value.trim();
-                appData.hero.marqueeItems = document.getElementById('marqueeText').value.split(',').map(s => s.trim()).filter(Boolean);
+                appData.hero.badgeText = (document.getElementById('heroBadgeText')?.value || '').trim();
+                appData.hero.badgeCode = (document.getElementById('heroBadgeCode')?.value || '').trim();
+                appData.hero.titleLine1 = (document.getElementById('heroTitleLine1')?.value || '').trim();
+                appData.hero.titleLine2 = (document.getElementById('heroTitleLine2')?.value || '').trim();
+                appData.hero.typewriterRoles = (document.getElementById('heroTypewriterRoles')?.value || '').split(',').map(s => s.trim()).filter(Boolean);
+                appData.hero.introText = (document.getElementById('heroIntroText')?.value || '').trim();
+                appData.hero.stat1 = { 
+                    num: (document.getElementById('heroStat1Num')?.value || '').trim(), 
+                    lbl: (document.getElementById('heroStat1Lbl')?.value || '').trim() 
+                };
+                appData.hero.stat2 = { 
+                    num: (document.getElementById('heroStat2Num')?.value || '').trim(), 
+                    lbl: (document.getElementById('heroStat2Lbl')?.value || '').trim() 
+                };
+                appData.hero.stat3 = { 
+                    num: (document.getElementById('heroStat3Num')?.value || '').trim(), 
+                    lbl: (document.getElementById('heroStat3Lbl')?.value || '').trim() 
+                };
+                appData.hero.featuredImage = (document.getElementById('heroImage')?.value || '').trim();
+                appData.hero.marqueeItems = (document.getElementById('marqueeText')?.value || '').split(',').map(s => s.trim()).filter(Boolean);
 
                 // Collect About
-                appData.about.title = document.getElementById('aboutTitle').value.trim();
-                appData.about.quote = document.getElementById('aboutQuote').value.trim();
-                appData.about.body = document.getElementById('aboutBody').value.trim();
+                appData.about.title = (document.getElementById('aboutTitle')?.value || '').trim();
+                appData.about.quote = (document.getElementById('aboutQuote')?.value || '').trim();
+                appData.about.body = (document.getElementById('aboutBody')?.value || '').trim();
                 appData.about.education = {
-                    title: document.getElementById('aboutEduTitle').value.trim(),
-                    sub: document.getElementById('aboutEduSub').value.trim()
+                    title: (document.getElementById('aboutEduTitle')?.value || '').trim(),
+                    sub: (document.getElementById('aboutEduSub')?.value || '').trim()
                 };
                 appData.about.languages = {
-                    title: document.getElementById('aboutLangTitle').value.trim(),
-                    sub: document.getElementById('aboutLangSub').value.trim()
+                    title: (document.getElementById('aboutLangTitle')?.value || '').trim(),
+                    sub: (document.getElementById('aboutLangSub')?.value || '').trim()
                 };
 
                 // Collect Contact & Footer
-                appData.contact.email = document.getElementById('contactEmail').value.trim();
-                appData.contact.phone = document.getElementById('contactPhone').value.trim();
-                appData.contact.location = document.getElementById('contactLocation').value.trim();
-                appData.contact.behance = document.getElementById('contactBehance').value.trim();
-                appData.contact.copyright = document.getElementById('footerCopyright').value.trim();
-                appData.contact.credit = document.getElementById('footerCredit').value.trim();
+                appData.contact.email = (document.getElementById('contactEmail')?.value || '').trim();
+                appData.contact.phone = (document.getElementById('contactPhone')?.value || '').trim();
+                appData.contact.location = (document.getElementById('contactLocation')?.value || '').trim();
+                appData.contact.behance = (document.getElementById('contactBehance')?.value || '').trim();
+                appData.contact.copyright = (document.getElementById('footerCopyright')?.value || '').trim();
+                appData.contact.credit = (document.getElementById('footerCredit')?.value || '').trim();
 
                 // Collect GitHub token if provided (store locally in browser)
-                const ghTokenVal = document.getElementById('ghToken').value.trim();
+                const ghTokenInput = document.getElementById('ghToken');
+                const ghTokenVal = ghTokenInput ? ghTokenInput.value.trim() : '';
                 if (ghTokenVal) {
                     localStorage.setItem('nibras_portfolio_gh_token', ghTokenVal);
                 }
-                if (!appData.githubConfig) appData.githubConfig = defaultData.githubConfig;
+                if (!appData.githubConfig) appData.githubConfig = JSON.parse(JSON.stringify(defaultData.githubConfig));
                 appData.githubConfig.token = "";
 
                 await saveData(appData);
