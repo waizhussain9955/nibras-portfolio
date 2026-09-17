@@ -172,7 +172,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             location: "Karachi, Pakistan (Available for Global Remote Projects)",
             behance: "https://behance.net/nibrasansari2",
             copyright: "© 2026 Nibras Ansari. All rights reserved.",
-            credit: "Handcrafted with Cyber Neon & Interactive Code"
+            credit: "Handcrafted with Cyber Neon & Interactive Code",
+            portalTitle: "// CLIENT TRANSMISSION PORTAL",
+            portalBadge: "ENCRYPTED",
+            submitBtnText: "TRANSMIT BRIEF",
+            projectTypePlaceholder: "Select project type",
+            projectDomains: [
+                { id: "esports", label: "Esports Team Logo / Branding" },
+                { id: "mascot", label: "Custom Mascot Design" },
+                { id: "sports", label: "Athletic Sports Emblem" },
+                { id: "character", label: "2D Character Illustration" },
+                { id: "other", label: "General Graphic Design / Collaboration" }
+            ]
         },
         leads: []
     };
@@ -246,6 +257,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!merged.about.education) merged.about.education = cleanDefault.about.education;
             if (!merged.about.languages) merged.about.languages = cleanDefault.about.languages;
+
+            if (!merged.contact.portalTitle) merged.contact.portalTitle = cleanDefault.contact.portalTitle;
+            if (!merged.contact.portalBadge) merged.contact.portalBadge = cleanDefault.contact.portalBadge;
+            if (!merged.contact.submitBtnText) merged.contact.submitBtnText = cleanDefault.contact.submitBtnText;
+            if (!merged.contact.projectTypePlaceholder) merged.contact.projectTypePlaceholder = cleanDefault.contact.projectTypePlaceholder;
+            if (!Array.isArray(merged.contact.projectDomains) || merged.contact.projectDomains.length === 0) {
+                merged.contact.projectDomains = cleanDefault.contact.projectDomains;
+            }
 
             const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
             const combined = [...localLeads, ...incomingLeads];
@@ -548,6 +567,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 9. Contact & Footer
         if (liveData.contact) {
+            // Hydrate Client Transmission Portal Header & Status Badge & Submit Button
+            const hudTitle = document.querySelector('.form-hud-title');
+            if (hudTitle && liveData.contact.portalTitle) {
+                hudTitle.textContent = liveData.contact.portalTitle;
+            }
+            const hudStatus = document.querySelector('.form-hud-status');
+            if (hudStatus && liveData.contact.portalBadge) {
+                hudStatus.innerHTML = `<span class="live-blink-dot"></span> ${liveData.contact.portalBadge}`;
+            }
+            const submitSpan = document.querySelector('#contactForm .btn-submit span');
+            if (submitSpan && liveData.contact.submitBtnText) {
+                submitSpan.textContent = liveData.contact.submitBtnText;
+            }
+
+            // Hydrate Project Domain dropdown options dynamically
+            const projectTypeSelect = document.getElementById('project-type');
+            if (projectTypeSelect && Array.isArray(liveData.contact.projectDomains) && liveData.contact.projectDomains.length > 0) {
+                const placeholder = liveData.contact.projectTypePlaceholder || 'Select project type';
+                let optionsHtml = `<option value="" disabled selected>${placeholder}</option>`;
+                liveData.contact.projectDomains.forEach(item => {
+                    const label = typeof item === 'string' ? item : (item.label || item.name || '');
+                    const val = typeof item === 'string' ? item.toLowerCase().replace(/[^a-z0-9]+/g, '-') : (item.id || item.value || label.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+                    if (label) {
+                        optionsHtml += `<option value="${val}">${label}</option>`;
+                    }
+                });
+                projectTypeSelect.innerHTML = optionsHtml;
+            }
+
             const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
             emailLinks.forEach(el => {
                 el.href = `mailto:${liveData.contact.email}`;
@@ -1185,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const clientName = nameInput ? nameInput.value.trim() : '';
             const clientEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
-            const clientProject = projectInput ? projectInput.value : 'general';
+            const clientProject = projectInput ? (projectInput.options[projectInput.selectedIndex]?.text || projectInput.value) : 'General';
             const clientMsg = messageInput ? messageInput.value.trim() : '';
 
             // Strict Validation Checks

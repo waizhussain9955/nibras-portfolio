@@ -177,7 +177,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             location: "Karachi, Pakistan (Available for Global Remote Projects)",
             behance: "https://behance.net/nibrasansari2",
             copyright: "© 2026 Nibras Ansari. All rights reserved.",
-            credit: "Handcrafted with Cyber Neon & Interactive Code"
+            credit: "Handcrafted with Cyber Neon & Interactive Code",
+            portalTitle: "// CLIENT TRANSMISSION PORTAL",
+            portalBadge: "ENCRYPTED",
+            submitBtnText: "TRANSMIT BRIEF",
+            projectTypePlaceholder: "Select project type",
+            projectDomains: [
+                { id: "esports", label: "Esports Team Logo / Branding" },
+                { id: "mascot", label: "Custom Mascot Design" },
+                { id: "sports", label: "Athletic Sports Emblem" },
+                { id: "character", label: "2D Character Illustration" },
+                { id: "other", label: "General Graphic Design / Collaboration" }
+            ]
         },
         githubConfig: {
             repoOwner: "waizhussain9955",
@@ -314,6 +325,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Guarantee about sub-objects
         if (!merged.about.education) merged.about.education = cleanDefault.about.education;
         if (!merged.about.languages) merged.about.languages = cleanDefault.about.languages;
+
+        // Guarantee contact sub-objects & projectDomains
+        if (!merged.contact.portalTitle) merged.contact.portalTitle = cleanDefault.contact.portalTitle;
+        if (!merged.contact.portalBadge) merged.contact.portalBadge = cleanDefault.contact.portalBadge;
+        if (!merged.contact.submitBtnText) merged.contact.submitBtnText = cleanDefault.contact.submitBtnText;
+        if (!merged.contact.projectTypePlaceholder) merged.contact.projectTypePlaceholder = cleanDefault.contact.projectTypePlaceholder;
+        if (!Array.isArray(merged.contact.projectDomains) || merged.contact.projectDomains.length === 0) {
+            merged.contact.projectDomains = cleanDefault.contact.projectDomains;
+        }
 
         let localLeads = [];
         try {
@@ -650,7 +670,19 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
         document.getElementById('aboutLangTitle').value = appData.about.languages.title || '';
         document.getElementById('aboutLangSub').value = appData.about.languages.sub || '';
 
-        // 4. Contact & Footer
+        // 4. Contact & Client Transmission Portal
+        if (document.getElementById('contactPortalTitle')) {
+            document.getElementById('contactPortalTitle').value = appData.contact.portalTitle || '// CLIENT TRANSMISSION PORTAL';
+        }
+        if (document.getElementById('contactPortalBadge')) {
+            document.getElementById('contactPortalBadge').value = appData.contact.portalBadge || 'ENCRYPTED';
+        }
+        if (document.getElementById('contactDropdownPlaceholder')) {
+            document.getElementById('contactDropdownPlaceholder').value = appData.contact.projectTypePlaceholder || 'Select project type';
+        }
+        if (document.getElementById('contactSubmitBtnText')) {
+            document.getElementById('contactSubmitBtnText').value = appData.contact.submitBtnText || 'TRANSMIT BRIEF';
+        }
         document.getElementById('contactEmail').value = appData.contact.email || '';
         document.getElementById('contactPhone').value = appData.contact.phone || '';
         document.getElementById('contactLocation').value = appData.contact.location || '';
@@ -675,6 +707,7 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
         renderExperienceList();
         renderSoftwareList();
         renderNavLinksList();
+        renderProjectDomainsList();
     };
 
     // Render Leads Table (Real-time from Neon Database + Local Cache)
@@ -1401,6 +1434,119 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
         }
     };
 
+    // --- 6. Project Domains CRUD (Contact Form Dropdown) ---
+    const renderProjectDomainsList = () => {
+        const container = document.getElementById('projectDomainsAdminList');
+        const countEl = document.getElementById('countProjectDomains');
+        if (!container) return;
+
+        if (!Array.isArray(appData.contact.projectDomains)) {
+            appData.contact.projectDomains = [
+                { id: "esports", label: "Esports Team Logo / Branding" },
+                { id: "mascot", label: "Custom Mascot Design" },
+                { id: "sports", label: "Athletic Sports Emblem" },
+                { id: "character", label: "2D Character Illustration" },
+                { id: "other", label: "General Graphic Design / Collaboration" }
+            ];
+        }
+
+        if (countEl) countEl.textContent = appData.contact.projectDomains.length;
+
+        if (appData.contact.projectDomains.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No project domains added yet. Click "+ ADD NEW PROJECT DOMAIN" to add your first dropdown option.</div>`;
+            return;
+        }
+
+        container.innerHTML = appData.contact.projectDomains.map((item, idx) => {
+            const label = typeof item === 'string' ? item : (item.label || item.name || '');
+            const id = typeof item === 'string' ? item.toLowerCase().replace(/[^a-z0-9]+/g, '-') : (item.id || item.value || '');
+            return `
+            <div class="admin-list-item" style="margin-bottom:10px;">
+                <div class="item-info-col">
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <span class="admin-item-tag" style="background:rgba(189,0,255,0.15); color:var(--neon-purple, #bd00ff); border:1px solid rgba(189,0,255,0.4); padding:3px 10px; font-weight:700;">#${idx + 1}</span>
+                        <h4 class="admin-item-title" style="margin:0; font-size:1.05rem; font-weight:600;">${label}</h4>
+                    </div>
+                    <small class="text-muted" style="margin-top:4px;">Identifier / Option Value: <code>${id}</code></small>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="editProjectDomain(${idx})">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteProjectDomain(${idx})">Delete</button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    };
+
+    window.editProjectDomain = (idx) => {
+        const item = appData.contact.projectDomains[idx];
+        const curLabel = typeof item === 'string' ? item : (item.label || item.name || '');
+        const curId = typeof item === 'string' ? item.toLowerCase().replace(/[^a-z0-9]+/g, '-') : (item.id || item.value || '');
+
+        openModal("EDIT PROJECT DOMAIN", `
+            <div class="form-group">
+                <label>DOMAIN / SERVICE LABEL (Displayed to Client in Dropdown)</label>
+                <input type="text" id="m_domain_label" value="${curLabel.replace(/"/g, '&quot;')}" class="admin-input" placeholder="e.g. Esports Team Logo / Branding">
+            </div>
+            <div class="form-group">
+                <label>UNIQUE IDENTIFIER / SLUG</label>
+                <input type="text" id="m_domain_id" value="${curId}" class="admin-input" placeholder="e.g. esports">
+            </div>
+        `, () => {
+            const label = document.getElementById('m_domain_label').value.trim();
+            let id = document.getElementById('m_domain_id').value.trim();
+            if (!label) return alert("Domain label is required");
+            if (!id) id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+            appData.contact.projectDomains[idx] = { id, label };
+            saveData(appData);
+            populateAllForms();
+            closeModal();
+            showToast("Project domain updated successfully!", "success");
+        });
+    };
+
+    const addProjectDomainBtn = document.getElementById('addProjectDomainBtn');
+    if (addProjectDomainBtn) {
+        addProjectDomainBtn.addEventListener('click', () => {
+            openModal("ADD NEW PROJECT DOMAIN", `
+                <div class="form-group">
+                    <label>DOMAIN / SERVICE LABEL (Displayed to Client in Dropdown)</label>
+                    <input type="text" id="m_domain_label" placeholder="e.g. YouTube Banner & Stream Art" class="admin-input">
+                </div>
+                <div class="form-group">
+                    <label>UNIQUE IDENTIFIER / SLUG (Optional)</label>
+                    <input type="text" id="m_domain_id" placeholder="e.g. stream-art (auto-generated if empty)" class="admin-input">
+                </div>
+            `, () => {
+                const label = document.getElementById('m_domain_label').value.trim();
+                let id = document.getElementById('m_domain_id').value.trim();
+                if (!label) return alert("Domain label is required");
+                if (!id) id = label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+                if (!Array.isArray(appData.contact.projectDomains)) {
+                    appData.contact.projectDomains = [];
+                }
+                appData.contact.projectDomains.push({ id, label });
+                saveData(appData);
+                populateAllForms();
+                closeModal();
+                showToast(`"${label}" added to Client Transmission Portal!`, "success");
+            });
+        });
+    }
+
+    window.deleteProjectDomain = (idx) => {
+        const item = appData.contact.projectDomains[idx];
+        const label = typeof item === 'string' ? item : (item.label || item.name || '');
+        if (confirm(`Are you sure you want to remove "${label}" from the dropdown?`)) {
+            appData.contact.projectDomains.splice(idx, 1);
+            saveData(appData);
+            populateAllForms();
+            showToast("Project domain removed.", "info");
+        }
+    };
+
     // Hero image file upload helper
     const heroImageFile = document.getElementById('heroImageFile');
     if (heroImageFile) {
@@ -1600,7 +1746,19 @@ DO UPDATE SET content_json = EXCLUDED.content_json, updated_at = CURRENT_TIMESTA
                     sub: (document.getElementById('aboutLangSub')?.value || '').trim()
                 };
 
-                // Collect Contact & Footer
+                // Collect Contact & Client Transmission Portal
+                if (document.getElementById('contactPortalTitle')) {
+                    appData.contact.portalTitle = document.getElementById('contactPortalTitle').value.trim() || '// CLIENT TRANSMISSION PORTAL';
+                }
+                if (document.getElementById('contactPortalBadge')) {
+                    appData.contact.portalBadge = document.getElementById('contactPortalBadge').value.trim() || 'ENCRYPTED';
+                }
+                if (document.getElementById('contactDropdownPlaceholder')) {
+                    appData.contact.projectTypePlaceholder = document.getElementById('contactDropdownPlaceholder').value.trim() || 'Select project type';
+                }
+                if (document.getElementById('contactSubmitBtnText')) {
+                    appData.contact.submitBtnText = document.getElementById('contactSubmitBtnText').value.trim() || 'TRANSMIT BRIEF';
+                }
                 appData.contact.email = (document.getElementById('contactEmail')?.value || '').trim();
                 appData.contact.phone = (document.getElementById('contactPhone')?.value || '').trim();
                 appData.contact.location = (document.getElementById('contactLocation')?.value || '').trim();

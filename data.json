@@ -109,7 +109,33 @@
     "credit": "Handcrafted with Cyber Neon & Interactive Code",
     "behance": "https://behance.net/nibrasansari2",
     "location": "Karachi, Pakistan (Available for Global Remote Projects)",
-    "copyright": "© 2026 Nibras Ansari. All rights reserved."
+    "copyright": "© 2026 Nibras Ansari. All rights reserved.",
+    "portalTitle": "// CLIENT TRANSMISSION PORTAL",
+    "portalBadge": "ENCRYPTED",
+    "submitBtnText": "TRANSMIT BRIEF",
+    "projectTypePlaceholder": "Select project type",
+    "projectDomains": [
+      {
+        "id": "esports",
+        "label": "Esports Team Logo / Branding"
+      },
+      {
+        "id": "mascot",
+        "label": "Custom Mascot Design"
+      },
+      {
+        "id": "sports",
+        "label": "Athletic Sports Emblem"
+      },
+      {
+        "id": "character",
+        "label": "2D Character Illustration"
+      },
+      {
+        "id": "other",
+        "label": "General Graphic Design / Collaboration"
+      }
+    ]
   },
   "gallery": [
     {
