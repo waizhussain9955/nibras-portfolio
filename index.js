@@ -193,22 +193,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isSubfolder = pathname.includes('/projects/') || pathname.endsWith('/projects');
     const isProjectsPage = isSubfolder || pathname.includes('projects.html');
 
-    // Safe path resolver for images
+    // Safe path resolver for images (Root-relative for zero broken asset links)
     const resolveAssetPath = (path) => {
         if (!path) return '';
         if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
             return path;
         }
-        if (isSubfolder) {
-            const clean = path.replace(/^(\.\.\/|\.\/)/, '');
-            return '../' + clean;
-        } else {
-            return path.replace(/^(\.\.\/)/, '');
-        }
+        const clean = path.replace(/^(\.\.\/|\.\/)/, '').replace(/^\//, '');
+        return '/' + clean;
     };
 
-    // Load dynamic data from Backend API, data.json, or localStorage fallback
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    // Live Neon Cloud Database configuration
+    const NEON_SQL_ENDPOINT = 'https://ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/sql';
+    const NEON_CONN_STR = 'postgresql://neondb_owner:npg_c4Xbr2UyZnPE@ep-morning-king-b4ge91k2-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require';
 
     const getLiveData = async () => {
         let localLeads = [];
@@ -221,45 +218,102 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const mergeWithLocal = (incomingData) => {
-            if (!incomingData) return defaultData;
+            const cleanDefault = JSON.parse(JSON.stringify(defaultData));
+            if (!incomingData || typeof incomingData !== 'object') {
+                return cleanDefault;
+            }
+            const merged = {
+                ...cleanDefault,
+                ...incomingData,
+                auth: { ...cleanDefault.auth, ...(incomingData.auth || {}) },
+                hero: { ...cleanDefault.hero, ...(incomingData.hero || {}) },
+                about: { ...cleanDefault.about, ...(incomingData.about || {}) },
+                contact: { ...cleanDefault.contact, ...(incomingData.contact || {}) },
+                githubConfig: { ...cleanDefault.githubConfig, ...(incomingData.githubConfig || {}) },
+                portfolio: Array.isArray(incomingData.portfolio) && incomingData.portfolio.length > 0 ? incomingData.portfolio : cleanDefault.portfolio,
+                gallery: Array.isArray(incomingData.gallery) ? incomingData.gallery : cleanDefault.gallery,
+                expertise: Array.isArray(incomingData.expertise) ? incomingData.expertise : cleanDefault.expertise,
+                experience: Array.isArray(incomingData.experience) ? incomingData.experience : cleanDefault.experience,
+                software: Array.isArray(incomingData.software) ? incomingData.software : cleanDefault.software,
+                navLinks: Array.isArray(incomingData.navLinks) ? incomingData.navLinks : cleanDefault.navLinks,
+            };
+
+            if (!merged.hero.stat1) merged.hero.stat1 = cleanDefault.hero.stat1;
+            if (!merged.hero.stat2) merged.hero.stat2 = cleanDefault.hero.stat2;
+            if (!merged.hero.stat3) merged.hero.stat3 = cleanDefault.hero.stat3;
+            if (!Array.isArray(merged.hero.typewriterRoles)) merged.hero.typewriterRoles = cleanDefault.hero.typewriterRoles;
+            if (!Array.isArray(merged.hero.marqueeItems)) merged.hero.marqueeItems = cleanDefault.hero.marqueeItems;
+
+            if (!merged.about.education) merged.about.education = cleanDefault.about.education;
+            if (!merged.about.languages) merged.about.languages = cleanDefault.about.languages;
+
             const incomingLeads = Array.isArray(incomingData.leads) ? incomingData.leads : [];
             const combined = [...localLeads, ...incomingLeads];
-            incomingData.leads = combined.filter((item, index, self) =>
-                index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.name === item.name)
+            merged.leads = combined.filter((item, index, self) =>
+                index === self.findIndex((t) => t.email === item.email && t.date === item.date && t.message === item.message)
             );
-            return incomingData;
+            return merged;
         };
 
-        // Fast path: Immediate 0ms hydration from local cache if present
+        // 1. Primary: Fetch live data directly from Neon Cloud Database (3s timeout)
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const neonRes = await fetch(NEON_SQL_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                    'Neon-Connection-String': NEON_CONN_STR
+                },
+                body: JSON.stringify({
+                    query: "SELECT content_json FROM portfolio_content WHERE section_key = 'main_portfolio';"
+                }),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (neonRes.ok) {
+                const json = await neonRes.json();
+                if (json && json.rows && json.rows.length > 0 && json.rows[0].content_json) {
+                    const data = json.rows[0].content_json;
+                    if (data && data.hero && data.portfolio) {
+                        const merged = mergeWithLocal(data);
+                        localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                        return merged;
+                    }
+                }
+            }
+        } catch (e) {}
+
+        // 2. Secondary: Try same-origin /api/data endpoint
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const apiRes = await fetch('/api/data?v=' + Date.now(), { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (apiRes.ok) {
+                const data = await apiRes.json();
+                if (data && data.hero && data.portfolio) {
+                    const merged = mergeWithLocal(data);
+                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(merged));
+                    return merged;
+                }
+            }
+        } catch (e) {}
+
+        // 3. Fallback to localStorage if present
         if (localStored) {
             try {
                 const parsed = JSON.parse(localStored);
-                if (parsed && Array.isArray(parsed.portfolio) && parsed.portfolio.length > 0) {
-                    // Refresh in background without blocking initial paint
-                    setTimeout(async () => {
-                        try {
-                            const dataUrl = isSubfolder ? '../data.json' : 'data.json';
-                            const res = await fetch(dataUrl);
-                            if (res.ok) {
-                                const fetched = await res.json();
-                                if (fetched && fetched.hero) {
-                                    localStorage.setItem('nibras_portfolio_data', JSON.stringify(mergeWithLocal(fetched)));
-                                }
-                            }
-                        } catch (err) {}
-                    }, 200);
+                if (parsed && parsed.hero && Array.isArray(parsed.portfolio)) {
                     return mergeWithLocal(parsed);
                 }
             } catch (e) {}
         }
 
-        // First-time visitor: fetch data with fast timeout
+        // 4. Ultimate fallback to static data.json
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
-            const dataUrl = isSubfolder ? '../data.json' : 'data.json';
-            const res = await fetch(dataUrl, { signal: controller.signal });
-            clearTimeout(timeoutId);
+            const res = await fetch('/data.json');
             if (res.ok) {
                 const fetchedData = await res.json();
                 if (fetchedData && fetchedData.hero) {
